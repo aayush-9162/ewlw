@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import POSTER_IMAGES from '../data/posterImages.js';
-import REINF_POSTER_IMAGES from '../data/reinfPosterImages.js';
-import PPT_SLIDES from '../data/pptSlides.js';
-import WORKSHEETS from '../data/worksheets.js';
+import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets } from '../data/lazyData.js';
+
+// Hook: load async data on mount/key change
+function useLazy(loader, key) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    setData(null);
+    loader(key).then(d => { if (!cancelled) setData(d); });
+    return () => { cancelled = true; };
+  }, [key]);
+  return data;
+}
 
 function HabitPoster({ habit }) {
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(false);
   const habitIdx = (habit?.n || 1) - 1;
-  const posterImage = POSTER_IMAGES[habitIdx];
+  const posterImage = useLazy(loadPoster, habitIdx);
 
   return (
     <div>
@@ -18,11 +27,15 @@ function HabitPoster({ habit }) {
         Habit Poster
       </h2>
       <div style={{ maxWidth: '860px' }}>
-        <img
-          src={posterImage}
-          alt="Habit Poster"
-          style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }}
-        />
+        {posterImage ? (
+          <img
+            src={posterImage}
+            alt="Habit Poster"
+            style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }}
+          />
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+        )}
         <div className="poster-btn-row">
           <button className="poster-btn poster-btn-primary" onClick={() => setOverviewOpen(true)}>Know More</button>
           <button className="poster-btn poster-btn-secondary" onClick={() => setTipsOpen(true)}>Tips for Teachers</button>
@@ -63,6 +76,7 @@ function LessonsPanel({ habit, openLessonNum }) {
   const lessonRefs = useRef({});
   const habitIdx = (habit?.n || 1) - 1;
   const lessons = ALL_LESSONS[habitIdx] || [];
+  const lessonImages = useLazy(loadLessonImages, habitIdx);
 
   useEffect(() => {
     if (openLessonNum) {
@@ -88,7 +102,9 @@ function LessonsPanel({ habit, openLessonNum }) {
         }}>Habit {habit?.n || 1}</span>
       </div>
       <div className="lesson-accordion">
-        {lessons.map((lesson) => (
+        {lessons.map((lesson) => {
+          const img = lessonImages ? lessonImages[lesson.num - 1] : null;
+          return (
           <div
             key={lesson.id}
             ref={el => lessonRefs.current[lesson.id] = el}
@@ -103,19 +119,22 @@ function LessonsPanel({ habit, openLessonNum }) {
               <div className="lesson-chevron">&#9662;</div>
             </div>
             <div className="lesson-body" style={{ padding: '0 22px 22px' }}>
-              {lesson.image && (
+              {img ? (
                 <img
-                  src={lesson.image}
+                  src={img}
                   alt={lesson.name}
                   style={{
                     width: '100%', borderRadius: '10px',
                     boxShadow: '0 4px 20px rgba(0,0,0,.12)', display: 'block', marginTop: '16px'
                   }}
                 />
-              )}
+              ) : openId === lesson.id ? (
+                <div style={{ width: '100%', aspectRatio: '4/3', background: '#f5f5f5', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', marginTop: '16px' }}>Loading...</div>
+              ) : null}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -236,14 +255,14 @@ function WorksheetViewer({ data }) {
           onClick={() => setLevel('level1')}
         >
           Level 1
-          <span className="ws-tab-sub">Classes 3-5</span>
+          <span className="ws-tab-sub">Classes 3-5 &middot; Ex I-III</span>
         </button>
         <button
           className={`ws-tab${level === 'level2' ? ' ws-tab--active' : ''}`}
           onClick={() => setLevel('level2')}
         >
           Level 2
-          <span className="ws-tab-sub">Classes 6-8</span>
+          <span className="ws-tab-sub">Classes 6-8 &middot; Ex I-IV</span>
         </button>
       </div>
       <div className="ws-pages">
@@ -261,10 +280,10 @@ function AdditionalResources({ habit }) {
   const fileInputRef = useRef(null);
 
   const habitIdx = (habit?.n || 1) - 1;
-  const slides = PPT_SLIDES[habitIdx];
+  const slides = useLazy(loadPptSlides, habitIdx);
   const hasSlides = slides && slides.length > 0;
   const pptExpanded = !!expanded.ppt;
-  const wsData = WORKSHEETS[habitIdx];
+  const wsData = useLazy(loadWorksheets, habitIdx);
 
   return (
     <div>
@@ -385,7 +404,7 @@ function AdditionalResources({ habit }) {
 
 function ReinforcementFeedback({ habit }) {
   const habitIdx = (habit?.n || 1) - 1;
-  const reinfImage = REINF_POSTER_IMAGES[habitIdx];
+  const reinfImage = useLazy(loadReinfPoster, habitIdx);
 
   return (
     <div>
@@ -399,10 +418,12 @@ function ReinforcementFeedback({ habit }) {
             alt="Reinforcement Poster"
             style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }}
           />
-        ) : (
+        ) : reinfImage === null ? (
           <div style={{ padding: '48px', textAlign: 'center', background: '#f5f5f5', borderRadius: '14px', color: '#888' }}>
             <p style={{ fontSize: '1.1rem' }}>Reinforcement poster for this habit will be available soon.</p>
           </div>
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
         )}
       </div>
       <hr style={{ border: 'none', borderTop: '2px solid #eee', margin: '32px 0' }} />

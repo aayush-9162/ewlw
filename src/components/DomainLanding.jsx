@@ -41,6 +41,19 @@ export default function DomainLanding({ onOpenDomain }) {
         }}>
           Eat Well. <span style={{ color: '#27AE60' }}>Live Well.</span>
         </h1>
+        <p style={{
+          fontSize: '.82rem',
+          fontFamily: "'DM Sans', sans-serif",
+          color: '#888',
+          letterSpacing: '.03em',
+          lineHeight: 1.5,
+          marginTop: '4px'
+        }}>
+          Aligned to{' '}
+          <span style={{ color: '#1A7A40', fontWeight: 600 }}>School Health &amp; Wellness Curriculum</span>
+          {' '}&amp;{' '}
+          <span style={{ color: '#1A80C0', fontWeight: 600 }}>Lifestyle for Environment (LiFE)</span>
+        </p>
       </div>
       <div className="domain-row">
         {Object.entries(DOMAIN_CONFIG).map(([key, cfg]) => (
