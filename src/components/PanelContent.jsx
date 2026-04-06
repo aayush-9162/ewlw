@@ -110,9 +110,11 @@ function KnowMoreScreen({ habit }) {
           <div className="km-card-body">
             <div className="km-video-embed">
               <iframe
-                src={`https://www.youtube.com/embed/${kmData.video.embedId}`}
+                src={kmData.video.embedUrl}
                 title={kmData.video.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>
@@ -531,20 +533,19 @@ function AdditionalResources({ habit, openSection }) {
             <div className="videos-grid">
               {videos.map((v, i) => (
                 <div key={i} className="video-card">
-                  <a href={v.url} target="_blank" rel="noopener noreferrer" className="video-thumb-link">
-                    <img
-                      src={`https://img.youtube.com/vi/${v.embedId}/hqdefault.jpg`}
-                      alt={v.title}
-                      className="video-thumb-img"
+                  <div className="video-embed">
+                    <iframe
+                      src={v.embedUrl}
+                      title={v.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
                     />
-                    <div className="video-play-btn"></div>
-                  </a>
+                  </div>
                   <div className="video-card-body">
                     <h4 className="video-card-title">{v.title}</h4>
                     <p className="video-card-desc">{v.description}</p>
-                    <a href={v.url} target="_blank" rel="noopener noreferrer" className="video-card-link">
-                      Watch on YouTube &#8599;
-                    </a>
                   </div>
                 </div>
               ))}

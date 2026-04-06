@@ -54,8 +54,8 @@ const KNOW_MORE_DATA = {
     },
     video: {
       title: 'How Much Water Should You Drink Daily?',
-      embedId: 'eB1BYfe2ZyE',
-      url: 'https://youtu.be/eB1BYfe2ZyE?si=xCBhnCY6vvmDFBgJ',
+      embedUrl: 'https://www.youtube.com/embed/Knmv8JLikGM?si=1',
+      url: 'https://www.youtube.com/shorts/Knmv8JLikGM',
       description: 'Dr. Saurabh Sethi, a renowned gastroenterologist known for sharing digestive health and nutrition advice, explains that a simple rule for staying hydrated is to drink about eight glasses of water a day (around 2 litres), though the exact amount can vary depending on factors like physical activity, climate, and individual body needs.',
     },
     hasSlides: true,
