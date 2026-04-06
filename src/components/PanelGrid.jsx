@@ -6,6 +6,7 @@ import REINF_THUMBS from '../data/reinfThumbs.js';
 import { ALL_LESSON_TITLES } from '../data/lessons.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
+import SHW_DATA from '../data/shwData.js';
 import { loadPoster } from '../data/lazyData.js';
 
 function PosterLightbox({ habitIdx, onClose }) {
@@ -153,6 +154,9 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'ic')}>&#x1F3A5; Videos</button>
                 {HABIT_QUIZZES[habitIdx] && (
                   <button className="pcard-btn" onClick={() => onOpenPanel(3, 'quiz')}>&#x1F3AF; Quiz</button>
+                )}
+                {SHW_DATA[habitIdx] && (
+                  <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHW Curriculum</button>
                 )}
                 {habitIdx === 6 && (
                   <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shwc')}>&#x1F4D8; SHWC Module 2</button>

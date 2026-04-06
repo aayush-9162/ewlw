@@ -5,6 +5,7 @@ import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorks
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
+import SHW_DATA from '../data/shwData.js';
 
 // Hook: load async data on mount/key change
 function useLazy(loader, key) {
@@ -470,6 +471,8 @@ function AdditionalResources({ habit, openSection }) {
     if (hasShwc) loadShwcModule2().then(setShwcPages);
   }, [hasShwc]);
 
+  const shwData = SHW_DATA[habitIdx] || null;
+
   const sections = [
     { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
     { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
@@ -477,6 +480,9 @@ function AdditionalResources({ habit, openSection }) {
   ];
   if (quizData) {
     sections.push({ key: 'quiz', label: 'Quiz', icon: '\uD83C\uDFAF' });
+  }
+  if (shwData) {
+    sections.push({ key: 'shw', label: 'SHW Curriculum', icon: '\uD83C\uDFEB' });
   }
   if (hasShwc) {
     sections.push({ key: 'shwc', label: 'SHWC Module 2', icon: '\uD83D\uDCD8' });
@@ -562,6 +568,34 @@ function AdditionalResources({ habit, openSection }) {
 
         {activeSection === 'quiz' && quizData && (
           <QuizPanel quiz={quizData} />
+        )}
+
+        {activeSection === 'shw' && shwData && (
+          <div className="shw-content">
+            {shwData.modules.map((mod, mi) => (
+              <div key={mi} className="shw-module">
+                <div className="shw-module-header">
+                  <span className="shw-module-badge">Module {mod.moduleNum}</span>
+                  <h3 className="shw-module-title">{mod.title}</h3>
+                </div>
+                <p className="shw-module-desc">{mod.description}</p>
+                <div className="shw-activities">
+                  <div className="shw-activities-label">Activities included:</div>
+                  <ol className="shw-activities-list">
+                    {mod.activities.map((act, ai) => (
+                      <li key={ai}>{act}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            ))}
+            <a href="/Training_Resource_Material_english.pdf" target="_blank" rel="noopener noreferrer" className="shw-fullmodule-btn">
+              &#x1F4D6; View Full Module
+            </a>
+            <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn">
+              &#x2B07; Download Full Guide
+            </a>
+          </div>
         )}
 
         {activeSection === 'shwc' && (
