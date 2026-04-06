@@ -94,3 +94,27 @@ export function loadWorksheets(idx) {
     ]).then(([l1, l2]) => ({ default: { level1: l1.default, level2: l2.default } }))
   );
 }
+
+// SHWC Module 2 pages (16 pages, for habit 7 / index 6)
+export function loadShwcModule2() {
+  return lazy('shwc_module2', () =>
+    Promise.all([
+      import('./shwcModule2_page0.js'),
+      import('./shwcModule2_page1.js'),
+      import('./shwcModule2_page2.js'),
+      import('./shwcModule2_page3.js'),
+      import('./shwcModule2_page4.js'),
+      import('./shwcModule2_page5.js'),
+      import('./shwcModule2_page6.js'),
+      import('./shwcModule2_page7.js'),
+      import('./shwcModule2_page8.js'),
+      import('./shwcModule2_page9.js'),
+      import('./shwcModule2_page10.js'),
+      import('./shwcModule2_page11.js'),
+      import('./shwcModule2_page12.js'),
+      import('./shwcModule2_page13.js'),
+      import('./shwcModule2_page14.js'),
+      import('./shwcModule2_page15.js'),
+    ]).then(mods => ({ default: mods.map(m => m.default) }))
+  );
+}

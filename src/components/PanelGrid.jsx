@@ -2,6 +2,7 @@ import { HABIT_ICONS } from '../data/domains.js';
 import INTRO_THUMBS from '../data/introThumbs.js';
 import REINF_THUMBS from '../data/reinfThumbs.js';
 import { ALL_LESSON_TITLES } from '../data/lessons.js';
+import HABIT_QUIZZES from '../data/habitQuizzes.js';
 
 export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel, onOpenLesson }) {
   const habitIconSrc = typeof habit.iconIdx !== 'undefined' && HABIT_ICONS[habit.iconIdx]
@@ -12,9 +13,14 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
   const introThumb = INTRO_THUMBS[habitIdx];
   const reinfThumb = REINF_THUMBS[habitIdx];
 
+  const decorIcons = ['🍎', '🥦', '🏃', '💪', '🌿', '🥗'];
+
   return (
     <div>
       <div className="sp-hero" style={{ background: domain.bg }}>
+        <div className="sp-hero-decor">
+          {decorIcons.map((icon, i) => <span key={i}>{icon}</span>)}
+        </div>
         <button className="sp-back" onClick={onBack}>&#8592; Back to Habits</button>
         <div className="sp-crumb">
           <span>{domain.label}</span>
@@ -97,6 +103,12 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'ppt')}>&#x1F4CA; Presentation</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'ws')}>&#x1F4C4; Worksheets</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'ic')}>&#x1F3A5; Videos</button>
+                {HABIT_QUIZZES[habitIdx] && (
+                  <button className="pcard-btn" onClick={() => onOpenPanel(3, 'quiz')}>&#x1F3AF; Quiz</button>
+                )}
+                {habitIdx === 6 && (
+                  <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shwc')}>&#x1F4D8; SHWC Module 2</button>
+                )}
               </div>
             </div>
           </div>

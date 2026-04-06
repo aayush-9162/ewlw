@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets } from '../data/lazyData.js';
+import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule2 } from '../data/lazyData.js';
+import HABIT_VIDEOS from '../data/habitVideos.js';
+import HABIT_QUIZZES from '../data/habitQuizzes.js';
 
 // Hook: load async data on mount/key change
 function useLazy(loader, key) {
@@ -295,18 +297,140 @@ function WorksheetViewer({ data }) {
   );
 }
 
+function QuizPanel({ quiz }) {
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [answered, setAnswered] = useState([]);
+  const [showResult, setShowResult] = useState(false);
+  const total = quiz.questions.length;
+  const q = quiz.questions[current];
+
+  const pickOption = (idx) => {
+    if (selected !== null) return;
+    setSelected(idx);
+    setAnswered(prev => [...prev, { qIdx: current, picked: idx, correct: idx === q.answer }]);
+  };
+
+  const nextQ = () => {
+    if (current < total - 1) {
+      setCurrent(c => c + 1);
+      setSelected(null);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const restart = () => {
+    setCurrent(0);
+    setSelected(null);
+    setAnswered([]);
+    setShowResult(false);
+  };
+
+  const score = answered.filter(a => a.correct).length;
+
+  if (showResult) {
+    const pct = Math.round((score / total) * 100);
+    const emoji = pct === 100 ? '\uD83C\uDF1F' : pct >= 60 ? '\uD83C\uDF89' : '\uD83D\uDCAA';
+    return (
+      <div className="quiz-result">
+        <div className="quiz-result-emoji">{emoji}</div>
+        <div className="quiz-result-title">
+          {pct === 100 ? 'Perfect Score!' : pct >= 60 ? 'Great Job!' : 'Keep Learning!'}
+        </div>
+        <div className="quiz-result-score">{score} / {total}</div>
+        <div className="quiz-result-bar-track">
+          <div className="quiz-result-bar-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <div className="quiz-result-msg">
+          {pct === 100 ? 'You know everything about this habit!' :
+           pct >= 60 ? 'You are doing well. Review and try again!' :
+           'No worries! Read the habit poster and try again.'}
+        </div>
+        <button className="quiz-restart-btn" onClick={restart}>Play Again &#x1F504;</button>
+      </div>
+    );
+  }
+
+  const optionLabels = ['A', 'B', 'C', 'D'];
+
+  return (
+    <div className="quiz-container">
+      <div className="quiz-progress-row">
+        <div className="quiz-progress-text">Question {current + 1} of {total}</div>
+        <div className="quiz-score-badge">{'\u2B50'} {answered.filter(a => a.correct).length}</div>
+      </div>
+      <div className="quiz-progress-track">
+        <div className="quiz-progress-fill" style={{ width: `${((current + 1) / total) * 100}%` }} />
+      </div>
+
+      <div className="quiz-question-card">
+        <div className="quiz-q-num">Q{current + 1}</div>
+        <div className="quiz-q-text">{q.q}</div>
+      </div>
+
+      <div className="quiz-options">
+        {q.options.map((opt, i) => {
+          let cls = 'quiz-option';
+          if (selected !== null) {
+            if (i === q.answer) cls += ' quiz-option--correct';
+            else if (i === selected) cls += ' quiz-option--wrong';
+            else cls += ' quiz-option--dimmed';
+          }
+          return (
+            <button key={i} className={cls} onClick={() => pickOption(i)}>
+              <span className="quiz-option-label">{optionLabels[i]}</span>
+              <span className="quiz-option-text">{opt}</span>
+              {selected !== null && i === q.answer && <span className="quiz-option-icon">{'\u2705'}</span>}
+              {selected !== null && i === selected && i !== q.answer && <span className="quiz-option-icon">{'\u274C'}</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      {selected !== null && (
+        <div className={`quiz-explain ${selected === q.answer ? 'quiz-explain--correct' : 'quiz-explain--wrong'}`}>
+          <div className="quiz-explain-icon">{selected === q.answer ? '\uD83C\uDF1F' : '\uD83D\uDCA1'}</div>
+          <div className="quiz-explain-text">{q.explain}</div>
+        </div>
+      )}
+
+      {selected !== null && (
+        <button className="quiz-next-btn" onClick={nextQ}>
+          {current < total - 1 ? 'Next Question \u2192' : 'See Results \uD83C\uDFC6'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function AdditionalResources({ habit, openSection }) {
-  const [activeSection, setActiveSection] = useState(openSection || 'ppt');
   const habitIdx = (habit?.n || 1) - 1;
   const slides = useLazy(loadPptSlides, habitIdx);
   const hasSlides = slides && slides.length > 0;
   const wsData = useLazy(loadWorksheets, habitIdx);
+  const videos = HABIT_VIDEOS[habitIdx] || [];
+  const quizData = HABIT_QUIZZES[habitIdx] || null;
+  const hasShwc = habitIdx === 6;
+
+  const [shwcPages, setShwcPages] = useState(null);
+  useEffect(() => {
+    if (hasShwc) loadShwcModule2().then(setShwcPages);
+  }, [hasShwc]);
 
   const sections = [
     { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
     { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
     { key: 'ic', label: 'Videos', icon: '\uD83C\uDFA5' },
   ];
+  if (quizData) {
+    sections.push({ key: 'quiz', label: 'Quiz', icon: '\uD83C\uDFAF' });
+  }
+  if (hasShwc) {
+    sections.push({ key: 'shwc', label: 'SHWC Module 2', icon: '\uD83D\uDCD8' });
+  }
+
+  const [activeSection, setActiveSection] = useState(openSection || 'ppt');
 
   return (
     <div>
@@ -353,11 +477,49 @@ function AdditionalResources({ habit, openSection }) {
         )}
 
         {activeSection === 'ic' && (
-          <div className="section-content-card">
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
-            <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
-              Video resources for this habit will be available soon.
-            </p>
+          videos.length > 0 ? (
+            <div className="videos-grid">
+              {videos.map((v, i) => (
+                <div key={i} className="video-card">
+                  <a href={v.url} target="_blank" rel="noopener noreferrer" className="video-thumb-link">
+                    <img
+                      src={`https://img.youtube.com/vi/${v.embedId}/hqdefault.jpg`}
+                      alt={v.title}
+                      className="video-thumb-img"
+                    />
+                    <div className="video-play-btn"></div>
+                  </a>
+                  <div className="video-card-body">
+                    <h4 className="video-card-title">{v.title}</h4>
+                    <p className="video-card-desc">{v.description}</p>
+                    <a href={v.url} target="_blank" rel="noopener noreferrer" className="video-card-link">
+                      Watch on YouTube &#8599;
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="section-content-card">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
+              <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+                Video resources for this habit will be available soon.
+              </p>
+            </div>
+          )
+        )}
+
+        {activeSection === 'quiz' && quizData && (
+          <QuizPanel quiz={quizData} />
+        )}
+
+        {activeSection === 'shwc' && (
+          <div className="shwc-pages">
+            {shwcPages ? shwcPages.map((src, i) => (
+              <img key={i} src={src} alt={`SHWC Module 2 — Page ${i + 1}`} />
+            )) : (
+              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+            )}
           </div>
         )}
       </div>
@@ -466,9 +628,6 @@ export default function PanelContent({ panelNum, habit, onBack, openLessonNum, o
     <div>
       <div className="sc-header">
         <button className="sc-back" onClick={onBack}>&#8592; Back</button>
-        <span className="sc-badge" style={{ background: PANEL_COLORS[panelNum] || '#888' }}>
-          Panel 0{panelNum}
-        </span>
         <span className="sc-title">{PANEL_NAMES[panelNum] || ''}</span>
       </div>
       <div className="sc-body">
