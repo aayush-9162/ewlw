@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule2 } from '../data/lazyData.js';
+import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule2, loadKnowMoreSlides } from '../data/lazyData.js';
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
+import KNOW_MORE_DATA from '../data/knowMoreData.js';
 
 // Hook: load async data on mount/key change
 function useLazy(loader, key) {
@@ -17,78 +18,127 @@ function useLazy(loader, key) {
   return data;
 }
 
-function HabitPoster({ habit, openSection }) {
-  const [activeSection, setActiveSection] = useState(openSection || 'poster');
+function HabitPoster({ habit }) {
   const habitIdx = (habit?.n || 1) - 1;
   const posterImage = useLazy(loadPoster, habitIdx);
-
-  const sections = [
-    { key: 'poster', label: 'Poster', icon: '\uD83D\uDDBC' },
-    { key: 'knowmore', label: 'Know More', icon: '\uD83D\uDCDA' },
-    { key: 'tips', label: 'Tips for Teachers', icon: '\uD83D\uDCA1' },
-    { key: 'family', label: 'Key Messages for Families', icon: '\uD83C\uDFE0' },
-  ];
 
   return (
     <div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
         Habit Poster
       </h2>
-
-      <div className="section-tabs">
-        {sections.map(s => (
-          <button key={s.key}
-            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
-            onClick={() => setActiveSection(s.key)}>
-            <span className="section-tab-icon">{s.icon}</span>
-            <span className="section-tab-label">{s.label}</span>
-          </button>
-        ))}
+      <div style={{ maxWidth: '860px' }}>
+        {posterImage ? (
+          <img src={posterImage} alt="Habit Poster"
+            style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+        )}
       </div>
+    </div>
+  );
+}
 
-      <div style={{ marginTop: '20px' }}>
-        {activeSection === 'poster' && (
-          <div style={{ maxWidth: '860px' }}>
+function KnowMoreScreen({ habit }) {
+  const habitIdx = (habit?.n || 1) - 1;
+  const kmData = KNOW_MORE_DATA[habitIdx];
+  const posterImage = useLazy(loadPoster, habitIdx);
+  const [kmSlides, setKmSlides] = useState(null);
+
+  useEffect(() => {
+    if (kmData?.hasSlides) loadKnowMoreSlides().then(setKmSlides);
+  }, [kmData]);
+
+  if (!kmData) {
+    return (
+      <div className="section-content-card">
+        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Know More</h3>
+        <p style={{ fontSize: '.88rem', color: '#666' }}>Detailed content for this habit will be available soon.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '20px' }}>
+        Know More — {habit?.name}
+      </h2>
+      <div className="km-grid">
+
+        {/* Panel 1: Document */}
+        <div className="km-card">
+          <div className="km-card-header km-card-header--blue">
+            <span className="km-card-icon">&#x1F4D6;</span>
+            <span className="km-card-title">{kmData.document.title}</span>
+          </div>
+          <div className="km-card-body km-card-body--scroll">
+            {kmData.document.sections.map((sec, i) => (
+              <div key={i} className="km-doc-section">
+                <h4 className="km-doc-heading">{sec.heading}</h4>
+                {sec.text && <p className="km-doc-text">{sec.text}</p>}
+                {sec.list && (
+                  <ul className="km-doc-list">
+                    {sec.list.map((item, j) => <li key={j}>{item}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Panel 2: PPT Slides */}
+        <div className="km-card">
+          <div className="km-card-header km-card-header--orange">
+            <span className="km-card-icon">&#x1F4CA;</span>
+            <span className="km-card-title">Presentation</span>
+          </div>
+          <div className="km-card-body">
+            {kmSlides ? (
+              <PptSlideViewer slides={kmSlides} />
+            ) : (
+              <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading slides...</div>
+            )}
+          </div>
+        </div>
+
+        {/* Panel 3: Video */}
+        <div className="km-card">
+          <div className="km-card-header km-card-header--red">
+            <span className="km-card-icon">&#x1F3AC;</span>
+            <span className="km-card-title">Video</span>
+          </div>
+          <div className="km-card-body">
+            <div className="km-video-embed">
+              <iframe
+                src={`https://www.youtube.com/embed/${kmData.video.embedId}`}
+                title={kmData.video.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <div className="km-video-info">
+              <h4 className="km-video-title">{kmData.video.title}</h4>
+              <p className="km-video-desc">{kmData.video.description}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Panel 4: Habit Poster */}
+        <div className="km-card">
+          <div className="km-card-header km-card-header--green">
+            <span className="km-card-icon">&#x1F5BC;</span>
+            <span className="km-card-title">Habit Poster</span>
+          </div>
+          <div className="km-card-body" style={{ display: 'flex', justifyContent: 'center' }}>
             {posterImage ? (
               <img src={posterImage} alt="Habit Poster"
-                style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
+                style={{ width: '100%', maxWidth: '400px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,.1)' }} />
             ) : (
-              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+              <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading...</div>
             )}
           </div>
-        )}
+        </div>
 
-        {activeSection === 'knowmore' && (
-          <div className="section-content-card">
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Why This Habit Matters</h3>
-            <p style={{ fontSize: '.92rem', color: '#444', lineHeight: 1.8 }}>{habit?.why}</p>
-          </div>
-        )}
-
-        {activeSection === 'tips' && (
-          <div className="section-content-card">
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Tips for Teachers</h3>
-            {habit?.tips && habit.tips.length > 0 ? (
-              <ol style={{ paddingLeft: '20px', margin: 0 }}>
-                {habit.tips.map((t, i) => (
-                  <li key={i} style={{ fontSize: '.88rem', color: '#444', lineHeight: 1.8, marginBottom: '6px' }}>{t}</li>
-                ))}
-              </ol>
-            ) : (
-              <p style={{ color: '#888' }}>Tips for this habit will be available soon.</p>
-            )}
-          </div>
-        )}
-
-        {activeSection === 'family' && (
-          <div className="section-content-card">
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Key Messages for Families</h3>
-            <p style={{ fontSize: '.88rem', color: '#444', lineHeight: 1.8 }}>
-              Key messages and home activities to share with families, including conversation starters and
-              observation tasks that reinforce healthy habits at home.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -631,7 +681,8 @@ export default function PanelContent({ panelNum, habit, onBack, openLessonNum, o
         <span className="sc-title">{PANEL_NAMES[panelNum] || ''}</span>
       </div>
       <div className="sc-body">
-        {panelNum === 1 && <HabitPoster habit={habit} openSection={openSection} />}
+        {panelNum === 1 && openSection === 'knowmore' && <KnowMoreScreen habit={habit} />}
+        {panelNum === 1 && openSection !== 'knowmore' && <HabitPoster habit={habit} />}
         {panelNum === 2 && <LessonsPanel habit={habit} openLessonNum={openLessonNum} />}
         {panelNum === 3 && <AdditionalResources habit={habit} openSection={openSection} />}
         {panelNum === 4 && <ReinforcementFeedback habit={habit} openSection={openSection} />}

@@ -1,10 +1,44 @@
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { HABIT_ICONS } from '../data/domains.js';
 import INTRO_THUMBS from '../data/introThumbs.js';
 import REINF_THUMBS from '../data/reinfThumbs.js';
 import { ALL_LESSON_TITLES } from '../data/lessons.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
+import KNOW_MORE_DATA from '../data/knowMoreData.js';
+import { loadPoster } from '../data/lazyData.js';
+
+function PosterLightbox({ habitIdx, onClose }) {
+  const [fullImg, setFullImg] = useState(null);
+  useEffect(() => {
+    loadPoster(habitIdx).then(setFullImg);
+    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = '';
+    };
+  }, [habitIdx, onClose]);
+
+  return createPortal(
+    <div className="poster-lightbox" onClick={onClose}>
+      <div className="poster-lightbox-inner" onClick={e => e.stopPropagation()}>
+        <button className="poster-lightbox-close" onClick={onClose}>&#x2715; Close</button>
+        {fullImg ? (
+          <img src={fullImg} alt="Habit Poster" className="poster-lightbox-img" />
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '3/4', background: 'rgba(255,255,255,.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '.9rem' }}>Loading...</div>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel, onOpenLesson }) {
+  const [showPoster, setShowPoster] = useState(false);
+  const [whyExpanded, setWhyExpanded] = useState(false);
   const habitIconSrc = typeof habit.iconIdx !== 'undefined' && HABIT_ICONS[habit.iconIdx]
     ? HABIT_ICONS[habit.iconIdx] : null;
 
@@ -42,30 +76,44 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <div className="sp-habit-name">{habit.name}</div>
           </div>
         </div>
-        <div className="sp-why-box">
-          <span className="sp-why-label">Why This Habit Matters</span>
-          <span>{habit.why}</span>
+
+        <div className="sp-why-row">
+          {introThumb && (
+            <div className="sp-poster-thumb" onClick={() => setShowPoster(true)}>
+              <img src={introThumb} alt="Habit Poster" />
+              <div className="sp-poster-thumb-overlay">
+                <span>&#x1F50D;</span>
+              </div>
+            </div>
+          )}
+          <div className="sp-why-col">
+            <div className="sp-why-box">
+              <span className="sp-why-label">Why This Habit Matters</span>
+              <span>{habit.why}</span>
+              {whyExpanded && habit.tips && (
+                <ul className="sp-why-tips">
+                  {habit.tips.slice(0, 3).map((t, i) => <li key={i}>{t}</li>)}
+                </ul>
+              )}
+            </div>
+            <div className="sp-why-actions">
+              <button className="sp-readmore" onClick={() => setWhyExpanded(e => !e)}>
+                {whyExpanded ? '\u2191 Less' : 'Read More \u2192'}
+              </button>
+              <button className="sp-knowmore-btn" onClick={() => onOpenPanel(1, 'knowmore')}>
+                &#x1F4DA; Know More
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
+      {showPoster && (
+        <PosterLightbox habitIdx={habitIdx} onClose={() => setShowPoster(false)} />
+      )}
+
       <div className="panels-outer">
         <div className="panels-grid">
-
-          {/* Panel 1 — Habit Poster */}
-          <div className="pcard" style={{ '--pcard-bg': '#FDE8E8', '--pcard-fg': '#C53030' }}>
-            <div className="pcard-thumb pcard-thumb--rose">
-              {introThumb && <img src={introThumb} alt="" />}
-            </div>
-            <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#E05555' }}></span>Habit Poster</div>
-              <div className="pcard-btns">
-                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'poster')}>&#x1F5BC; View Poster</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'knowmore')}>&#x1F4DA; Know More</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'tips')}>&#x1F4A1; Tips for Teachers</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'family')}>&#x1F3E0; Family Messages</button>
-              </div>
-            </div>
-          </div>
 
           {/* Panel 2 — Lessons */}
           <div className="pcard" style={{ '--pcard-bg': '#E3EFFC', '--pcard-fg': '#1A5FA8' }}>

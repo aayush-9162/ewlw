@@ -95,6 +95,25 @@ export function loadWorksheets(idx) {
   );
 }
 
+// Know More PPT slides (habit 2 / index 1, 11 slides)
+export function loadKnowMoreSlides() {
+  return lazy('knowmore_slides', () =>
+    Promise.all([
+      import('./knowMoreSlide0.js'),
+      import('./knowMoreSlide1.js'),
+      import('./knowMoreSlide2.js'),
+      import('./knowMoreSlide3.js'),
+      import('./knowMoreSlide4.js'),
+      import('./knowMoreSlide5.js'),
+      import('./knowMoreSlide6.js'),
+      import('./knowMoreSlide7.js'),
+      import('./knowMoreSlide8.js'),
+      import('./knowMoreSlide9.js'),
+      import('./knowMoreSlide10.js'),
+    ]).then(mods => ({ default: mods.map(m => m.default) }))
+  );
+}
+
 // SHWC Module 2 pages (16 pages, for habit 7 / index 6)
 export function loadShwcModule2() {
   return lazy('shwc_module2', () =>
