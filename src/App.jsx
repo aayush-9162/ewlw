@@ -40,15 +40,19 @@ export default function App() {
     setScreen('habits');
   };
 
-  const openPanel = (n) => {
+  const [openSection, setOpenSection] = useState(null);
+
+  const openPanel = (n, section) => {
     setCurrentPanel(n);
     setOpenLessonNum(null);
+    setOpenSection(section || null);
     setScreen('content');
   };
 
   const openLesson = (n) => {
     setCurrentPanel(2);
     setOpenLessonNum(n);
+    setOpenSection(null);
     setScreen('content');
   };
 
@@ -85,6 +89,7 @@ export default function App() {
           habit={currentHabit}
           onBack={backToPanels}
           openLessonNum={openLessonNum}
+          openSection={openSection}
         />
       )}
     </>

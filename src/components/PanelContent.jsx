@@ -15,57 +15,78 @@ function useLazy(loader, key) {
   return data;
 }
 
-function HabitPoster({ habit }) {
-  const [overviewOpen, setOverviewOpen] = useState(false);
-  const [tipsOpen, setTipsOpen] = useState(false);
+function HabitPoster({ habit, openSection }) {
+  const [activeSection, setActiveSection] = useState(openSection || 'poster');
   const habitIdx = (habit?.n || 1) - 1;
   const posterImage = useLazy(loadPoster, habitIdx);
+
+  const sections = [
+    { key: 'poster', label: 'Poster', icon: '\uD83D\uDDBC' },
+    { key: 'knowmore', label: 'Know More', icon: '\uD83D\uDCDA' },
+    { key: 'tips', label: 'Tips for Teachers', icon: '\uD83D\uDCA1' },
+    { key: 'family', label: 'Key Messages for Families', icon: '\uD83C\uDFE0' },
+  ];
 
   return (
     <div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
         Habit Poster
       </h2>
-      <div style={{ maxWidth: '860px' }}>
-        {posterImage ? (
-          <img
-            src={posterImage}
-            alt="Habit Poster"
-            style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }}
-          />
-        ) : (
-          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+
+      <div className="section-tabs">
+        {sections.map(s => (
+          <button key={s.key}
+            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
+            onClick={() => setActiveSection(s.key)}>
+            <span className="section-tab-icon">{s.icon}</span>
+            <span className="section-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        {activeSection === 'poster' && (
+          <div style={{ maxWidth: '860px' }}>
+            {posterImage ? (
+              <img src={posterImage} alt="Habit Poster"
+                style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
+            ) : (
+              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+            )}
+          </div>
         )}
-        <div className="poster-btn-row">
-          <button className="poster-btn poster-btn-primary" onClick={() => setOverviewOpen(true)}>Know More</button>
-          <button className="poster-btn poster-btn-secondary" onClick={() => setTipsOpen(true)}>Tips for Teachers</button>
-        </div>
-      </div>
 
-      {/* Know More Modal */}
-      <div className={`poster-overlay${overviewOpen ? ' active' : ''}`}>
-        <div className="poster-modal">
-          <button className="poster-modal-close" onClick={() => setOverviewOpen(false)}>&times;</button>
-          <h3>Habit Overview</h3>
-          <p>{habit?.why}</p>
-        </div>
-      </div>
+        {activeSection === 'knowmore' && (
+          <div className="section-content-card">
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Why This Habit Matters</h3>
+            <p style={{ fontSize: '.92rem', color: '#444', lineHeight: 1.8 }}>{habit?.why}</p>
+          </div>
+        )}
 
-      {/* Tips Modal */}
-      <div className={`poster-overlay${tipsOpen ? ' active' : ''}`}>
-        <div className="poster-modal">
-          <button className="poster-modal-close" onClick={() => setTipsOpen(false)}>&times;</button>
-          <h3>Tips for Teachers</h3>
-          {habit?.tips && habit.tips.length > 0 ? (
-            <ol style={{ paddingLeft: '18px' }}>
-              {habit.tips.map((t, i) => (
-                <li key={i} style={{ marginBottom: '6px' }}>{t}</li>
-              ))}
-            </ol>
-          ) : (
-            <p>Tips for this habit will be available soon.</p>
-          )}
-        </div>
+        {activeSection === 'tips' && (
+          <div className="section-content-card">
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Tips for Teachers</h3>
+            {habit?.tips && habit.tips.length > 0 ? (
+              <ol style={{ paddingLeft: '20px', margin: 0 }}>
+                {habit.tips.map((t, i) => (
+                  <li key={i} style={{ fontSize: '.88rem', color: '#444', lineHeight: 1.8, marginBottom: '6px' }}>{t}</li>
+                ))}
+              </ol>
+            ) : (
+              <p style={{ color: '#888' }}>Tips for this habit will be available soon.</p>
+            )}
+          </div>
+        )}
+
+        {activeSection === 'family' && (
+          <div className="section-content-card">
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Key Messages for Families</h3>
+            <p style={{ fontSize: '.88rem', color: '#444', lineHeight: 1.8 }}>
+              Key messages and home activities to share with families, including conversation starters and
+              observation tasks that reinforce healthy habits at home.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -274,214 +295,165 @@ function WorksheetViewer({ data }) {
   );
 }
 
-function AdditionalResources({ habit }) {
-  const [expanded, setExpanded] = useState({});
-  const toggle = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
-  const fileInputRef = useRef(null);
-
+function AdditionalResources({ habit, openSection }) {
+  const [activeSection, setActiveSection] = useState(openSection || 'ppt');
   const habitIdx = (habit?.n || 1) - 1;
   const slides = useLazy(loadPptSlides, habitIdx);
   const hasSlides = slides && slides.length > 0;
-  const pptExpanded = !!expanded.ppt;
   const wsData = useLazy(loadWorksheets, habitIdx);
+
+  const sections = [
+    { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
+    { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
+    { key: 'ic', label: 'Videos', icon: '\uD83C\uDFA5' },
+  ];
 
   return (
     <div>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
         Additional Resources
       </h2>
-      <p style={{ fontSize: '.88rem', color: '#666', marginBottom: '20px' }}>
-        Explore all teaching and learning materials for this habit.
-      </p>
-      <div className="ar-grid">
-        {/* Presentation */}
-        <div className={`ar-card${pptExpanded ? ' ar-card--expanded' : ''}`} style={{ borderColor: '#5A5EC0' }}>
-          <div className="ar-card-header" onClick={() => toggle('ppt')}>
-            <div className="ar-card-icon">&#128202;</div>
-            <div className="ar-card-title" style={{ color: '#5A5EC0' }}>
-              Presentation
-              {hasSlides && (
-                <span style={{
-                  marginLeft: '8px', fontSize: '.65rem', background: '#5A5EC0', color: '#fff',
-                  padding: '2px 8px', borderRadius: '10px', verticalAlign: 'middle'
-                }}>{slides.length} slides</span>
-              )}
-            </div>
-            <div className="ar-card-desc">Classroom presentation slides for this habit.</div>
-          </div>
-          {pptExpanded && (
-            <div style={{ marginTop: '14px' }}>
-              {hasSlides ? (
-                <PptSlideViewer slides={slides} />
-              ) : (
-                <div className="ppt-placeholder" style={{ padding: '24px' }}>
-                  <div className="ppt-icon">&#128202;</div>
-                  <div className="ppt-sub" style={{ fontSize: '.82rem' }}>
-                    Presentation slides for this habit will be available soon.
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
 
-        {/* Worksheets */}
-        <div className={`ar-card${expanded.ws ? ' ar-card--expanded' : ''}`} style={{ borderColor: '#27AE60' }}>
-          <div className="ar-card-header" onClick={() => toggle('ws')}>
-            <div className="ar-card-icon">&#128196;</div>
-            <div className="ar-card-title" style={{ color: '#27AE60' }}>
-              Worksheets for Students
-              {wsData && <span style={{ marginLeft: '8px', fontSize: '.65rem', background: '#27AE60', color: '#fff', padding: '2px 8px', borderRadius: '10px', verticalAlign: 'middle' }}>2 levels</span>}
-            </div>
-            <div className="ar-card-desc">Printable activity worksheets, observation tasks, and home activity cards.</div>
-          </div>
-          {expanded.ws && (
-            <div style={{ marginTop: '14px' }}>
-              {wsData ? (
-                <WorksheetViewer data={wsData} />
-              ) : (
-                <div className="ws-placeholder" style={{ padding: '24px' }}>
-                  <div className="ws-icon">&#128196;</div>
-                  <div className="ws-sub" style={{ fontSize: '.82rem' }}>
-                    Worksheets for this habit will be available soon.
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+      <div className="section-tabs">
+        {sections.map(s => (
+          <button key={s.key}
+            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
+            onClick={() => setActiveSection(s.key)}>
+            <span className="section-tab-icon">{s.icon}</span>
+            <span className="section-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
 
-        {/* Key Messages */}
-        <div className="ar-card" style={{ borderColor: '#7B5EA7' }}>
-          <div className="ar-card-header" onClick={() => toggle('km')}>
-            <div className="ar-card-icon">&#128218;</div>
-            <div className="ar-card-title" style={{ color: '#7B5EA7' }}>Key Messages for Families</div>
-            <div className="ar-card-desc">Family engagement materials and home conversation guides.</div>
-          </div>
-          {expanded.km && (
-            <div style={{ marginTop: '14px', padding: '14px', background: '#F8F4FF', borderRadius: '10px' }}>
-              <p style={{ fontSize: '.84rem', color: '#555', lineHeight: 1.7 }}>
-                Key messages and home activities to share with families, including conversation starters and
-                observation tasks that reinforce healthy habits at home.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Innovative Corner */}
-        <div className="ar-card" style={{ borderColor: '#D4A017' }}>
-          <div className="ar-card-header" onClick={() => toggle('ic')}>
-            <div className="ar-card-icon">&#128161;</div>
-            <div className="ar-card-title" style={{ color: '#D4A017' }}>Innovative Corner</div>
-            <div className="ar-card-desc">Share creative work &mdash; posters, reels, photos, and family engagement ideas.</div>
-          </div>
-          {expanded.ic && (
-            <div style={{ marginTop: '14px' }}>
-              <div className="ic-share-grid" style={{ marginBottom: '14px' }}>
-                <div className="ic-share-card"><div className="ic-share-icon">&#127912;</div><div className="ic-share-label">Posters</div></div>
-                <div className="ic-share-card"><div className="ic-share-icon">&#127909;</div><div className="ic-share-label">Reels / Videos</div></div>
-                <div className="ic-share-card"><div className="ic-share-icon">&#128247;</div><div className="ic-share-label">Photos</div></div>
-                <div className="ic-share-card"><div className="ic-share-icon">&#127968;</div><div className="ic-share-label">Family Ideas</div></div>
-              </div>
-              <div className="ic-upload-box" onClick={() => fileInputRef.current?.click()} style={{ padding: '20px' }}>
-                <div className="ic-upload-icon">&#128228;</div>
-                <div className="ic-upload-title">Upload Your Work</div>
-                <div style={{ marginTop: '8px' }}>
-                  <span className="ic-format-badge">JPG</span>
-                  <span className="ic-format-badge">PNG</span>
-                  <span className="ic-format-badge">PDF</span>
-                  <span className="ic-format-badge">MP4</span>
-                </div>
-                <input ref={fileInputRef} type="file" style={{ display: 'none' }} multiple accept=".jpg,.jpeg,.png,.pdf,.mp4" />
+      <div style={{ marginTop: '20px' }}>
+        {activeSection === 'ppt' && (
+          hasSlides ? (
+            <PptSlideViewer slides={slides} />
+          ) : (
+            <div className="ppt-placeholder" style={{ padding: '24px' }}>
+              <div className="ppt-icon">&#128202;</div>
+              <div className="ppt-sub" style={{ fontSize: '.82rem' }}>
+                Presentation slides for this habit will be available soon.
               </div>
             </div>
-          )}
-        </div>
+          )
+        )}
+
+        {activeSection === 'ws' && (
+          wsData ? (
+            <WorksheetViewer data={wsData} />
+          ) : (
+            <div className="ws-placeholder" style={{ padding: '24px' }}>
+              <div className="ws-icon">&#128196;</div>
+              <div className="ws-sub" style={{ fontSize: '.82rem' }}>
+                Worksheets for this habit will be available soon.
+              </div>
+            </div>
+          )
+        )}
+
+        {activeSection === 'ic' && (
+          <div className="section-content-card">
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
+            <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+              Video resources for this habit will be available soon.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function ReinforcementFeedback({ habit }) {
+function ReinforcementFeedback({ habit, openSection }) {
+  const [activeSection, setActiveSection] = useState(openSection || 'reinf');
   const habitIdx = (habit?.n || 1) - 1;
   const reinfImage = useLazy(loadReinfPoster, habitIdx);
+
+  const sections = [
+    { key: 'reinf', label: 'Reinforcement Poster', icon: '\uD83D\uDDBC' },
+    { key: 'feedback', label: 'Feedback', icon: '\uD83D\uDCAC' },
+  ];
 
   return (
     <div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
-        Reinforcement Poster
+        Reinforcement & Feedback
       </h2>
-      <div style={{ maxWidth: '860px', marginBottom: '32px' }}>
-        {reinfImage ? (
-          <img
-            src={reinfImage}
-            alt="Reinforcement Poster"
-            style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }}
-          />
-        ) : reinfImage === null ? (
-          <div style={{ padding: '48px', textAlign: 'center', background: '#f5f5f5', borderRadius: '14px', color: '#888' }}>
-            <p style={{ fontSize: '1.1rem' }}>Reinforcement poster for this habit will be available soon.</p>
+
+      <div className="section-tabs">
+        {sections.map(s => (
+          <button key={s.key}
+            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
+            onClick={() => setActiveSection(s.key)}>
+            <span className="section-tab-icon">{s.icon}</span>
+            <span className="section-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        {activeSection === 'reinf' && (
+          <div style={{ maxWidth: '860px' }}>
+            {reinfImage ? (
+              <img src={reinfImage} alt="Reinforcement Poster"
+                style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
+            ) : reinfImage === null ? (
+              <div style={{ padding: '48px', textAlign: 'center', background: '#f5f5f5', borderRadius: '14px', color: '#888' }}>
+                <p style={{ fontSize: '1.1rem' }}>Reinforcement poster for this habit will be available soon.</p>
+              </div>
+            ) : (
+              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+            )}
           </div>
-        ) : (
-          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+        )}
+
+        {activeSection === 'feedback' && (
+          <div>
+            <div className="fb-section">
+              <div className="fb-section-title">1. Resource Type</div>
+              <div className="fb-checkboxes">
+                {['Lessons for Teachers', 'Poster', 'PPT', 'Worksheets', 'Family Engagement', 'Other'].map((item, i) => (
+                  <label key={i} className="fb-check-item"><input type="checkbox" /> {item}</label>
+                ))}
+              </div>
+            </div>
+            <div className="fb-section">
+              <div className="fb-section-title">2. Lessons for Teachers</div>
+              <div className="fb-lessons-row">
+                <span>Lesson:</span>
+                {['L1', 'L2', 'L3', 'L4', 'L5', 'L6'].map((l, i) => (
+                  <label key={i} className="fb-lesson-check"><input type="checkbox" /> {l}</label>
+                ))}
+              </div>
+              <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
+            </div>
+            <div className="fb-section">
+              <div className="fb-section-title">3. Poster</div>
+              <div className="fb-checkboxes" style={{ flexDirection: 'row', gap: '20px', marginBottom: '8px' }}>
+                <span style={{ fontSize: '.86rem', fontWeight: 600 }}>Type:</span>
+                <label className="fb-check-item"><input type="checkbox" /> Instruction</label>
+                <label className="fb-check-item"><input type="checkbox" /> Reinforcement</label>
+              </div>
+              <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
+            </div>
+            <div className="fb-section">
+              <div className="fb-section-title">4. PPT</div>
+              <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
+            </div>
+            <div className="fb-section">
+              <div className="fb-section-title">5. Family Engagement Activities</div>
+              <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
+            </div>
+            <div className="fb-section">
+              <div className="fb-section-title">6. Any Other Feedback</div>
+              <textarea className="fb-input" rows="3" placeholder="Feedback: ___________________"
+                style={{ resize: 'vertical', paddingTop: '8px' }}></textarea>
+            </div>
+            <button className="fb-submit">Submit Feedback &#8594;</button>
+          </div>
         )}
       </div>
-      <hr style={{ border: 'none', borderTop: '2px solid #eee', margin: '32px 0' }} />
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, color: '#1B72B8', marginBottom: '24px' }}>
-        Feedback
-      </h2>
-
-      <div className="fb-section">
-        <div className="fb-section-title">1. Resource Type</div>
-        <div className="fb-checkboxes">
-          {['Lessons for Teachers', 'Poster', 'PPT', 'Worksheets', 'Family Engagement', 'Other'].map((item, i) => (
-            <label key={i} className="fb-check-item"><input type="checkbox" /> {item}</label>
-          ))}
-        </div>
-      </div>
-
-      <div className="fb-section">
-        <div className="fb-section-title">2. Lessons for Teachers</div>
-        <div className="fb-lessons-row">
-          <span>Lesson:</span>
-          {['L1', 'L2', 'L3', 'L4', 'L5', 'L6'].map((l, i) => (
-            <label key={i} className="fb-lesson-check"><input type="checkbox" /> {l}</label>
-          ))}
-        </div>
-        <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
-      </div>
-
-      <div className="fb-section">
-        <div className="fb-section-title">3. Poster</div>
-        <div className="fb-checkboxes" style={{ flexDirection: 'row', gap: '20px', marginBottom: '8px' }}>
-          <span style={{ fontSize: '.86rem', fontWeight: 600 }}>Type:</span>
-          <label className="fb-check-item"><input type="checkbox" /> Instruction</label>
-          <label className="fb-check-item"><input type="checkbox" /> Reinforcement</label>
-        </div>
-        <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
-      </div>
-
-      <div className="fb-section">
-        <div className="fb-section-title">4. PPT</div>
-        <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
-      </div>
-
-      <div className="fb-section">
-        <div className="fb-section-title">5. Family Engagement Activities</div>
-        <input className="fb-input" type="text" placeholder="Feedback: ___________________" />
-      </div>
-
-      <div className="fb-section">
-        <div className="fb-section-title">6. Any Other Feedback</div>
-        <textarea
-          className="fb-input"
-          rows="3"
-          placeholder="Feedback: ___________________"
-          style={{ resize: 'vertical', paddingTop: '8px' }}
-        ></textarea>
-      </div>
-
-      <button className="fb-submit">Submit Feedback &#8594;</button>
     </div>
   );
 }
@@ -489,7 +461,7 @@ function ReinforcementFeedback({ habit }) {
 const PANEL_COLORS = { 1: '#E05555', 2: '#3A7FD5', 3: '#E07830', 4: '#22A882' };
 const PANEL_NAMES = { 1: 'Habit Poster', 2: 'Lessons', 3: 'Additional Resources', 4: 'Reinforcement & Feedback' };
 
-export default function PanelContent({ panelNum, habit, onBack, openLessonNum }) {
+export default function PanelContent({ panelNum, habit, onBack, openLessonNum, openSection }) {
   return (
     <div>
       <div className="sc-header">
@@ -500,10 +472,10 @@ export default function PanelContent({ panelNum, habit, onBack, openLessonNum })
         <span className="sc-title">{PANEL_NAMES[panelNum] || ''}</span>
       </div>
       <div className="sc-body">
-        {panelNum === 1 && <HabitPoster habit={habit} />}
+        {panelNum === 1 && <HabitPoster habit={habit} openSection={openSection} />}
         {panelNum === 2 && <LessonsPanel habit={habit} openLessonNum={openLessonNum} />}
-        {panelNum === 3 && <AdditionalResources habit={habit} />}
-        {panelNum === 4 && <ReinforcementFeedback habit={habit} />}
+        {panelNum === 3 && <AdditionalResources habit={habit} openSection={openSection} />}
+        {panelNum === 4 && <ReinforcementFeedback habit={habit} openSection={openSection} />}
       </div>
     </div>
   );
