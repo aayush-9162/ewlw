@@ -1,4 +1,4 @@
-import { HABIT_ICONS } from '../data/domains.js';
+import { HABIT_ICONS, HABIT_TILE_COLORS } from '../data/domains.js';
 
 export default function HabitTiles({ domain, onBack, onOpenHabit }) {
   return (
@@ -22,10 +22,12 @@ export default function HabitTiles({ domain, onBack, onOpenHabit }) {
               {cluster.habits.map((h, hi) => {
                 const firstChar = h.name.charAt(0);
                 const restName = h.name.slice(1);
+                const tileBg = HABIT_TILE_COLORS[h.n] || cluster.color;
                 return (
                   <div
                     key={hi}
-                    className={`ht ${cluster.cls}`}
+                    className="ht"
+                    style={{ background: tileBg }}
                     onClick={() => onOpenHabit(ci, hi)}
                   >
                     <div className="ht-top">

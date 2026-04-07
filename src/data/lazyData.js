@@ -114,26 +114,41 @@ export function loadKnowMoreSlides() {
   );
 }
 
-// SHWC Module 2 pages (16 pages, for habit 7 / index 6)
+// SHWC Module pages loader — keyed by module number
+const SHWC_MODULE_PAGE_COUNTS = {
+  1: 22, 2: 16, 3: 20, 4: 14, 5: 16, 7: 20, 9: 18, 10: 24, 11: 22,
+};
+
+function buildModuleImports(moduleNum) {
+  const count = SHWC_MODULE_PAGE_COUNTS[moduleNum];
+  if (!count) return null;
+  const imports = [];
+  for (let i = 0; i < count; i++) {
+    imports.push(import(`./shwcModule${moduleNum}_page${i}.js`));
+  }
+  return imports;
+}
+
+export function loadShwcModule(moduleNum) {
+  const count = SHWC_MODULE_PAGE_COUNTS[moduleNum];
+  if (!count) return Promise.resolve(null);
+  return lazy(`shwc_module${moduleNum}`, () =>
+    Promise.all(buildModuleImports(moduleNum))
+      .then(mods => ({ default: mods.map(m => m.default) }))
+  );
+}
+
+// Backward compat
 export function loadShwcModule2() {
-  return lazy('shwc_module2', () =>
+  return loadShwcModule(2);
+}
+
+// FAQ pages (2 pages)
+export function loadFaqPages() {
+  return lazy('faq_pages', () =>
     Promise.all([
-      import('./shwcModule2_page0.js'),
-      import('./shwcModule2_page1.js'),
-      import('./shwcModule2_page2.js'),
-      import('./shwcModule2_page3.js'),
-      import('./shwcModule2_page4.js'),
-      import('./shwcModule2_page5.js'),
-      import('./shwcModule2_page6.js'),
-      import('./shwcModule2_page7.js'),
-      import('./shwcModule2_page8.js'),
-      import('./shwcModule2_page9.js'),
-      import('./shwcModule2_page10.js'),
-      import('./shwcModule2_page11.js'),
-      import('./shwcModule2_page12.js'),
-      import('./shwcModule2_page13.js'),
-      import('./shwcModule2_page14.js'),
-      import('./shwcModule2_page15.js'),
+      import('./faqPage0.js'),
+      import('./faqPage1.js'),
     ]).then(mods => ({ default: mods.map(m => m.default) }))
   );
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule2, loadKnowMoreSlides } from '../data/lazyData.js';
+import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadShwcModule2, loadKnowMoreSlides } from '../data/lazyData.js';
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
@@ -19,129 +19,193 @@ function useLazy(loader, key) {
   return data;
 }
 
-function HabitPoster({ habit }) {
+function TeachingLearningResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
   const posterImage = useLazy(loadPoster, habitIdx);
-
-  return (
-    <div>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
-        Habit Poster
-      </h2>
-      <div style={{ maxWidth: '860px' }}>
-        {posterImage ? (
-          <img src={posterImage} alt="Habit Poster"
-            style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
-        ) : (
-          <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function KnowMoreScreen({ habit }) {
-  const habitIdx = (habit?.n || 1) - 1;
+  const slides = useLazy(loadPptSlides, habitIdx);
+  const hasSlides = slides && slides.length > 0;
+  const wsData = useLazy(loadWorksheets, habitIdx);
+  const videos = HABIT_VIDEOS[habitIdx] || [];
   const kmData = KNOW_MORE_DATA[habitIdx];
-  const posterImage = useLazy(loadPoster, habitIdx);
   const [kmSlides, setKmSlides] = useState(null);
 
   useEffect(() => {
     if (kmData?.hasSlides) loadKnowMoreSlides().then(setKmSlides);
   }, [kmData]);
 
-  if (!kmData) {
-    return (
-      <div className="section-content-card">
-        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', fontWeight: 900, marginBottom: '12px' }}>Know More</h3>
-        <p style={{ fontSize: '.88rem', color: '#666' }}>Detailed content for this habit will be available soon.</p>
-      </div>
-    );
-  }
+  const sections = [
+    { key: 'note', label: 'Habit Note', icon: '\uD83D\uDCD6' },
+    { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
+    { key: 'video', label: 'Video', icon: '\uD83C\uDFA5' },
+    { key: 'poster', label: 'Additional Posters & Images', icon: '\uD83D\uDDBC' },
+    { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
+  ];
+
+  const [activeSection, setActiveSection] = useState(openSection || 'note');
 
   return (
     <div>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '20px' }}>
-        Know More — {habit?.name}
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '6px' }}>
+        Teaching & Learning Resources
       </h2>
-      <div className="km-grid">
+      <p style={{ fontSize: '.82rem', color: '#666', lineHeight: 1.6, marginBottom: '18px', maxWidth: '760px' }}>
+        These resources are designed to support teachers in understanding the habit and preparing effectively for classroom sessions. They provide clear explanations, engaging materials, and structured support to help teachers confidently deliver the lessons and reinforce the habit overall.
+      </p>
 
-        {/* Panel 1: Document */}
-        <div className="km-card">
-          <div className="km-card-header km-card-header--blue">
-            <span className="km-card-icon">&#x1F4D6;</span>
-            <span className="km-card-title">{kmData.document.title}</span>
-          </div>
-          <div className="km-card-body km-card-body--scroll">
-            {kmData.document.sections.map((sec, i) => (
-              <div key={i} className="km-doc-section">
-                <h4 className="km-doc-heading">{sec.heading}</h4>
-                {sec.text && <p className="km-doc-text">{sec.text}</p>}
-                {sec.list && (
-                  <ul className="km-doc-list">
-                    {sec.list.map((item, j) => <li key={j}>{item}</li>)}
-                  </ul>
+      <div className="section-tabs">
+        {sections.map(s => (
+          <button key={s.key}
+            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
+            onClick={() => setActiveSection(s.key)}>
+            <span className="section-tab-icon">{s.icon}</span>
+            <span className="section-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        {activeSection === 'note' && (
+          kmData ? (
+            <div>
+              <div className="km-grid">
+                <div className="km-card">
+                  <div className="km-card-header km-card-header--blue">
+                    <span className="km-card-icon">&#x1F4D6;</span>
+                    <span className="km-card-title">{kmData.document.title}</span>
+                  </div>
+                  <div className="km-card-body km-card-body--scroll">
+                    {kmData.document.sections.map((sec, i) => (
+                      <div key={i} className="km-doc-section">
+                        <h4 className="km-doc-heading">{sec.heading}</h4>
+                        {sec.text && <p className="km-doc-text">{sec.text}</p>}
+                        {sec.list && (
+                          <ul className="km-doc-list">
+                            {sec.list.map((item, j) => <li key={j}>{item}</li>)}
+                          </ul>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {kmData.video && (
+                  <div className="km-card">
+                    <div className="km-card-header km-card-header--red">
+                      <span className="km-card-icon">&#x1F3AC;</span>
+                      <span className="km-card-title">Video</span>
+                    </div>
+                    <div className="km-card-body">
+                      <div className="km-video-embed">
+                        <iframe
+                          src={kmData.video.embedUrl}
+                          title={kmData.video.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                      </div>
+                      <div className="km-video-info">
+                        <h4 className="km-video-title">{kmData.video.title}</h4>
+                        <p className="km-video-desc">{kmData.video.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {kmData.hasSlides && (
+                  <div className="km-card">
+                    <div className="km-card-header km-card-header--orange">
+                      <span className="km-card-icon">&#x1F4CA;</span>
+                      <span className="km-card-title">Presentation</span>
+                    </div>
+                    <div className="km-card-body">
+                      {kmSlides ? (
+                        <PptSlideViewer slides={kmSlides} />
+                      ) : (
+                        <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading slides...</div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Panel 2: PPT Slides */}
-        <div className="km-card">
-          <div className="km-card-header km-card-header--orange">
-            <span className="km-card-icon">&#x1F4CA;</span>
-            <span className="km-card-title">Presentation</span>
-          </div>
-          <div className="km-card-body">
-            {kmSlides ? (
-              <PptSlideViewer slides={kmSlides} />
-            ) : (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading slides...</div>
-            )}
-          </div>
-        </div>
-
-        {/* Panel 3: Video */}
-        <div className="km-card">
-          <div className="km-card-header km-card-header--red">
-            <span className="km-card-icon">&#x1F3AC;</span>
-            <span className="km-card-title">Video</span>
-          </div>
-          <div className="km-card-body">
-            <div className="km-video-embed">
-              <iframe
-                src={kmData.video.embedUrl}
-                title={kmData.video.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allowFullScreen
-              />
             </div>
-            <div className="km-video-info">
-              <h4 className="km-video-title">{kmData.video.title}</h4>
-              <p className="km-video-desc">{kmData.video.description}</p>
+          ) : (
+            <div className="section-content-card">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Habit Note</h3>
+              <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+                Detailed habit note for this habit will be available soon.
+              </p>
             </div>
-          </div>
-        </div>
+          )
+        )}
 
-        {/* Panel 4: Habit Poster */}
-        <div className="km-card">
-          <div className="km-card-header km-card-header--green">
-            <span className="km-card-icon">&#x1F5BC;</span>
-            <span className="km-card-title">Habit Poster</span>
-          </div>
-          <div className="km-card-body" style={{ display: 'flex', justifyContent: 'center' }}>
+        {activeSection === 'ppt' && (
+          hasSlides ? (
+            <PptSlideViewer slides={slides} />
+          ) : (
+            <div className="ppt-placeholder" style={{ padding: '24px' }}>
+              <div className="ppt-icon">&#128202;</div>
+              <div className="ppt-sub" style={{ fontSize: '.82rem' }}>
+                Presentation slides for this habit will be available soon.
+              </div>
+            </div>
+          )
+        )}
+
+        {activeSection === 'video' && (
+          videos.length > 0 ? (
+            <div className="videos-grid">
+              {videos.map((v, i) => (
+                <div key={i} className="video-card">
+                  <div className="video-embed">
+                    <iframe
+                      src={v.embedUrl}
+                      title={v.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </div>
+                  <div className="video-card-body">
+                    <h4 className="video-card-title">{v.title}</h4>
+                    <p className="video-card-desc">{v.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="section-content-card">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
+              <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+                Video resources for this habit will be available soon.
+              </p>
+            </div>
+          )
+        )}
+
+        {activeSection === 'poster' && (
+          <div style={{ maxWidth: '860px' }}>
             {posterImage ? (
               <img src={posterImage} alt="Habit Poster"
-                style={{ width: '100%', maxWidth: '400px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,.1)' }} />
+                style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
             ) : (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading...</div>
+              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
             )}
           </div>
-        </div>
+        )}
 
+        {activeSection === 'ws' && (
+          wsData ? (
+            <WorksheetViewer data={wsData} />
+          ) : (
+            <div className="ws-placeholder" style={{ padding: '24px' }}>
+              <div className="ws-icon">&#128196;</div>
+              <div className="ws-sub" style={{ fontSize: '.82rem' }}>
+                Worksheets for this habit will be available soon.
+              </div>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
@@ -171,7 +235,7 @@ function LessonsPanel({ habit, openLessonNum }) {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700 }}>Lessons</h2>
+        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700 }}>Lesson Plans</h2>
         <span style={{
           background: '#1C1A17', color: '#F9F5EC', fontFamily: "'DM Mono', monospace",
           fontSize: '.68rem', padding: '3px 12px', borderRadius: '100px'
@@ -459,42 +523,36 @@ function QuizPanel({ quiz }) {
 
 function AdditionalResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
-  const slides = useLazy(loadPptSlides, habitIdx);
-  const hasSlides = slides && slides.length > 0;
-  const wsData = useLazy(loadWorksheets, habitIdx);
-  const videos = HABIT_VIDEOS[habitIdx] || [];
-  const quizData = HABIT_QUIZZES[habitIdx] || null;
-  const hasShwc = habitIdx === 6;
-
-  const [shwcPages, setShwcPages] = useState(null);
-  useEffect(() => {
-    if (hasShwc) loadShwcModule2().then(setShwcPages);
-  }, [hasShwc]);
-
   const shwData = SHW_DATA[habitIdx] || null;
 
-  const sections = [
-    { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
-    { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
-    { key: 'ic', label: 'Videos', icon: '\uD83C\uDFA5' },
-  ];
-  if (quizData) {
-    sections.push({ key: 'quiz', label: 'Quiz', icon: '\uD83C\uDFAF' });
-  }
+  const [shwcModulePages, setShwcModulePages] = useState({});
+  const [viewingModule, setViewingModule] = useState(null);
+  useEffect(() => {
+    if (!shwData) return;
+    shwData.modules.forEach(mod => {
+      loadShwcModule(mod.moduleNum).then(pages => {
+        if (pages) setShwcModulePages(prev => ({ ...prev, [mod.moduleNum]: pages }));
+      });
+    });
+  }, [habitIdx]);
+
+  const sections = [];
   if (shwData) {
     sections.push({ key: 'shw', label: 'SHW Curriculum', icon: '\uD83C\uDFEB' });
   }
-  if (hasShwc) {
-    sections.push({ key: 'shwc', label: 'SHWC Module 2', icon: '\uD83D\uDCD8' });
-  }
+  sections.push({ key: 'dgi', label: 'Dietary Guidelines for Indians', icon: '\uD83D\uDCD7' });
+  sections.push({ key: 'fssai', label: 'FSSAI Eat Right Activity Book', icon: '\uD83D\uDCD9' });
 
-  const [activeSection, setActiveSection] = useState(openSection || 'ppt');
+  const [activeSection, setActiveSection] = useState(openSection || (shwData ? 'shw' : 'dgi'));
 
   return (
     <div>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '6px' }}>
         Additional Resources
       </h2>
+      <p style={{ fontSize: '.82rem', color: '#666', lineHeight: 1.6, marginBottom: '18px', maxWidth: '760px' }}>
+        The EWLW programme content is aligned with the School Health and Wellness Programme curriculum and the Dietary Guidelines for Indians.
+      </p>
 
       <div className="section-tabs">
         {sections.map(s => (
@@ -508,103 +566,74 @@ function AdditionalResources({ habit, openSection }) {
       </div>
 
       <div style={{ marginTop: '20px' }}>
-        {activeSection === 'ppt' && (
-          hasSlides ? (
-            <PptSlideViewer slides={slides} />
-          ) : (
-            <div className="ppt-placeholder" style={{ padding: '24px' }}>
-              <div className="ppt-icon">&#128202;</div>
-              <div className="ppt-sub" style={{ fontSize: '.82rem' }}>
-                Presentation slides for this habit will be available soon.
-              </div>
-            </div>
-          )
-        )}
-
-        {activeSection === 'ws' && (
-          wsData ? (
-            <WorksheetViewer data={wsData} />
-          ) : (
-            <div className="ws-placeholder" style={{ padding: '24px' }}>
-              <div className="ws-icon">&#128196;</div>
-              <div className="ws-sub" style={{ fontSize: '.82rem' }}>
-                Worksheets for this habit will be available soon.
-              </div>
-            </div>
-          )
-        )}
-
-        {activeSection === 'ic' && (
-          videos.length > 0 ? (
-            <div className="videos-grid">
-              {videos.map((v, i) => (
-                <div key={i} className="video-card">
-                  <div className="video-embed">
-                    <iframe
-                      src={v.embedUrl}
-                      title={v.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="video-card-body">
-                    <h4 className="video-card-title">{v.title}</h4>
-                    <p className="video-card-desc">{v.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="section-content-card">
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
-              <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
-                Video resources for this habit will be available soon.
-              </p>
-            </div>
-          )
-        )}
-
-        {activeSection === 'quiz' && quizData && (
-          <QuizPanel quiz={quizData} />
-        )}
-
         {activeSection === 'shw' && shwData && (
           <div className="shw-content">
-            {shwData.modules.map((mod, mi) => (
-              <div key={mi} className="shw-module">
-                <div className="shw-module-header">
-                  <span className="shw-module-badge">Module {mod.moduleNum}</span>
-                  <h3 className="shw-module-title">{mod.title}</h3>
+            {viewingModule !== null ? (
+              <div className="shwc-module-viewer">
+                <button className="shwc-back-btn" onClick={() => setViewingModule(null)}>
+                  &#x2190; Back to SHW Curriculum
+                </button>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, margin: '12px 0' }}>
+                  Module {viewingModule} — {shwData.modules.find(m => m.moduleNum === viewingModule)?.title}
+                </h3>
+                <div className="shwc-pages">
+                  {shwcModulePages[viewingModule] ? shwcModulePages[viewingModule].map((src, i) => (
+                    <img key={i} src={src} alt={`Module ${viewingModule} — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                  )) : (
+                    <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading module pages...</div>
+                  )}
                 </div>
-                <p className="shw-module-desc">{mod.description}</p>
-                <div className="shw-activities">
-                  <div className="shw-activities-label">Activities included:</div>
-                  <ol className="shw-activities-list">
-                    {mod.activities.map((act, ai) => (
-                      <li key={ai}>{act}</li>
-                    ))}
-                  </ol>
-                </div>
+                <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn" style={{ display: 'inline-block', marginTop: '16px' }}>
+                  &#x2B07; Download Full Guide
+                </a>
               </div>
-            ))}
-            <a href="/Training_Resource_Material_english.pdf" target="_blank" rel="noopener noreferrer" className="shw-fullmodule-btn">
-              &#x1F4D6; View Full Module
-            </a>
-            <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn">
-              &#x2B07; Download Full Guide
-            </a>
+            ) : (
+              <>
+                {shwData.modules.map((mod, mi) => (
+                  <div key={mi} className="shw-module">
+                    <div className="shw-module-header">
+                      <span className="shw-module-badge">Module {mod.moduleNum}</span>
+                      <h3 className="shw-module-title">{mod.title}</h3>
+                    </div>
+                    <p className="shw-module-desc">{mod.description}</p>
+                    <div className="shw-activities">
+                      <div className="shw-activities-label">Activities included:</div>
+                      <ol className="shw-activities-list">
+                        {mod.activities.map((act, ai) => (
+                          <li key={ai}>{act}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div className="shw-module-actions">
+                      <button className="shw-fullmodule-btn" onClick={() => setViewingModule(mod.moduleNum)}>
+                        &#x1F4D6; View Full Module
+                      </button>
+                      <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn">
+                        &#x2B07; Download Full Guide
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         )}
 
-        {activeSection === 'shwc' && (
-          <div className="shwc-pages">
-            {shwcPages ? shwcPages.map((src, i) => (
-              <img key={i} src={src} alt={`SHWC Module 2 — Page ${i + 1}`} />
-            )) : (
-              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
-            )}
+        {activeSection === 'dgi' && (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Dietary Guidelines for Indians</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+              The EWLW programme content is aligned with the <strong>Dietary Guidelines for Indians</strong>, which provide evidence-based recommendations for healthy eating patterns suited to the Indian context. These guidelines serve as a key reference for the nutrition-related habits and skills covered in the programme.
+            </p>
+          </div>
+        )}
+
+        {activeSection === 'fssai' && (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>FSSAI Eat Right Activity Book</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+              The <strong>Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book</strong> provides activities which are also mapped to relevant habits and skills and are available on the portal.
+            </p>
           </div>
         )}
       </div>
@@ -612,20 +641,24 @@ function AdditionalResources({ habit, openSection }) {
   );
 }
 
-function ReinforcementFeedback({ habit, openSection }) {
-  const [activeSection, setActiveSection] = useState(openSection || 'reinf');
+function ReflectionReinforcement({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
   const reinfImage = useLazy(loadReinfPoster, habitIdx);
+  const quizData = HABIT_QUIZZES[habitIdx] || null;
 
   const sections = [
     { key: 'reinf', label: 'Reinforcement Poster', icon: '\uD83D\uDDBC' },
-    { key: 'feedback', label: 'Feedback', icon: '\uD83D\uDCAC' },
   ];
+  if (quizData) {
+    sections.push({ key: 'quiz', label: 'Habit Quiz', icon: '\uD83C\uDFAF' });
+  }
+
+  const [activeSection, setActiveSection] = useState(openSection || 'reinf');
 
   return (
     <div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
-        Reinforcement & Feedback
+        Reflection & Reinforcement
       </h2>
 
       <div className="section-tabs">
@@ -655,6 +688,40 @@ function ReinforcementFeedback({ habit, openSection }) {
           </div>
         )}
 
+        {activeSection === 'quiz' && quizData && (
+          <QuizPanel quiz={quizData} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TeacherFeedback({ habit, openSection }) {
+  const [activeSection, setActiveSection] = useState(openSection || 'feedback');
+
+  const sections = [
+    { key: 'feedback', label: 'Share Feedback', icon: '\uD83D\uDCDD' },
+    { key: 'upload', label: 'Upload Content', icon: '\uD83D\uDCF7' },
+  ];
+
+  return (
+    <div>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px' }}>
+        Feedback from Teachers
+      </h2>
+
+      <div className="section-tabs">
+        {sections.map(s => (
+          <button key={s.key}
+            className={`section-tab${activeSection === s.key ? ' section-tab--active' : ''}`}
+            onClick={() => setActiveSection(s.key)}>
+            <span className="section-tab-icon">{s.icon}</span>
+            <span className="section-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
         {activeSection === 'feedback' && (
           <div>
             <div className="fb-section">
@@ -700,13 +767,45 @@ function ReinforcementFeedback({ habit, openSection }) {
             <button className="fb-submit">Submit Feedback &#8594;</button>
           </div>
         )}
+
+        {activeSection === 'upload' && (
+          <div className="tu-section">
+            <div className="tu-card">
+              <div className="tu-icon">&#x1F4E4;</div>
+              <h3 className="tu-title">Contribute to the Learning Repository</h3>
+              <p className="tu-desc">
+                Teachers are encouraged to upload an image, poster, short video, or reel related to the habit or skill.
+                Such contributions can be added to the portal's repository, helping to continuously enrich and update the learning resources over time.
+              </p>
+              <div className="tu-types">
+                <div className="tu-type"><span className="tu-type-icon">&#x1F5BC;</span><span>Images</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F4CB;</span><span>Posters</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F3AC;</span><span>Videos</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F4F1;</span><span>Reels</span></div>
+              </div>
+              <label className="tu-upload-area">
+                <input type="file" accept="image/*,video/*,.pdf" style={{ display: 'none' }} />
+                <div className="tu-upload-inner">
+                  <span className="tu-upload-icon">&#x2B06;</span>
+                  <span className="tu-upload-text">Click to select a file or drag & drop here</span>
+                  <span className="tu-upload-hint">Supported: Images, Videos, PDF (Max 50 MB)</span>
+                </div>
+              </label>
+              <textarea className="fb-input" rows="2" placeholder="Add a brief description of your contribution..."
+                style={{ resize: 'vertical', paddingTop: '8px', marginTop: '16px' }}></textarea>
+              <button className="fb-submit" style={{ background: '#7C3AED' }}>Upload Contribution &#8594;</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-const PANEL_COLORS = { 1: '#E05555', 2: '#3A7FD5', 3: '#E07830', 4: '#22A882' };
-const PANEL_NAMES = { 1: 'Habit Poster', 2: 'Lessons', 3: 'Additional Resources', 4: 'Reinforcement & Feedback' };
+const PANEL_NAMES = {
+  1: 'Teaching & Learning Resources', 2: 'Lesson Plans', 3: 'Additional Resources',
+  4: 'Reflection & Reinforcement', 5: 'Feedback from Teachers'
+};
 
 export default function PanelContent({ panelNum, habit, onBack, openLessonNum, openSection }) {
   return (
@@ -716,11 +815,11 @@ export default function PanelContent({ panelNum, habit, onBack, openLessonNum, o
         <span className="sc-title">{PANEL_NAMES[panelNum] || ''}</span>
       </div>
       <div className="sc-body">
-        {panelNum === 1 && openSection === 'knowmore' && <KnowMoreScreen habit={habit} />}
-        {panelNum === 1 && openSection !== 'knowmore' && <HabitPoster habit={habit} />}
+        {panelNum === 1 && <TeachingLearningResources habit={habit} openSection={openSection} />}
         {panelNum === 2 && <LessonsPanel habit={habit} openLessonNum={openLessonNum} />}
         {panelNum === 3 && <AdditionalResources habit={habit} openSection={openSection} />}
-        {panelNum === 4 && <ReinforcementFeedback habit={habit} openSection={openSection} />}
+        {panelNum === 4 && <ReflectionReinforcement habit={habit} openSection={openSection} />}
+        {panelNum === 5 && <TeacherFeedback habit={habit} openSection={openSection} />}
       </div>
     </div>
   );

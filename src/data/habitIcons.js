@@ -19,6 +19,20 @@ import habitIcon17 from "./habitIcon17.js";
 import habitIcon18 from "./habitIcon18.js";
 import habitIcon19 from "./habitIcon19.js";
 import habitIcon20 from "./habitIcon20.js";
+import habitIcon21 from "./habitIcon21.js";
+import habitIcon22 from "./habitIcon22.js";
+import habitIcon23 from "./habitIcon23.js";
+import habitIcon24 from "./habitIcon24.js";
+import habitIcon25 from "./habitIcon25.js";
+import habitIcon26 from "./habitIcon26.js";
+import habitIcon27 from "./habitIcon27.js";
+import habitIcon28 from "./habitIcon28.js";
+import habitIcon29 from "./habitIcon29.js";
+import habitIcon30 from "./habitIcon30.js";
+import habitIcon31 from "./habitIcon31.js";
+import habitIcon32 from "./habitIcon32.js";
+import habitIcon33 from "./habitIcon33.js";
+import habitIcon34 from "./habitIcon34.js";
 
 const HABIT_ICONS = [
   habitIcon0,
@@ -42,6 +56,20 @@ const HABIT_ICONS = [
   habitIcon18,
   habitIcon19,
   habitIcon20,
+  habitIcon21,
+  habitIcon22,
+  habitIcon23,
+  habitIcon24,
+  habitIcon25,
+  habitIcon26,
+  habitIcon27,
+  habitIcon28,
+  habitIcon29,
+  habitIcon30,
+  habitIcon31,
+  habitIcon32,
+  habitIcon33,
+  habitIcon34,
 ];
 
 export default HABIT_ICONS;
