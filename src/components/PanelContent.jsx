@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadShwcModule2, loadKnowMoreSlides } from '../data/lazyData.js';
+import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadKnowMoreSlides, loadDgiGuideline, loadTlrPosters } from '../data/lazyData.js';
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
 import SHW_DATA from '../data/shwData.js';
+import DGI_DATA from '../data/dgiData.js';
+import ADDITIONAL_VIDEOS from '../data/additionalVideos.js';
 
 function SkeletonPoster() {
   return <div className="skeleton skeleton-poster"></div>;
@@ -42,6 +44,7 @@ function useLazy(loader, key) {
 function TeachingLearningResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
   const posterImage = useLazy(loadPoster, habitIdx);
+  const tlrPosters = useLazy(loadTlrPosters, habitIdx);
   const slides = useLazy(loadPptSlides, habitIdx);
   const hasSlides = slides && slides.length > 0;
   const wsData = useLazy(loadWorksheets, habitIdx);
@@ -212,6 +215,17 @@ function TeachingLearningResources({ habit, openSection }) {
                 style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
             ) : (
               <SkeletonPoster />
+            )}
+            {tlrPosters && tlrPosters.length > 0 && (
+              <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {tlrPosters.map((src, i) => (
+                  <img key={i} src={src} alt={`Additional Poster ${i + 1}`}
+                    style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
+                ))}
+              </div>
+            )}
+            {tlrPosters === null && (
+              <div style={{ marginTop: '20px' }}><SkeletonPoster /></div>
             )}
           </div>
         )}
@@ -548,9 +562,14 @@ function QuizPanel({ quiz }) {
 function AdditionalResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
   const shwData = SHW_DATA[habitIdx] || null;
+  const dgiData = DGI_DATA[habitIdx] || null;
 
   const [shwcModulePages, setShwcModulePages] = useState({});
   const [viewingModule, setViewingModule] = useState(null);
+
+  const [dgiPages, setDgiPages] = useState({});
+  const [viewingGuideline, setViewingGuideline] = useState(null);
+
   useEffect(() => {
     if (!shwData) return;
     shwData.modules.forEach(mod => {
@@ -560,14 +579,17 @@ function AdditionalResources({ habit, openSection }) {
     });
   }, [habitIdx]);
 
-  const sections = [];
-  if (shwData) {
-    sections.push({ key: 'shw', label: 'SHW Curriculum', icon: '\uD83C\uDFEB' });
-  }
-  sections.push({ key: 'dgi', label: 'Dietary Guidelines for Indians', icon: '\uD83D\uDCD7' });
-  sections.push({ key: 'fssai', label: 'FSSAI Eat Right Activity Book', icon: '\uD83D\uDCD9' });
+  const sections = [
+    { key: 'shw', label: 'SHW Curriculum', icon: '\uD83C\uDFEB' },
+    { key: 'dgi', label: 'Dietary Guidelines', icon: '\uD83D\uDCD7' },
+    { key: 'fssai', label: 'Eat Right Activity Book', icon: '\uD83D\uDCD9' },
+    { key: 'yellow', label: 'FSSAI Yellow Books', icon: '\uD83D\uDCD2' },
+    { key: 'other', label: 'Other Resources', icon: '\uD83D\uDCC2' },
+    { key: 'posters', label: 'Additional Posters', icon: '\uD83D\uDDBC' },
+    { key: 'videos', label: 'Additional Videos', icon: '\uD83C\uDFA5' },
+  ];
 
-  const [activeSection, setActiveSection] = useState(openSection || (shwData ? 'shw' : 'dgi'));
+  const [activeSection, setActiveSection] = useState(openSection || 'shw');
 
   return (
     <div>
@@ -590,7 +612,7 @@ function AdditionalResources({ habit, openSection }) {
       </div>
 
       <div style={{ marginTop: '20px' }}>
-        {activeSection === 'shw' && shwData && (
+        {activeSection === 'shw' && shwData ? (
           <div className="shw-content">
             {viewingModule !== null ? (
               <div className="shwc-module-viewer">
@@ -641,25 +663,162 @@ function AdditionalResources({ habit, openSection }) {
               </>
             )}
           </div>
-        )}
-
-        {activeSection === 'dgi' && (
+        ) : activeSection === 'shw' ? (
           <div className="section-content-card" style={{ maxWidth: '760px' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Dietary Guidelines for Indians</h3>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>School Health and Wellness Curriculum (SHWC)</h3>
             <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
-              The EWLW programme content is aligned with the <strong>Dietary Guidelines for Indians</strong>, which provide evidence-based recommendations for healthy eating patterns suited to the Indian context. These guidelines serve as a key reference for the nutrition-related habits and skills covered in the programme.
+              The SHWC consists of <strong>11 modules with 5–6 activities in each module</strong>. Relevant modules and activities mapped to this habit will be available here soon.
             </p>
           </div>
-        )}
+        ) : null}
+
+        {activeSection === 'dgi' && dgiData ? (
+          <div className="shw-content">
+            {viewingGuideline !== null ? (
+              <div className="shwc-module-viewer">
+                <button className="shwc-back-btn" onClick={() => setViewingGuideline(null)}>
+                  &#x2190; Back to Guidelines
+                </button>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, margin: '12px 0' }}>
+                  Guideline {viewingGuideline} — {dgiData.guidelines.find(g => g.guidelineNum === viewingGuideline)?.title}
+                </h3>
+                <div className="shwc-pages">
+                  {dgiPages[viewingGuideline] ? dgiPages[viewingGuideline].map((src, i) => (
+                    <img key={i} src={src} alt={`Guideline ${viewingGuideline} — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                  )) : (
+                    <SkeletonPoster />
+                  )}
+                </div>
+                <a href="/DGI_2024.pdf" download className="shw-download-btn" style={{ display: 'inline-block', marginTop: '16px' }}>
+                  &#x2B07; Download Full Dietary Guidelines
+                </a>
+              </div>
+            ) : (
+              <>
+                {dgiData.guidelines.map((gl, gi) => (
+                  <div key={gi} className="shw-module">
+                    <div className="shw-module-header">
+                      <span className="shw-module-badge" style={{ background: '#2E7D32' }}>Guideline {gl.guidelineNum}</span>
+                      <h3 className="shw-module-title">{gl.title}</h3>
+                    </div>
+                    <p className="shw-module-desc">{gl.description}</p>
+                    <div className="shw-activities">
+                      <div className="shw-activities-label">Key points:</div>
+                      <ul className="shw-activities-list">
+                        {gl.details.map((d, di) => (
+                          <li key={di}>{d}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="shw-module-actions">
+                      <button className="shw-fullmodule-btn" style={{ background: '#2E7D32' }} onClick={() => {
+                        setViewingGuideline(gl.guidelineNum);
+                        if (!dgiPages[gl.guidelineNum]) {
+                          loadDgiGuideline(gl.guidelineNum).then(pages => {
+                            if (pages) setDgiPages(prev => ({ ...prev, [gl.guidelineNum]: pages }));
+                          });
+                        }
+                      }}>
+                        &#x1F4D6; View Full Guideline
+                      </button>
+                      <a href="/DGI_2024.pdf" download className="shw-download-btn">
+                        &#x2B07; Download Full Dietary Guidelines
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        ) : activeSection === 'dgi' ? (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Dietary Guidelines for Indians (DGI-2024)</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, marginBottom: '14px' }}>
+              The EWLW programme content is aligned with the <strong>Dietary Guidelines for Indians (DGI-2024)</strong>, which include <strong>17 national dietary guidelines</strong> providing evidence-based recommendations for healthy eating patterns suited to the Indian context.
+            </p>
+            <div className="shw-module-actions">
+              <a href="/DGI_2024.pdf" target="_blank" rel="noopener noreferrer" className="shw-fullmodule-btn" style={{ background: '#2E7D32' }}>
+                &#x1F4D6; View Full Guidelines
+              </a>
+              <a href="/DGI_2024.pdf" download className="shw-download-btn">
+                &#x2B07; Download Full Dietary Guidelines
+              </a>
+            </div>
+          </div>
+        ) : null}
 
         {activeSection === 'fssai' && (
           <div className="section-content-card" style={{ maxWidth: '760px' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>FSSAI Eat Right Activity Book</h3>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Eat Right India Activity Book</h3>
             <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
-              The <strong>Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book</strong> provides activities which are also mapped to relevant habits and skills and are available on the portal.
+              The <strong>Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book</strong> provides activities organised under <strong>7 themes for primary, middle, and senior classes</strong>. These activities are mapped to relevant habits and skills and are available on the portal.
             </p>
           </div>
         )}
+
+        {activeSection === 'yellow' && (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>FSSAI Yellow Books for Schools</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+              The <strong>FSSAI Yellow Books</strong> are resource books designed for <strong>primary, middle, and senior classes</strong>. They provide age-appropriate content on food safety, nutrition, and healthy eating habits to support classroom learning.
+            </p>
+          </div>
+        )}
+
+        {activeSection === 'other' && (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Other Resources</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, marginBottom: '10px' }}>
+              Additional reference materials to support teaching and learning:
+            </p>
+            <ul style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, paddingLeft: '20px' }}>
+              <li><strong>Detect Adulteration through Rapid Testing (DART) Book</strong> — a practical guide for identifying food adulteration using simple tests.</li>
+              <li><strong>Nutrition (Kitchen) Garden Guidelines</strong> — guidelines for setting up and maintaining kitchen gardens in schools to promote hands-on learning about nutrition and food production.</li>
+            </ul>
+          </div>
+        )}
+
+        {activeSection === 'posters' && (
+          <div className="section-content-card" style={{ maxWidth: '760px' }}>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Additional Posters</h3>
+            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+              Additional posters related to this habit will be available here soon.
+            </p>
+          </div>
+        )}
+
+        {activeSection === 'videos' && (() => {
+          const addVids = ADDITIONAL_VIDEOS[habitIdx] || [];
+          return addVids.length > 0 ? (
+            <div className="videos-grid">
+              {addVids.map((v, i) => (
+                <div key={i} className="video-card">
+                  <div className="video-embed">
+                    <iframe
+                      src={v.embedUrl}
+                      title={v.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </div>
+                  <div className="video-card-body">
+                    <h4 className="video-card-title">{v.title}</h4>
+                    <p className="video-card-desc">{v.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="section-content-card" style={{ maxWidth: '760px' }}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Additional Videos</h3>
+              <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+                Additional videos related to this habit will be available here soon.
+              </p>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -720,7 +879,7 @@ function ReflectionReinforcement({ habit, openSection }) {
   );
 }
 
-function TeacherFeedback({ habit, openSection }) {
+function TeacherFeedback({ openSection }) {
   const [activeSection, setActiveSection] = useState(openSection || 'feedback');
 
   const sections = [

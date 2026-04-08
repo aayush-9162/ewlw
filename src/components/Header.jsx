@@ -10,14 +10,23 @@ export default function Header() {
   return (
     <>
       <header className="site-header">
-        <div>
-          <div className="logo-main">Eat Well. <span>Live Well.</span></div>
-          <div className="logo-sub"> &middot; Healthy Living Framework</div>
+        <div className="header-left">
+          <img src="/ewlw_logo.png" alt="EWLW" className="header-logo" />
+          <div>
+            <div className="logo-main">Eat Well. <span>Live Well.</span></div>
+            <div className="logo-sub"> &middot; Healthy Living Framework</div>
+          </div>
         </div>
+        <div className="header-center">
+          <img src="/fff_logo.png" alt="Food Future Foundation" className="header-logo-fff" />
+        </div>
+        <div className="header-right"></div>
+      </header>
+      <div className="faq-bar">
         <button className="faq-btn" onClick={() => setShowFaq(true)}>
           &#x2753; FAQs
         </button>
-      </header>
+      </div>
 
       {showFaq && (
         <div className="faq-overlay" onClick={() => setShowFaq(false)}>

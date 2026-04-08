@@ -143,6 +143,43 @@ export function loadShwcModule2() {
   return loadShwcModule(2);
 }
 
+// DGI guideline pages loader — keyed by guideline number
+const DGI_PAGE_COUNTS = {
+  1: 12, 5: 10, 6: 4, 7: 6, 8: 5, 9: 7, 10: 4, 11: 4, 12: 4, 13: 9, 14: 4, 15: 7, 17: 5,
+};
+
+export function loadDgiGuideline(guidelineNum) {
+  const count = DGI_PAGE_COUNTS[guidelineNum];
+  if (!count) return Promise.resolve(null);
+  return lazy(`dgi_g${guidelineNum}`, () => {
+    const imports = [];
+    for (let i = 0; i < count; i++) {
+      imports.push(import(`./dgiG${guidelineNum}_page${i}.js`));
+    }
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
+// TLR Additional Poster Images — mapped per habit (page ranges from PDF)
+const TLR_POSTER_MAP = {
+  1: [0, 1],       // Habit 2: pages 0-1
+  5: [2],           // Habit 6: page 2
+  9: [3, 4, 5],     // Habit 10: pages 3-5
+  11: [6, 7],       // Habit 12: pages 6-7
+  12: [8, 9],       // Habit 13: pages 8-9
+  18: [10, 11],     // Habit 19: pages 10-11
+  19: [12],         // Habit 20: page 12
+};
+
+export function loadTlrPosters(habitIdx) {
+  const pages = TLR_POSTER_MAP[habitIdx];
+  if (!pages) return Promise.resolve(null);
+  return lazy(`tlr_poster_${habitIdx}`, () =>
+    Promise.all(pages.map(p => import(`./tlrPoster_page${p}.js`)))
+      .then(mods => ({ default: mods.map(m => m.default) }))
+  );
+}
+
 // FAQ pages (2 pages)
 export function loadFaqPages() {
   return lazy('faq_pages', () =>

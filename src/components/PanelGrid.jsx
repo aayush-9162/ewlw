@@ -218,7 +218,11 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
               <div className="pcard-btns">
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHW Curriculum</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; Dietary Guidelines for Indians</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; FSSAI Eat Right Activity Book</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; Eat Right India Activity Book</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books for Schools</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4C2; Other Resources</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'posters')}>&#x1F5BC; Additional Posters</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'videos')}>&#x1F3A5; Additional Videos</button>
               </div>
             </div>
           </div>
