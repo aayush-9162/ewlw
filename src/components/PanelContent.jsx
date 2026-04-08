@@ -7,6 +7,26 @@ import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
 import SHW_DATA from '../data/shwData.js';
 
+function SkeletonPoster() {
+  return <div className="skeleton skeleton-poster"></div>;
+}
+function SkeletonSlide() {
+  return <div className="skeleton skeleton-slide"></div>;
+}
+function SkeletonDoc() {
+  return (
+    <div className="skeleton skeleton-card" style={{ maxWidth: '700px' }}>
+      <div className="skeleton-lines">
+        <div className="skeleton skeleton-line" style={{ width: '40%', height: '18px' }}></div>
+        <div className="skeleton skeleton-line"></div>
+        <div className="skeleton skeleton-line"></div>
+        <div className="skeleton skeleton-line"></div>
+        <div className="skeleton skeleton-line" style={{ width: '50%' }}></div>
+      </div>
+    </div>
+  );
+}
+
 // Hook: load async data on mount/key change
 function useLazy(loader, key) {
   const [data, setData] = useState(null);
@@ -121,7 +141,7 @@ function TeachingLearningResources({ habit, openSection }) {
                       {kmSlides ? (
                         <PptSlideViewer slides={kmSlides} />
                       ) : (
-                        <div style={{ padding: '40px', textAlign: 'center', color: '#aaa' }}>Loading slides...</div>
+                        <SkeletonSlide />
                       )}
                     </div>
                   </div>
@@ -141,6 +161,8 @@ function TeachingLearningResources({ habit, openSection }) {
         {activeSection === 'ppt' && (
           hasSlides ? (
             <PptSlideViewer slides={slides} />
+          ) : slides === null ? (
+            <SkeletonSlide />
           ) : (
             <div className="ppt-placeholder" style={{ padding: '24px' }}>
               <div className="ppt-icon">&#128202;</div>
@@ -189,7 +211,7 @@ function TeachingLearningResources({ habit, openSection }) {
               <img src={posterImage} alt="Habit Poster"
                 style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
             ) : (
-              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+              <SkeletonPoster />
             )}
           </div>
         )}
@@ -197,6 +219,8 @@ function TeachingLearningResources({ habit, openSection }) {
         {activeSection === 'ws' && (
           wsData ? (
             <WorksheetViewer data={wsData} />
+          ) : wsData === null ? (
+            <SkeletonPoster />
           ) : (
             <div className="ws-placeholder" style={{ padding: '24px' }}>
               <div className="ws-icon">&#128196;</div>
@@ -269,7 +293,7 @@ function LessonsPanel({ habit, openLessonNum }) {
                   }}
                 />
               ) : openId === lesson.id ? (
-                <div style={{ width: '100%', aspectRatio: '4/3', background: '#f5f5f5', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#bbb', marginTop: '16px' }}>Loading...</div>
+                <div style={{ marginTop: '16px' }}><SkeletonSlide /></div>
               ) : null}
             </div>
           </div>
@@ -580,7 +604,7 @@ function AdditionalResources({ habit, openSection }) {
                   {shwcModulePages[viewingModule] ? shwcModulePages[viewingModule].map((src, i) => (
                     <img key={i} src={src} alt={`Module ${viewingModule} — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
                   )) : (
-                    <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading module pages...</div>
+                    <SkeletonPoster />
                   )}
                 </div>
                 <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn" style={{ display: 'inline-block', marginTop: '16px' }}>
@@ -683,7 +707,7 @@ function ReflectionReinforcement({ habit, openSection }) {
                 <p style={{ fontSize: '1.1rem' }}>Reinforcement poster for this habit will be available soon.</p>
               </div>
             ) : (
-              <div style={{ width: '100%', aspectRatio: '3/4', background: '#f0f0f0', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>Loading...</div>
+              <SkeletonPoster />
             )}
           </div>
         )}

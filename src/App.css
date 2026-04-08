@@ -52,6 +52,22 @@ body { background: #fff; margin: 0; padding: 0; }
 .faq-answer p { margin: 4px 0; }
 @keyframes faqSlideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ══ SKELETON LOADER ════════════════════════════════════════ */
+.skeleton { position: relative; overflow: hidden; background: #e8e8e8; border-radius: 12px; }
+.skeleton::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.5) 50%, transparent 100%);
+  animation: skeletonShimmer 1.5s infinite; }
+@keyframes skeletonShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.skeleton-poster { width: 100%; aspect-ratio: 3/4; border-radius: 14px; }
+.skeleton-slide { width: 100%; aspect-ratio: 16/9; border-radius: 10px; }
+.skeleton-card { border-radius: 14px; padding: 20px; }
+.skeleton-line { height: 14px; border-radius: 6px; margin-bottom: 10px; background: #e0e0e0; }
+.skeleton-line:last-child { width: 60%; }
+.skeleton-lines { display: flex; flex-direction: column; gap: 8px; }
+.skeleton-lines .skeleton-line { width: 100%; }
+.skeleton-lines .skeleton-line:nth-child(2) { width: 85%; }
+.skeleton-lines .skeleton-line:nth-child(3) { width: 70%; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ══ SCREEN 1 — DOMAINS ══════════════════════════════════════════ */
