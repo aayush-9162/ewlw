@@ -6,14 +6,17 @@ import INTRO_THUMBS from '../data/introThumbs.js';
 import { ALL_LESSON_TITLES } from '../data/lessons.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
-import SHW_DATA from '../data/shwData.js';
+
 import { loadPoster } from '../data/lazyData.js';
 
-function PanelInfoThumb({ bg, icon, summary, detail }) {
+function PanelInfoThumb({ bg, icon, title, summary, detail }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div className="pcard-info-thumb" style={{ background: bg }} onMouseLeave={() => setExpanded(false)}>
-      <div className="pcard-info-icon">{icon}</div>
+      <div className="pcard-info-header">
+        <div className="pcard-info-icon">{icon}</div>
+        <div className="pcard-info-title">{title}</div>
+      </div>
       <p className="pcard-info-summary">{summary}</p>
       {detail && !expanded && (
         <button className="pcard-info-toggle" onClick={(e) => { e.stopPropagation(); setExpanded(true); }}>
@@ -144,11 +147,12 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <PanelInfoThumb
               bg="linear-gradient(135deg,#2563EB,#60A5FA)"
               icon="&#x1F4D6;"
+              title="Teaching & Learning Resources"
+
               summary="Resources to help teachers understand the habit and prepare for classroom sessions."
               detail={<p>They provide clear explanations, engaging materials, and structured support to help teachers confidently deliver the lessons and reinforce the habit overall.</p>}
             />
             <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#3A7FD5' }}></span>Teaching & Learning Resources</div>
               <div className="pcard-btns">
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'note')}>&#x1F4D6; Habit Note</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'ppt')}>&#x1F4CA; Presentation</button>
@@ -164,11 +168,12 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <PanelInfoThumb
               bg="linear-gradient(135deg,#B8860B,#F0C850)"
               icon="&#x1F4DD;"
+              title="Lesson Plans"
+
               summary="Six conversation-based lessons (6–8 minutes each), ideally one per day."
               detail={<ul><li>Teachers may cover more than one lesson in a day.</li><li>Not all lessons need to be taken up for lower classes.</li><li>As far as possible, all lessons for a habit should be conducted on consecutive days.</li></ul>}
             />
             <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#D4A017' }}></span>Lesson Plans</div>
               <div className="pcard-btns">
                 {lessonTitles.map((lt, li) => (
                   <button key={li} className="pcard-btn pcard-btn--lesson" onClick={() => onOpenLesson(li + 1)}>
@@ -184,11 +189,12 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <PanelInfoThumb
               bg="linear-gradient(135deg,#059669,#34D399)"
               icon="&#x1F5BC;"
+              title="Reflection & Reinforcement"
+
               summary="After completing all lessons, one session can be used for reflection and reinforcement."
               detail={<p>Key messages and important goals are revisited to strengthen understanding. A habit reinforcement poster may be used to support this process. A simple Habit Quiz is also provided to engage students and reinforce the key ideas and practices covered in the lessons.</p>}
             />
             <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#22A882' }}></span>Reflection & Reinforcement</div>
               <div className="pcard-btns">
                 <button className="pcard-btn" onClick={() => onOpenPanel(4, 'reinf')}>&#x1F5BC; Reinforcement Poster</button>
                 {HABIT_QUIZZES[habitIdx] && (
@@ -203,15 +209,14 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <PanelInfoThumb
               bg="linear-gradient(135deg,#C2410C,#FB923C)"
               icon="&#x1F4DA;"
-              summary="Aligned with the School Health and Wellness Programme curriculum and Dietary Guidelines for Indians."
-              detail={<p>The FSSAI Eat Right India Activity Book provides activities mapped to relevant habits and skills, available on the portal.</p>}
+              title="Additional Resources"
+
+              summary="The EWLW programme content is aligned with the School Health and Wellness Programme curriculum and the Dietary Guidelines for Indians."
+              detail={<><p>Relevant modules, activities, and guidelines mapped to each habit are available in the Additional Resources section.</p><p>The Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book provides activities organised under seven themes for primary, middle, and senior classes. These activities are also mapped to relevant habits and skills and are available on the portal.</p></>}
             />
             <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#E07830' }}></span>Additional Resources</div>
               <div className="pcard-btns">
-                {SHW_DATA[habitIdx] && (
-                  <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHW Curriculum</button>
-                )}
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHW Curriculum</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; Dietary Guidelines for Indians</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; FSSAI Eat Right Activity Book</button>
               </div>
@@ -223,11 +228,12 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <PanelInfoThumb
               bg="linear-gradient(135deg,#7C3AED,#A78BFA)"
               icon="&#x1F4AC;"
+              title="Feedback from Teachers"
+
               summary="Upload images, posters, videos, or reels to enrich the learning repository."
               detail={<p>Teachers are encouraged to share classroom content related to the habit or skill. Such contributions help continuously enrich and update the learning resources over time.</p>}
             />
             <div className="pcard-body">
-              <div className="pcard-title"><span className="pcard-dot" style={{ background: '#7C3AED' }}></span>Feedback from Teachers</div>
               <div className="pcard-btns">
                 <button className="pcard-btn" onClick={() => onOpenPanel(5, 'feedback')}>&#x1F4DD; Share Feedback</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(5, 'upload')}>&#x1F4F7; Upload Content</button>

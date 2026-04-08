@@ -4,12 +4,8 @@ const FAQ_DATA = [
     a: 'The EWLW programme helps students build positive behaviours and responsible attitudes through 21 personal wellbeing habits, 7 social skills, and 7 sustainability skills that support individual wellbeing, positive social interaction, and care for the environment.'
   },
   {
-    q: 'Where can teachers access the EWLW learning materials?',
-    a: 'All programme materials are available on the EWLW Digital Platform. Teachers can access posters, lesson plans, presentations, videos, worksheets, and additional resources for each habit or skill.'
-  },
-  {
     q: 'What resources are available for each habit or skill?',
-    a: 'For every habit or skill, the portal provides a set of classroom resources, including:\n\u2022 Habit poster (visual learning aid)\n\u2022 Note explaining why the habit or skill matters\n\u2022 Factual explanation of the habit or skill\n\u2022 Additional posters and images\n\u2022 Classroom presentation\n\u2022 Short video\n\u2022 Student worksheets\n\nThese resources support teachers in explaining concepts and engaging students in learning and reflection.'
+    a: 'For every habit or skill, the portal provides a set of classroom resources, including:\n\u2022 Habit poster (visual learning aid)\n\u2022 Why the Habit/skill matters\n\u2022 Note on the habit\n\u2022 Presentation\n\u2022 Short video\n\u2022 Additional posters and images\n\u2022 Student worksheets\n\nThese resources support teachers in explaining concepts and engaging students in learning and reflection.'
   },
   {
     q: 'How much classroom time is required for each lesson?',
@@ -17,7 +13,7 @@ const FAQ_DATA = [
   },
   {
     q: 'How are the lessons organised for each habit or skill?',
-    a: 'Each habit or skill is organised into six short lessons that guide classroom interaction. The lessons include conversation prompts and simple activities that help students understand and practice the habit in their daily lives.'
+    a: 'Each habit or skill is organised into six short lessons that guide classroom interaction. The lessons include conversation prompts, simple explanations and simple activities that help students understand and practice the habit in their daily lives.'
   },
   {
     q: 'Do teachers need to complete all six lessons for every class?',
@@ -29,18 +25,18 @@ const FAQ_DATA = [
   },
   {
     q: 'How can students be encouraged to practice the habits outside the classroom?',
-    a: 'Teachers can ask students to write their key takeaway from the lesson and practice the habit at home. In the following class, students can share their experiences and reflections.'
+    a: 'Teachers can ask students to write their key takeaway from the lesson and practice the habit at home. In the following class, students can share their experiences and reflections.\n\nAdditionally, teachers can refer to the family activity given in the habit lesson and guide students, in a simple and conversational way, to observe and discuss the habit with their family members. This helps involve families and reinforces the habit beyond the classroom.'
   },
   {
-    q: 'What happens after completing the lessons for a habit or skill?',
+    q: 'After completing a habit or skill, what can the teacher do?',
     a: 'After completing the lessons, teachers should conduct a reflection and reinforcement session. During this session, the key messages are revisited and students can participate in a Habit Quiz to reinforce their understanding.'
   },
   {
-    q: 'Are there additional resources available for classroom activities?',
-    a: 'Yes. The portal includes additional learning resources aligned with the School Health and Wellness Curriculum and the Dietary Guidelines for Indians. Activities from the FSSAI Eat Right India Activity Book are also available and mapped to relevant habits and skills.'
+    q: 'If teachers want to conduct activities, where can they find them?',
+    a: 'Teachers can easily explore and access activity ideas in the \u201CAdditional Resources\u201D section of the portal. This section includes a variety of ready-to-use activities from the FSSAI Eat Right India Activity Book, thoughtfully mapped to specific habits and skills. This makes it simple for teachers to select, plan, and conduct engaging and meaningful classroom sessions.'
   },
   {
-    q: 'Can teachers use these resources flexibly in their classroom?',
+    q: 'Do teachers need to cover everything for a habit, or can they be flexible?',
     a: 'Yes. Teachers can adapt the lessons and resources depending on class level, available time, and student engagement while maintaining the key learning objectives of each habit or skill.'
   },
   {

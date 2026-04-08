@@ -230,9 +230,13 @@ body { background: #fff; margin: 0; padding: 0; }
 
 /* info thumb (replaces image thumb) */
 .pcard-info-thumb { width: 100%; padding: 16px 14px; display: flex; flex-direction: column;
-  align-items: flex-start; gap: 6px; min-height: 120px; border-radius: 14px 14px 0 0;
+  align-items: flex-start; gap: 6px; min-height: 120px;
   transition: all .3s ease; }
-.pcard-info-icon { font-size: 1.6rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.2)); }
+.pcard-info-header { display: flex; align-items: center; gap: 10px; width: 100%; }
+.pcard-info-icon { font-size: 1.6rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,.2)); flex-shrink: 0; }
+.pcard-info-title { font-size: .88rem; font-weight: 900; color: #fff;
+  font-family: 'Playfair Display', serif; letter-spacing: .02em; line-height: 1.2;
+  border-left: 3px solid rgba(255,255,255,.6); padding-left: 8px; }
 .pcard-info-summary { font-size: .74rem; color: rgba(255,255,255,.92); line-height: 1.55;
   margin: 0; font-weight: 500; }
 .pcard-info-toggle { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3);
