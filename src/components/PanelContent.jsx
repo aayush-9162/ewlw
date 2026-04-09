@@ -637,9 +637,6 @@ function AdditionalResources({ habit, openSection }) {
                     <SkeletonPoster />
                   )}
                 </div>
-                <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn" style={{ display: 'inline-block', marginTop: '16px' }}>
-                  &#x2B07; Download Full Guide
-                </a>
               </div>
             ) : (
               <>
@@ -653,18 +650,19 @@ function AdditionalResources({ habit, openSection }) {
                     <div className="shw-activities">
                       <div className="shw-activities-label">Activities included:</div>
                       <ol className="shw-activities-list">
-                        {mod.activities.map((act, ai) => (
-                          <li key={ai}>{act}</li>
-                        ))}
+                        {mod.activities.map((act, ai) => {
+                          const colonIdx = act.indexOf(':');
+                          if (colonIdx > 0) {
+                            return <li key={ai}><span className="shw-act-title">{act.slice(0, colonIdx)}:</span> {act.slice(colonIdx + 1).trim()}</li>;
+                          }
+                          return <li key={ai}>{act}</li>;
+                        })}
                       </ol>
                     </div>
                     <div className="shw-module-actions">
                       <button className="shw-fullmodule-btn" onClick={() => setViewingModule(mod.moduleNum)}>
                         &#x1F4D6; View Full Module
                       </button>
-                      <a href="/Training_Resource_Material_english.pdf" download className="shw-download-btn">
-                        &#x2B07; Download Full Guide
-                      </a>
                     </div>
                   </div>
                 ))}
@@ -879,8 +877,17 @@ function ReflectionReinforcement({ habit, openSection }) {
           </div>
         )}
 
-        {activeSection === 'quiz' && quizData && (
-          <QuizPanel quiz={quizData} />
+        {activeSection === 'quiz' && (
+          quizData ? (
+            <QuizPanel quiz={quizData} />
+          ) : (
+            <div className="section-content-card" style={{ maxWidth: '760px' }}>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Habit Quiz</h3>
+              <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
+                The quiz for this habit will be available soon.
+              </p>
+            </div>
+          )
         )}
       </div>
     </div>
@@ -998,12 +1005,18 @@ const PANEL_NAMES = {
   4: 'Reflection & Reinforcement', 5: 'Feedback from Teachers'
 };
 
-export default function PanelContent({ panelNum, habit, onBack, openLessonNum, openSection }) {
+export default function PanelContent({ panelNum, domain, habit, onBack, openLessonNum, openSection }) {
   return (
     <div>
       <div className="sc-header">
         <button className="sc-back" onClick={onBack}>&#8592; Back</button>
-        <span className="sc-title">{PANEL_NAMES[panelNum] || ''}</span>
+        <div className="sc-breadcrumb">
+          <span className="sc-crumb-domain">{domain?.label || ''}</span>
+          <span className="sc-crumb-sep">/</span>
+          <span className="sc-crumb-habit">{habit?.name || ''}</span>
+          <span className="sc-crumb-sep">/</span>
+          <span className="sc-crumb-panel">{PANEL_NAMES[panelNum] || ''}</span>
+        </div>
       </div>
       <div className="sc-body">
         {panelNum === 1 && <TeachingLearningResources habit={habit} openSection={openSection} />}

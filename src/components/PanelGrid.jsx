@@ -4,7 +4,7 @@ import { HABIT_ICONS } from '../data/domains.js';
 import INTRO_THUMBS from '../data/introThumbs.js';
 
 import { ALL_LESSON_TITLES } from '../data/lessons.js';
-import HABIT_QUIZZES from '../data/habitQuizzes.js';
+
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
 
 import { loadPoster } from '../data/lazyData.js';
@@ -157,7 +157,7 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'note')}>&#x1F4D6; Habit Note</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'ppt')}>&#x1F4CA; Presentation</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'video')}>&#x1F3A5; Video</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'poster')}>&#x1F5BC; Additional Posters & Images</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(1, 'poster')}>&#x1F5BC; Poster/Image</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(1, 'ws')}>&#x1F4C4; Worksheets</button>
               </div>
             </div>
@@ -197,9 +197,7 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             <div className="pcard-body">
               <div className="pcard-btns">
                 <button className="pcard-btn" onClick={() => onOpenPanel(4, 'reinf')}>&#x1F5BC; Reinforcement Poster</button>
-                {HABIT_QUIZZES[habitIdx] && (
-                  <button className="pcard-btn" onClick={() => onOpenPanel(4, 'quiz')}>&#x1F3AF; Habit Quiz</button>
-                )}
+                <button className="pcard-btn" onClick={() => onOpenPanel(4, 'quiz')}>&#x1F3AF; Habit Quiz</button>
               </div>
             </div>
           </div>
@@ -211,15 +209,15 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
               icon="&#x1F4DA;"
               title="Additional Resources"
 
-              summary="The EWLW programme content is aligned with the School Health and Wellness Programme curriculum and the Dietary Guidelines for Indians."
-              detail={<><p>Relevant modules, activities, guidelines, and other materials linked to each habit are available here. Additional posters, images, and videos are also provided. These resources can support teachers, parents, and students in strengthening learning and encouraging the practice of healthy habits and skills.</p><p>The Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book provides activities organised under seven themes for primary, middle, and senior classes. These activities are also mapped to relevant habits and skills and are available on the portal.</p></>}
+              summary="Relevant modules, activities, guidelines, and other materials linked to each habit are available here."
+              detail={<><p>Additional posters, images, and videos are also provided. These resources can support teachers, parents, and students in strengthening learning and encouraging the practice of healthy habits and skills.</p><ul><li><strong>SHWC:</strong> 11 modules with 5–6 activities in each module.</li><li><strong>DGI-2024:</strong> 17 national dietary guidelines.</li><li><strong>Eat Right Activity Book:</strong> Activities under 7 themes for primary, middle, and senior classes.</li><li><strong>FSSAI Yellow Books:</strong> Resource books for primary, middle, and senior classes.</li><li><strong>Other Resources:</strong> DART Book, Nutrition (Kitchen) Garden Guidelines, Lifestyle as Medicine.</li><li><strong>Additional Posters</strong></li><li><strong>Additional Videos</strong></li></ul></>}
             />
             <div className="pcard-body">
               <div className="pcard-btns">
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHW Curriculum</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; Dietary Guidelines for Indians</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; Eat Right India Activity Book</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books for Schools</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHWC</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; DGI-2024</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; Eat Right Activity Book</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4C2; Other Resources</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'posters')}>&#x1F5BC; Additional Posters</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'videos')}>&#x1F3A5; Additional Videos</button>

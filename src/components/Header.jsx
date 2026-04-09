@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import FAQ_DATA from '../data/faqData.js';
 
-export default function Header() {
+export default function Header({ showFaqBtn }) {
   const [showFaq, setShowFaq] = useState(false);
   const [openIdx, setOpenIdx] = useState(null);
 
@@ -10,23 +10,20 @@ export default function Header() {
   return (
     <>
       <header className="site-header">
-        <div className="header-left">
-          <img src="/ewlw_logo.png" alt="EWLW" className="header-logo" />
-          <div>
-            <div className="logo-main">Eat Well. <span>Live Well.</span></div>
-            <div className="logo-sub"> &middot; Healthy Living Framework</div>
-          </div>
+        <img src="/ewlw_logo.png" alt="EWLW" className="header-logo" />
+        <div className="header-center-block">
+          <div className="logo-main">Eat Well. <span>Live Well.</span></div>
+          <div className="logo-sub">Personal Well-Being &nbsp;|&nbsp; Social Well-Being &nbsp;|&nbsp; Planetary Well-Being</div>
         </div>
-        <div className="header-center">
-          <img src="/fff_logo.png" alt="Food Future Foundation" className="header-logo-fff" />
-        </div>
-        <div className="header-right"></div>
+        <img src="/fff_logo.png" alt="Food Future Foundation" className="header-logo-fff" />
       </header>
-      <div className="faq-bar">
-        <button className="faq-btn" onClick={() => setShowFaq(true)}>
-          &#x2753; FAQs
-        </button>
-      </div>
+      {showFaqBtn && (
+        <div className="faq-bar">
+          <button className="faq-btn" onClick={() => setShowFaq(true)}>
+            &#x2753; FAQs
+          </button>
+        </div>
+      )}
 
       {showFaq && (
         <div className="faq-overlay" onClick={() => setShowFaq(false)}>

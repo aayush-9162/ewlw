@@ -62,7 +62,7 @@ export default function App() {
 
   return (
     <>
-      <Header />
+      <Header showFaqBtn={screen === 'domains'} />
       {screen === 'domains' && (
         <DomainLanding onOpenDomain={openDomain} />
       )}
@@ -86,6 +86,7 @@ export default function App() {
       {screen === 'content' && currentPanel && (
         <PanelContent
           panelNum={currentPanel}
+          domain={currentDomain}
           habit={currentHabit}
           onBack={backToPanels}
           openLessonNum={openLessonNum}
