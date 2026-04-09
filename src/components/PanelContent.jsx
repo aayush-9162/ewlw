@@ -267,7 +267,15 @@ function LessonsPanel({ habit, openLessonNum }) {
   }, [openLessonNum, habitIdx]);
 
   const toggleLesson = (id) => {
-    setOpenId(prev => prev === id ? null : id);
+    setOpenId(prev => {
+      const newId = prev === id ? null : id;
+      if (newId) {
+        setTimeout(() => {
+          lessonRefs.current[newId]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+      return newId;
+    });
   };
 
   return (

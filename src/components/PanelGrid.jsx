@@ -212,7 +212,7 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
               title="Additional Resources"
 
               summary="The EWLW programme content is aligned with the School Health and Wellness Programme curriculum and the Dietary Guidelines for Indians."
-              detail={<><p>Relevant modules, activities, and guidelines mapped to each habit are available in the Additional Resources section.</p><p>The Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book provides activities organised under seven themes for primary, middle, and senior classes. These activities are also mapped to relevant habits and skills and are available on the portal.</p></>}
+              detail={<><p>Relevant modules, activities, guidelines, and other materials linked to each habit are available here. Additional posters, images, and videos are also provided. These resources can support teachers, parents, and students in strengthening learning and encouraging the practice of healthy habits and skills.</p><p>The Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book provides activities organised under seven themes for primary, middle, and senior classes. These activities are also mapped to relevant habits and skills and are available on the portal.</p></>}
             />
             <div className="pcard-body">
               <div className="pcard-btns">

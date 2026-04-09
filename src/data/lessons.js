@@ -190,6 +190,15 @@ const ALL_LESSONS = [
     { id: 'h20l5', num: 5, name: 'Healthier Cooking Methods', objective: 'Students understand that cooking methods can affect nutrition.' },
     { id: 'h20l6', num: 6, name: 'Practical Food Skills', objective: 'Why is it useful to know how to prepare food?' },
   ],
+  // Habit 22
+  [
+    { id: 'h21l1', num: 1, name: 'My Values', objective: 'Students identify important values that guide their behaviour and decisions.' },
+    { id: 'h21l2', num: 2, name: 'My Behaviour and My Decisions', objective: 'Students understand how their behaviour reflects their values and affects others.' },
+    { id: 'h21l3', num: 3, name: 'Value-based Decision Making', objective: 'Students learn how values help guide responsible decisions.' },
+    { id: 'h21l4', num: 4, name: 'Real-Life Value Dilemma', objective: 'Students analyse situations where values influence difficult decisions.' },
+    { id: 'h21l5', num: 5, name: 'Active Citizenship', objective: 'Students understand how individuals can contribute positively to their communities.' },
+    { id: 'h21l6', num: 6, name: 'My Pledge for a Better Society', objective: 'Students commit to practising responsible citizenship through everyday actions.' },
+  ],
 ];
 
 export default ALL_LESSONS;
@@ -217,4 +226,5 @@ export const ALL_LESSON_TITLES = [
   ['Local and Seasonal Foods', 'Identifying Seasonal Foods', 'Seasonal Foods in Different', 'Regional Foods Across India', 'Benefits of Local and', 'Traditional Seasonal Foods'],
   ['Why Variety in Food Matters', 'Understanding Food Groups', 'Colourful Plates and Food', 'Rotating Foods in Daily Meals', 'The My Plate of the Day', 'Building a Balanced Meal'],
   ['Food Preparation in Daily Life', 'Cooking and Digestibility', 'Soaking and Sprouting', 'Microgreens and Fresh Foods', 'Healthier Cooking Methods', 'Practical Food Skills'],
+  ['My Values', 'My Behaviour and My', 'Value-based Decision Making', 'Real-Life Value Dilemma', 'Active Citizenship', 'My Pledge for a Better'],
 ];

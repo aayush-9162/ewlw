@@ -35,8 +35,9 @@ const posterLoaders = [
   () => import('./posterImage18.js'),
   () => import('./posterImage19.js'),
   () => import('./posterImage20.js'),
+  () => import('./posterImage21.js'),
 ];
-export function loadPoster(idx) { return lazy(`poster_${idx}`, posterLoaders[idx]); }
+export function loadPoster(idx) { if (!posterLoaders[idx]) return Promise.resolve(null); return lazy(`poster_${idx}`, posterLoaders[idx]); }
 
 // Reinforcement poster images
 const reinfLoaders = {};
