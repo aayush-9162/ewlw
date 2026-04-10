@@ -757,6 +757,8 @@ body { background: #fff; margin: 0; padding: 0; }
 .shw-activities-list { padding-left: 18px; margin: 0; }
 .shw-activities-list li { font-size: .82rem; color: #444; line-height: 1.7; margin-bottom: 8px; }
 .shw-act-title { font-weight: 800; color: #1565C0; font-size: .86rem; }
+.shw-act-link { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.shw-act-link:hover { color: #0D47A1; }
 .shw-module-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
 .shw-fullmodule-btn, .shw-download-btn { display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 20px; border-radius: 10px; font-size: .82rem; font-weight: 700;

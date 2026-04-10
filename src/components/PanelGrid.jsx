@@ -214,11 +214,11 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
             />
             <div className="pcard-body">
               <div className="pcard-btns">
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHWC</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; DGI-2024</button>
+                {[7,22,23,24,25,26,27,28].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'shw')}>&#x1F3EB; SHWC</button>}
+                {[2,4,9,10,12,14,17,18,20,21,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; DGI-2024</button>}
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; Eat Right Activity Book</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books</button>
-                <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4C2; Other Resources</button>
+                {[1,2,4,5,6,8,9,10,12,17,18,20,21,32,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books</button>}
+                {[17,31].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4C2; Other Resources</button>}
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'posters')}>&#x1F5BC; Additional Posters</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'videos')}>&#x1F3A5; Additional Videos</button>
               </div>

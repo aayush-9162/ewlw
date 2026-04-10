@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadPoster, loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadKnowMoreSlides, loadDgiGuideline, loadTlrPosters } from '../data/lazyData.js';
+import { loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadKnowMoreSlides, loadDgiGuideline, loadTlrPosters, loadDartBook, loadGardenBook } from '../data/lazyData.js';
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
@@ -43,7 +43,6 @@ function useLazy(loader, key) {
 
 function TeachingLearningResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
-  const posterImage = useLazy(loadPoster, habitIdx);
   const tlrPosters = useLazy(loadTlrPosters, habitIdx);
   const slides = useLazy(loadPptSlides, habitIdx);
   const hasSlides = slides && slides.length > 0;
@@ -60,7 +59,7 @@ function TeachingLearningResources({ habit, openSection }) {
     { key: 'note', label: 'Habit Note', icon: '\uD83D\uDCD6' },
     { key: 'ppt', label: 'Presentation', icon: '\uD83D\uDCCA' },
     { key: 'video', label: 'Video', icon: '\uD83C\uDFA5' },
-    { key: 'poster', label: 'Additional Posters & Images', icon: '\uD83D\uDDBC' },
+    { key: 'poster', label: 'Poster/Image', icon: '\uD83D\uDDBC' },
     { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
   ];
 
@@ -210,22 +209,21 @@ function TeachingLearningResources({ habit, openSection }) {
 
         {activeSection === 'poster' && (
           <div style={{ maxWidth: '860px' }}>
-            {posterImage ? (
-              <img src={posterImage} alt="Habit Poster"
-                style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
-            ) : (
-              <SkeletonPoster />
-            )}
-            {tlrPosters && tlrPosters.length > 0 && (
-              <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {tlrPosters && tlrPosters.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {tlrPosters.map((src, i) => (
-                  <img key={i} src={src} alt={`Additional Poster ${i + 1}`}
+                  <img key={i} src={src} alt={`Poster ${i + 1}`}
                     style={{ width: '100%', borderRadius: '14px', boxShadow: '0 8px 36px rgba(0,0,0,.15)', display: 'block' }} />
                 ))}
               </div>
-            )}
-            {tlrPosters === null && (
-              <div style={{ marginTop: '20px' }}><SkeletonPoster /></div>
+            ) : tlrPosters === null ? (
+              <SkeletonPoster />
+            ) : (
+              <div className="section-content-card" style={{ maxWidth: '760px' }}>
+                <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+                  Posters and images for this habit will be available soon.
+                </p>
+              </div>
             )}
           </div>
         )}
@@ -574,9 +572,18 @@ function AdditionalResources({ habit, openSection }) {
 
   const [shwcModulePages, setShwcModulePages] = useState({});
   const [viewingModule, setViewingModule] = useState(null);
+  const [scrollToPage, setScrollToPage] = useState(null);
+  const pageRefs = useRef({});
 
   const [dgiPages, setDgiPages] = useState({});
   const [viewingGuideline, setViewingGuideline] = useState(null);
+
+  const [otherBookPages, setOtherBookPages] = useState(null);
+
+  useEffect(() => {
+    if (habitIdx === 16) loadDartBook().then(p => { if (p) setOtherBookPages(p); });
+    if (habitIdx === 30) loadGardenBook().then(p => { if (p) setOtherBookPages(p); });
+  }, [habitIdx]);
 
   useEffect(() => {
     if (!shwData) return;
@@ -587,7 +594,8 @@ function AdditionalResources({ habit, openSection }) {
     });
   }, [habitIdx]);
 
-  const sections = [
+  const habitNum = habit?.n || 1;
+  const allSections = [
     { key: 'shw', label: 'SHW Curriculum', icon: '\uD83C\uDFEB' },
     { key: 'dgi', label: 'Dietary Guidelines', icon: '\uD83D\uDCD7' },
     { key: 'fssai', label: 'Eat Right Activity Book', icon: '\uD83D\uDCD9' },
@@ -596,8 +604,16 @@ function AdditionalResources({ habit, openSection }) {
     { key: 'posters', label: 'Additional Posters', icon: '\uD83D\uDDBC' },
     { key: 'videos', label: 'Additional Videos', icon: '\uD83C\uDFA5' },
   ];
+  const sectionVisibility = {
+    shw: [7,22,23,24,25,26,27,28].includes(habitNum),
+    dgi: [2,4,9,10,12,14,17,18,20,21,35].includes(habitNum),
+    yellow: [1,2,4,5,6,8,9,10,12,17,18,20,21,32,35].includes(habitNum),
+    other: [17,31].includes(habitNum),
+  };
+  const sections = allSections.filter(s => sectionVisibility[s.key] === undefined || sectionVisibility[s.key]);
 
-  const [activeSection, setActiveSection] = useState(openSection || 'shw');
+  const defaultSection = openSection && sections.some(s => s.key === openSection) ? openSection : sections[0]?.key || 'shw';
+  const [activeSection, setActiveSection] = useState(defaultSection);
 
   return (
     <div>
@@ -624,7 +640,7 @@ function AdditionalResources({ habit, openSection }) {
           <div className="shw-content">
             {viewingModule !== null ? (
               <div className="shwc-module-viewer">
-                <button className="shwc-back-btn" onClick={() => setViewingModule(null)}>
+                <button className="shwc-back-btn" onClick={() => { setViewingModule(null); setScrollToPage(null); }}>
                   &#x2190; Back to SHW Curriculum
                 </button>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, margin: '12px 0' }}>
@@ -632,7 +648,9 @@ function AdditionalResources({ habit, openSection }) {
                 </h3>
                 <div className="shwc-pages">
                   {shwcModulePages[viewingModule] ? shwcModulePages[viewingModule].map((src, i) => (
-                    <img key={i} src={src} alt={`Module ${viewingModule} — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                    <img key={i} ref={el => { pageRefs.current[i] = el; }} src={src} alt={`Module ${viewingModule} — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }}
+                      onLoad={() => { if (scrollToPage === i) { pageRefs.current[i]?.scrollIntoView({ behavior: 'smooth', block: 'start' }); setScrollToPage(null); } }}
+                    />
                   )) : (
                     <SkeletonPoster />
                   )}
@@ -652,8 +670,18 @@ function AdditionalResources({ habit, openSection }) {
                       <ol className="shw-activities-list">
                         {mod.activities.map((act, ai) => {
                           const colonIdx = act.indexOf(':');
+                          const hasPageLink = mod.activityPages && mod.activityPages[ai] !== undefined;
+                          const onClickActivity = hasPageLink ? () => {
+                            setScrollToPage(mod.activityPages[ai]);
+                            setViewingModule(mod.moduleNum);
+                            if (!shwcModulePages[mod.moduleNum]) {
+                              loadShwcModule(mod.moduleNum).then(pages => {
+                                if (pages) setShwcModulePages(prev => ({ ...prev, [mod.moduleNum]: pages }));
+                              });
+                            }
+                          } : undefined;
                           if (colonIdx > 0) {
-                            return <li key={ai}><span className="shw-act-title">{act.slice(0, colonIdx)}:</span> {act.slice(colonIdx + 1).trim()}</li>;
+                            return <li key={ai}><span className={`shw-act-title${hasPageLink ? ' shw-act-link' : ''}`} onClick={onClickActivity}>{act.slice(0, colonIdx)}:</span> {act.slice(colonIdx + 1).trim()}</li>;
                           }
                           return <li key={ai}>{act}</li>;
                         })}
@@ -772,15 +800,17 @@ function AdditionalResources({ habit, openSection }) {
         )}
 
         {activeSection === 'other' && (
-          <div className="section-content-card" style={{ maxWidth: '760px' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Other Resources</h3>
-            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, marginBottom: '10px' }}>
-              Additional reference materials to support teaching and learning:
-            </p>
-            <ul style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, paddingLeft: '20px' }}>
-              <li><strong>Detect Adulteration through Rapid Testing (DART) Book</strong> — a practical guide for identifying food adulteration using simple tests.</li>
-              <li><strong>Nutrition (Kitchen) Garden Guidelines</strong> — guidelines for setting up and maintaining kitchen gardens in schools to promote hands-on learning about nutrition and food production.</li>
-            </ul>
+          <div className="shw-content">
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, margin: '0 0 12px' }}>
+              {habitNum === 17 ? 'Detect Adulteration through Rapid Testing (DART) Book' : 'School Nutrition Garden Guidelines'}
+            </h3>
+            <div className="shwc-pages">
+              {otherBookPages ? otherBookPages.map((src, i) => (
+                <img key={i} src={src} alt={`Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+              )) : (
+                <SkeletonPoster />
+              )}
+            </div>
           </div>
         )}
 

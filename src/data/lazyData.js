@@ -181,6 +181,28 @@ export function loadTlrPosters(habitIdx) {
   );
 }
 
+// DART Book pages (habit 17, 41 pages)
+export function loadDartBook() {
+  return lazy('dart_book', () => {
+    const imports = [];
+    for (let i = 0; i < 41; i++) {
+      imports.push(import(`./dartBook_page${i}.js`));
+    }
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
+// School Nutrition Garden Guidelines (habit 31, 37 pages)
+export function loadGardenBook() {
+  return lazy('garden_book', () => {
+    const imports = [];
+    for (let i = 0; i < 37; i++) {
+      imports.push(import(`./gardenBook_page${i}.js`));
+    }
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
 // FAQ pages (2 pages)
 export function loadFaqPages() {
   return lazy('faq_pages', () =>
