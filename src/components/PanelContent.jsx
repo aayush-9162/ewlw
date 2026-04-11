@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import ALL_LESSONS from '../data/lessons.js';
-import { loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadKnowMoreSlides, loadDgiGuideline, loadTlrPosters, loadDartBook, loadGardenBook } from '../data/lazyData.js';
+import { loadReinfPoster, loadLessonImages, loadPptSlides, loadWorksheets, loadShwcModule, loadKnowMoreSlides, loadDgiGuideline, loadTlrPosters, loadDartBook, loadGardenBook, loadYellowBookPages, loadErabPages, loadLamPages } from '../data/lazyData.js';
+import YELLOW_BOOK_PAGES from '../data/yellowBookData.js';
+import ERAB_PAGES from '../data/erabData.js';
+import LAM_PAGES, { LAM_CHAPTERS, LAM_HABIT_CHAPTERS } from '../data/lamData.js';
 import HABIT_VIDEOS from '../data/habitVideos.js';
 import HABIT_QUIZZES from '../data/habitQuizzes.js';
 import KNOW_MORE_DATA from '../data/knowMoreData.js';
@@ -41,6 +44,100 @@ function useLazy(loader, key) {
   return data;
 }
 
+function VideoDesc({ text }) {
+  const [expanded, setExpanded] = useState(false);
+  const ref = useRef(null);
+  const [clamped, setClamped] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (el) setClamped(el.scrollHeight > el.clientHeight + 1);
+  }, [text]);
+  return (
+    <div className="video-desc-wrap">
+      <p ref={ref} className={`video-card-desc${expanded ? ' video-card-desc--open' : ''}`}>{text}</p>
+      {(clamped || expanded) && (
+        <button className="video-desc-toggle" onClick={() => setExpanded(e => !e)}>
+          {expanded ? 'Show less \u25B2' : 'Read more \u25BC'}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function HabitNoteAccordion({ kmData, kmSlides }) {
+  const [openIdx, setOpenIdx] = useState(null);
+  const toggle = (i) => setOpenIdx(prev => prev === i ? null : i);
+  return (
+    <div>
+      <div className="km-card">
+        <div className="km-card-header km-card-header--blue">
+          <span className="km-card-icon">&#x1F4D6;</span>
+          <span className="km-card-title">{kmData.document.title}</span>
+        </div>
+        <div className="km-card-body" style={{ padding: 0 }}>
+          {kmData.document.sections.map((sec, i) => (
+            <div key={i} className="habit-note-item">
+              <button className={`habit-note-toggle${openIdx === i ? ' habit-note-toggle--open' : ''}`} onClick={() => toggle(i)}>
+                <span className="habit-note-plus">{openIdx === i ? '\u2212' : '+'}</span>
+                <span className="habit-note-heading">{sec.heading}</span>
+              </button>
+              {openIdx === i && (
+                <div className="habit-note-body">
+                  {sec.text && <p className="km-doc-text">{sec.text}</p>}
+                  {sec.list && (
+                    <ul className="km-doc-list">
+                      {sec.list.map((item, j) => <li key={j}>{item}</li>)}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      {kmData.video && (
+        <div className="km-card" style={{ marginTop: '20px' }}>
+          <div className="km-card-header km-card-header--red">
+            <span className="km-card-icon">&#x1F3AC;</span>
+            <span className="km-card-title">Video</span>
+          </div>
+          <div className="km-card-body">
+            <div className="km-video-embed">
+              <iframe
+                src={kmData.video.embedUrl}
+                title={kmData.video.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+            <div className="km-video-info">
+              <h4 className="km-video-title">{kmData.video.title}</h4>
+              <p className="km-video-desc">{kmData.video.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {kmData.hasSlides && (
+        <div className="km-card" style={{ marginTop: '20px' }}>
+          <div className="km-card-header km-card-header--orange">
+            <span className="km-card-icon">&#x1F4CA;</span>
+            <span className="km-card-title">Presentation</span>
+          </div>
+          <div className="km-card-body">
+            {kmSlides ? (
+              <PptSlideViewer slides={kmSlides} />
+            ) : (
+              <SkeletonSlide />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function TeachingLearningResources({ habit, openSection }) {
   const habitIdx = (habit?.n || 1) - 1;
   const tlrPosters = useLazy(loadTlrPosters, habitIdx);
@@ -61,6 +158,7 @@ function TeachingLearningResources({ habit, openSection }) {
     { key: 'video', label: 'Video', icon: '\uD83C\uDFA5' },
     { key: 'poster', label: 'Poster/Image', icon: '\uD83D\uDDBC' },
     { key: 'ws', label: 'Worksheets', icon: '\uD83D\uDCC4' },
+    { key: 'upload', label: 'Contribute/Upload Content', icon: '\uD83D\uDCF7' },
   ];
 
   const [activeSection, setActiveSection] = useState(openSection || 'note');
@@ -88,68 +186,7 @@ function TeachingLearningResources({ habit, openSection }) {
       <div style={{ marginTop: '20px' }}>
         {activeSection === 'note' && (
           kmData ? (
-            <div>
-              <div className="km-grid">
-                <div className="km-card">
-                  <div className="km-card-header km-card-header--blue">
-                    <span className="km-card-icon">&#x1F4D6;</span>
-                    <span className="km-card-title">{kmData.document.title}</span>
-                  </div>
-                  <div className="km-card-body km-card-body--scroll">
-                    {kmData.document.sections.map((sec, i) => (
-                      <div key={i} className="km-doc-section">
-                        <h4 className="km-doc-heading">{sec.heading}</h4>
-                        {sec.text && <p className="km-doc-text">{sec.text}</p>}
-                        {sec.list && (
-                          <ul className="km-doc-list">
-                            {sec.list.map((item, j) => <li key={j}>{item}</li>)}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {kmData.video && (
-                  <div className="km-card">
-                    <div className="km-card-header km-card-header--red">
-                      <span className="km-card-icon">&#x1F3AC;</span>
-                      <span className="km-card-title">Video</span>
-                    </div>
-                    <div className="km-card-body">
-                      <div className="km-video-embed">
-                        <iframe
-                          src={kmData.video.embedUrl}
-                          title={kmData.video.title}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          referrerPolicy="strict-origin-when-cross-origin"
-                          allowFullScreen
-                        />
-                      </div>
-                      <div className="km-video-info">
-                        <h4 className="km-video-title">{kmData.video.title}</h4>
-                        <p className="km-video-desc">{kmData.video.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {kmData.hasSlides && (
-                  <div className="km-card">
-                    <div className="km-card-header km-card-header--orange">
-                      <span className="km-card-icon">&#x1F4CA;</span>
-                      <span className="km-card-title">Presentation</span>
-                    </div>
-                    <div className="km-card-body">
-                      {kmSlides ? (
-                        <PptSlideViewer slides={kmSlides} />
-                      ) : (
-                        <SkeletonSlide />
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <HabitNoteAccordion kmData={kmData} kmSlides={kmSlides} />
           ) : (
             <div className="section-content-card">
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Habit Note</h3>
@@ -192,7 +229,7 @@ function TeachingLearningResources({ habit, openSection }) {
                   </div>
                   <div className="video-card-body">
                     <h4 className="video-card-title">{v.title}</h4>
-                    <p className="video-card-desc">{v.description}</p>
+                    <VideoDesc text={v.description} />
                   </div>
                 </div>
               ))}
@@ -241,6 +278,36 @@ function TeachingLearningResources({ habit, openSection }) {
               </div>
             </div>
           )
+        )}
+
+        {activeSection === 'upload' && (
+          <div className="tu-section">
+            <div className="tu-card">
+              <div className="tu-icon">&#x1F4E4;</div>
+              <h3 className="tu-title">Contribute to the Learning Repository</h3>
+              <p className="tu-desc">
+                Teachers are encouraged to upload an image, poster, short video, or reel related to the habit or skill.
+                Such contributions can be added to the portal's repository, helping to continuously enrich and update the learning resources over time.
+              </p>
+              <div className="tu-types">
+                <div className="tu-type"><span className="tu-type-icon">&#x1F5BC;</span><span>Images</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F4CB;</span><span>Posters</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F3AC;</span><span>Videos</span></div>
+                <div className="tu-type"><span className="tu-type-icon">&#x1F4F1;</span><span>Reels</span></div>
+              </div>
+              <label className="tu-upload-area">
+                <input type="file" accept="image/*,video/*,.pdf" style={{ display: 'none' }} />
+                <div className="tu-upload-inner">
+                  <span className="tu-upload-icon">&#x2B06;</span>
+                  <span className="tu-upload-text">Click to select a file or drag & drop here</span>
+                  <span className="tu-upload-hint">Supported: Images, Videos, PDF (Max 50 MB)</span>
+                </div>
+              </label>
+              <textarea className="fb-input" rows="2" placeholder="Add a brief description of your contribution..."
+                style={{ resize: 'vertical', paddingTop: '8px', marginTop: '16px' }}></textarea>
+              <button className="fb-submit" style={{ background: '#7C3AED' }}>Upload Contribution &#8594;</button>
+            </div>
+          </div>
         )}
       </div>
     </div>
@@ -430,6 +497,38 @@ function PptSlideViewer({ slides }) {
 function WorksheetViewer({ data }) {
   const [level, setLevel] = useState('level1');
   const pages = data[level] || [];
+  const [downloading, setDownloading] = useState(false);
+
+  const downloadPage = (src, idx) => {
+    const a = document.createElement('a');
+    a.href = src;
+    a.download = `worksheet_${level}_page${idx + 1}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const downloadPdf = async () => {
+    setDownloading(true);
+    try {
+      const { default: jsPDF } = await import('jspdf');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px' });
+      for (let i = 0; i < pages.length; i++) {
+        const img = new Image();
+        img.src = pages[i];
+        await new Promise(resolve => { img.onload = resolve; });
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = (img.height / img.width) * pageW;
+        if (i > 0) pdf.addPage([pageW, pageH], pageH > pageW ? 'portrait' : 'landscape');
+        else pdf.internal.pageSize.setHeight(pageH);
+        pdf.addImage(pages[i], 'JPEG', 0, 0, pageW, pageH);
+      }
+      pdf.save(`worksheet_${level}.pdf`);
+    } catch (e) {
+      console.error('PDF generation failed:', e);
+    }
+    setDownloading(false);
+  };
 
   return (
     <div className="ws-viewer">
@@ -449,9 +548,21 @@ function WorksheetViewer({ data }) {
           <span className="ws-tab-sub">Classes 6-8 &middot; Ex I-IV</span>
         </button>
       </div>
+      {pages.length > 0 && (
+        <div className="ws-download-bar">
+          <button className="ws-download-all-btn" onClick={downloadPdf} disabled={downloading}>
+            &#x2B07; {downloading ? 'Preparing PDF...' : 'Download Worksheets'}
+          </button>
+        </div>
+      )}
       <div className="ws-pages">
         {pages.map((src, i) => (
-          <img key={`${level}-${i}`} src={src} alt={`${level} page ${i + 1}`} className="ws-page-img" />
+          <div key={`${level}-${i}`} className="ws-page-wrap">
+            <img src={src} alt={`${level} page ${i + 1}`} className="ws-page-img" />
+            <button className="ws-page-download" onClick={() => downloadPage(src, i)} title={`Download page ${i + 1}`}>
+              &#x2B07;
+            </button>
+          </div>
         ))}
       </div>
     </div>
@@ -550,9 +661,28 @@ function QuizPanel({ quiz }) {
       </div>
 
       {selected !== null && (
-        <div className={`quiz-explain ${selected === q.answer ? 'quiz-explain--correct' : 'quiz-explain--wrong'}`}>
-          <div className="quiz-explain-icon">{selected === q.answer ? '\uD83C\uDF1F' : '\uD83D\uDCA1'}</div>
-          <div className="quiz-explain-text">{q.explain}</div>
+        <div className="quiz-reasoning">
+          <div className="quiz-reasoning-header">
+            <span className="quiz-reasoning-icon">{selected === q.answer ? '\uD83C\uDF1F' : '\uD83D\uDCA1'}</span>
+            <span className="quiz-reasoning-title">{selected === q.answer ? 'Correct!' : 'Not quite right!'}</span>
+          </div>
+          <div className="quiz-reasoning-list">
+            {q.options.map((opt, i) => {
+              const isCorrect = i === q.answer;
+              const isPicked = i === selected;
+              return (
+                <div key={i} className={`quiz-reason-item${isCorrect ? ' quiz-reason--correct' : ' quiz-reason--incorrect'}${isPicked && !isCorrect ? ' quiz-reason--picked' : ''}`}>
+                  <div className="quiz-reason-badge">
+                    <span className="quiz-reason-letter">{optionLabels[i]}</span>
+                    <span className="quiz-reason-status">{isCorrect ? '\u2705' : '\u274C'}</span>
+                  </div>
+                  <div className="quiz-reason-text">
+                    {q.reasons ? q.reasons[i] : (isCorrect ? (q.explain || '') : '')}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -579,11 +709,36 @@ function AdditionalResources({ habit, openSection }) {
   const [viewingGuideline, setViewingGuideline] = useState(null);
 
   const [otherBookPages, setOtherBookPages] = useState(null);
+  const [lamPages, setLamPages] = useState(null);
+  const lamPageIndices = LAM_PAGES[habitIdx + 1] || null;
+
+  const ybData = YELLOW_BOOK_PAGES[habitIdx + 1] || null;
+  const ybDefaultLevel = ybData && ybData.level1.length > 0 ? 1 : ybData && ybData.level2.length > 0 ? 2 : null;
+  const [ybLevel, setYbLevel] = useState(ybDefaultLevel);
+  const [ybPages, setYbPages] = useState(null);
+
+  const erabData = ERAB_PAGES[habitIdx + 1] || null;
+  const erabDefaultLevel = erabData && erabData.level1.length > 0 ? 1 : erabData && erabData.level2.length > 0 ? 2 : null;
+  const [erabLevel, setErabLevel] = useState(erabDefaultLevel);
+  const [erabPages, setErabPages] = useState(null);
 
   useEffect(() => {
     if (habitIdx === 16) loadDartBook().then(p => { if (p) setOtherBookPages(p); });
     if (habitIdx === 30) loadGardenBook().then(p => { if (p) setOtherBookPages(p); });
-  }, [habitIdx]);
+    if (lamPageIndices) loadLamPages(lamPageIndices).then(p => { if (p) setLamPages(p); });
+  }, [habitIdx, lamPageIndices]);
+
+  useEffect(() => {
+    if (!ybData || !ybDefaultLevel) return;
+    const pages = ybDefaultLevel === 1 ? ybData.level1 : ybData.level2;
+    loadYellowBookPages(ybDefaultLevel, pages).then(p => { if (p) setYbPages(p); });
+  }, [habitIdx, ybData, ybDefaultLevel]);
+
+  useEffect(() => {
+    if (!erabData || !erabDefaultLevel) return;
+    const pages = erabDefaultLevel === 1 ? erabData.level1 : erabData.level2;
+    loadErabPages(erabDefaultLevel, pages).then(p => { if (p) setErabPages(p); });
+  }, [habitIdx, erabData, erabDefaultLevel]);
 
   useEffect(() => {
     if (!shwData) return;
@@ -607,8 +762,9 @@ function AdditionalResources({ habit, openSection }) {
   const sectionVisibility = {
     shw: [7,22,23,24,25,26,27,28].includes(habitNum),
     dgi: [2,4,9,10,12,14,17,18,20,21,35].includes(habitNum),
+    fssai: [1,2,4,6,12,16,17,18,19,20,31,32,35].includes(habitNum),
     yellow: [1,2,4,5,6,8,9,10,12,17,18,20,21,32,35].includes(habitNum),
-    other: [17,31].includes(habitNum),
+    other: [4,5,7,17,20,24,27,30,31,35].includes(habitNum),
   };
   const sections = allSections.filter(s => sectionVisibility[s.key] === undefined || sectionVisibility[s.key]);
 
@@ -781,38 +937,173 @@ function AdditionalResources({ habit, openSection }) {
           </div>
         ) : null}
 
-        {activeSection === 'fssai' && (
-          <div className="section-content-card" style={{ maxWidth: '760px' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Eat Right India Activity Book</h3>
-            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
-              The <strong>Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book</strong> provides activities organised under <strong>7 themes for primary, middle, and senior classes</strong>. These activities are mapped to relevant habits and skills and are available on the portal.
-            </p>
-          </div>
-        )}
-
-        {activeSection === 'yellow' && (
-          <div className="section-content-card" style={{ maxWidth: '760px' }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>FSSAI Yellow Books for Schools</h3>
-            <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75 }}>
-              The <strong>FSSAI Yellow Books</strong> are resource books designed for <strong>primary, middle, and senior classes</strong>. They provide age-appropriate content on food safety, nutrition, and healthy eating habits to support classroom learning.
-            </p>
-          </div>
-        )}
-
-        {activeSection === 'other' && (
-          <div className="shw-content">
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 700, margin: '0 0 12px' }}>
-              {habitNum === 17 ? 'Detect Adulteration through Rapid Testing (DART) Book' : 'School Nutrition Garden Guidelines'}
-            </h3>
-            <div className="shwc-pages">
-              {otherBookPages ? otherBookPages.map((src, i) => (
-                <img key={i} src={src} alt={`Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
-              )) : (
-                <SkeletonPoster />
+        {activeSection === 'fssai' && (() => {
+          const erData = ERAB_PAGES[habitNum];
+          const hasL1 = erData && erData.level1.length > 0;
+          const hasL2 = erData && erData.level2.length > 0;
+          const currentLevel = erabLevel || (hasL1 ? 1 : hasL2 ? 2 : null);
+          return (
+            <div className="shw-content">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Eat Right India Activity Book</h3>
+              <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, marginBottom: '16px' }}>
+                The <strong>Food Safety and Standards Authority of India (FSSAI) Eat Right India Activity Book</strong> provides activities organised under <strong>7 themes for primary, middle, and senior classes</strong>. These activities are mapped to relevant habits and skills and are available on the portal.
+              </p>
+              {(hasL1 || hasL2) && (
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '18px' }}>
+                  {hasL1 && (
+                    <button className="shw-fullmodule-btn"
+                      style={{ background: currentLevel === 1 ? '#1565C0' : '#90CAF9', fontWeight: currentLevel === 1 ? 700 : 400 }}
+                      onClick={() => {
+                        setErabLevel(1);
+                        if (!erabPages || erabLevel !== 1) {
+                          setErabPages(null);
+                          loadErabPages(1, erData.level1).then(p => { if (p) setErabPages(p); });
+                        }
+                      }}>
+                      Level 1 (Grades 1–4)
+                    </button>
+                  )}
+                  {hasL2 && (
+                    <button className="shw-fullmodule-btn"
+                      style={{ background: currentLevel === 2 ? '#1565C0' : '#90CAF9', fontWeight: currentLevel === 2 ? 700 : 400 }}
+                      onClick={() => {
+                        setErabLevel(2);
+                        if (!erabPages || erabLevel !== 2) {
+                          setErabPages(null);
+                          loadErabPages(2, erData.level2).then(p => { if (p) setErabPages(p); });
+                        }
+                      }}>
+                      Level 2 (Grades 5–8)
+                    </button>
+                  )}
+                </div>
+              )}
+              {currentLevel && (
+                <div className="shwc-pages">
+                  {erabPages ? erabPages.map((src, i) => (
+                    <img key={i} src={src} alt={`Eat Right Activity Book Level ${currentLevel} — Page ${i + 1}`}
+                      style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                  )) : (
+                    <SkeletonPoster />
+                  )}
+                </div>
+              )}
+              {!hasL1 && !hasL2 && (
+                <p style={{ fontSize: '.85rem', color: '#888', fontStyle: 'italic' }}>
+                  Activities mapped to this habit will be available soon.
+                </p>
               )}
             </div>
-          </div>
-        )}
+          );
+        })()}
+
+        {activeSection === 'yellow' && (() => {
+          const ybData = YELLOW_BOOK_PAGES[habitNum];
+          const hasL1 = ybData && ybData.level1.length > 0;
+          const hasL2 = ybData && ybData.level2.length > 0;
+          const currentLevel = ybLevel || (hasL1 ? 1 : hasL2 ? 2 : null);
+          return (
+            <div className="shw-content">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>FSSAI Yellow Books for Schools</h3>
+              <p style={{ fontSize: '.85rem', color: '#444', lineHeight: 1.75, marginBottom: '16px' }}>
+                The <strong>FSSAI Yellow Books</strong> are resource books designed for <strong>primary, middle, and senior classes</strong>. They provide age-appropriate content on food safety, nutrition, and healthy eating habits to support classroom learning.
+              </p>
+              {(hasL1 || hasL2) && (
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '18px' }}>
+                  {hasL1 && (
+                    <button className={`shw-fullmodule-btn${currentLevel === 1 ? '' : ''}`}
+                      style={{ background: currentLevel === 1 ? '#B45309' : '#D4A574', fontWeight: currentLevel === 1 ? 700 : 400 }}
+                      onClick={() => {
+                        setYbLevel(1);
+                        if (!ybPages || ybLevel !== 1) {
+                          setYbPages(null);
+                          loadYellowBookPages(1, ybData.level1).then(p => { if (p) setYbPages(p); });
+                        }
+                      }}>
+                      Level 1 (Grades 1–5)
+                    </button>
+                  )}
+                  {hasL2 && (
+                    <button className="shw-fullmodule-btn"
+                      style={{ background: currentLevel === 2 ? '#B45309' : '#D4A574', fontWeight: currentLevel === 2 ? 700 : 400 }}
+                      onClick={() => {
+                        setYbLevel(2);
+                        if (!ybPages || ybLevel !== 2) {
+                          setYbPages(null);
+                          loadYellowBookPages(2, ybData.level2).then(p => { if (p) setYbPages(p); });
+                        }
+                      }}>
+                      Level 2 (Grades 6–8)
+                    </button>
+                  )}
+                </div>
+              )}
+              {currentLevel && (
+                <div className="shwc-pages">
+                  {ybPages ? ybPages.map((src, i) => (
+                    <img key={i} src={src} alt={`Yellow Book Level ${currentLevel} — Page ${i + 1}`}
+                      style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                  )) : (
+                    <SkeletonPoster />
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+        {activeSection === 'other' && (() => {
+          const showDart = habitNum === 17;
+          const showGarden = habitNum === 31;
+          const showLam = !!lamPageIndices;
+          const lamChaps = LAM_HABIT_CHAPTERS[habitNum] || [];
+          const lamTitle = lamChaps.map(c => `Chapter ${c}: ${LAM_CHAPTERS[c] || ''}`).join(' | ');
+          return (
+            <div className="shw-content">
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Other Resources</h3>
+
+              {showDart && (
+                <>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.05rem', fontWeight: 700, margin: '16px 0 8px', color: '#7C3AED' }}>Detect Adulteration through Rapid Testing (DART) Book</h4>
+                  <div className="shwc-pages">
+                    {otherBookPages ? otherBookPages.map((src, i) => (
+                      <img key={i} src={src} alt={`DART Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                    )) : (
+                      <SkeletonPoster />
+                    )}
+                  </div>
+                </>
+              )}
+
+              {showGarden && (
+                <>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.05rem', fontWeight: 700, margin: '16px 0 8px', color: '#15803D' }}>School Nutrition Garden Guidelines</h4>
+                  <div className="shwc-pages">
+                    {otherBookPages ? otherBookPages.map((src, i) => (
+                      <img key={i} src={src} alt={`Garden Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                    )) : (
+                      <SkeletonPoster />
+                    )}
+                  </div>
+                </>
+              )}
+
+              {showLam && (
+                <>
+                  <h4 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.05rem', fontWeight: 700, margin: '16px 0 8px', color: '#1565C0' }}>Lifestyle as Medicine</h4>
+                  <p style={{ fontSize: '.82rem', color: '#555', lineHeight: 1.6, marginBottom: '12px' }}>{lamTitle}</p>
+                  <div className="shwc-pages">
+                    {lamPages ? lamPages.map((src, i) => (
+                      <img key={i} src={src} alt={`Lifestyle as Medicine — Page ${i + 1}`} style={{ width: '100%', borderRadius: '10px', marginBottom: '12px' }} />
+                    )) : (
+                      <SkeletonPoster />
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
 
         {activeSection === 'posters' && (
           <div className="section-content-card" style={{ maxWidth: '760px' }}>
@@ -841,7 +1132,7 @@ function AdditionalResources({ habit, openSection }) {
                   </div>
                   <div className="video-card-body">
                     <h4 className="video-card-title">{v.title}</h4>
-                    <p className="video-card-desc">{v.description}</p>
+                    <VideoDesc text={v.description} />
                   </div>
                 </div>
               ))}
@@ -929,7 +1220,6 @@ function TeacherFeedback({ openSection }) {
 
   const sections = [
     { key: 'feedback', label: 'Share Feedback', icon: '\uD83D\uDCDD' },
-    { key: 'upload', label: 'Upload Content', icon: '\uD83D\uDCF7' },
   ];
 
   return (
@@ -995,36 +1285,6 @@ function TeacherFeedback({ openSection }) {
             <button className="fb-submit">Submit Feedback &#8594;</button>
           </div>
         )}
-
-        {activeSection === 'upload' && (
-          <div className="tu-section">
-            <div className="tu-card">
-              <div className="tu-icon">&#x1F4E4;</div>
-              <h3 className="tu-title">Contribute to the Learning Repository</h3>
-              <p className="tu-desc">
-                Teachers are encouraged to upload an image, poster, short video, or reel related to the habit or skill.
-                Such contributions can be added to the portal's repository, helping to continuously enrich and update the learning resources over time.
-              </p>
-              <div className="tu-types">
-                <div className="tu-type"><span className="tu-type-icon">&#x1F5BC;</span><span>Images</span></div>
-                <div className="tu-type"><span className="tu-type-icon">&#x1F4CB;</span><span>Posters</span></div>
-                <div className="tu-type"><span className="tu-type-icon">&#x1F3AC;</span><span>Videos</span></div>
-                <div className="tu-type"><span className="tu-type-icon">&#x1F4F1;</span><span>Reels</span></div>
-              </div>
-              <label className="tu-upload-area">
-                <input type="file" accept="image/*,video/*,.pdf" style={{ display: 'none' }} />
-                <div className="tu-upload-inner">
-                  <span className="tu-upload-icon">&#x2B06;</span>
-                  <span className="tu-upload-text">Click to select a file or drag & drop here</span>
-                  <span className="tu-upload-hint">Supported: Images, Videos, PDF (Max 50 MB)</span>
-                </div>
-              </label>
-              <textarea className="fb-input" rows="2" placeholder="Add a brief description of your contribution..."
-                style={{ resize: 'vertical', paddingTop: '8px', marginTop: '16px' }}></textarea>
-              <button className="fb-submit" style={{ background: '#7C3AED' }}>Upload Contribution &#8594;</button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -1034,6 +1294,21 @@ const PANEL_NAMES = {
   1: 'Teaching & Learning Resources', 2: 'Lesson Plans', 3: 'Additional Resources',
   4: 'Reflection & Reinforcement', 5: 'Feedback from Teachers'
 };
+
+function ScrollToTopBtn() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <button className="scroll-top-btn" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Scroll to top">
+      &#8593;
+    </button>
+  );
+}
 
 export default function PanelContent({ panelNum, domain, habit, onBack, openLessonNum, openSection }) {
   return (
@@ -1055,6 +1330,7 @@ export default function PanelContent({ panelNum, domain, habit, onBack, openLess
         {panelNum === 4 && <ReflectionReinforcement habit={habit} openSection={openSection} />}
         {panelNum === 5 && <TeacherFeedback habit={habit} openSection={openSection} />}
       </div>
+      <ScrollToTopBtn />
     </div>
   );
 }

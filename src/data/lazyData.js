@@ -203,6 +203,34 @@ export function loadGardenBook() {
   });
 }
 
+// Lifestyle as Medicine pages loader — loads specific PDF page indices for a habit
+export function loadLamPages(pageIndices) {
+  const key = `lam_${pageIndices[0]}_${pageIndices[pageIndices.length - 1]}`;
+  return lazy(key, () => {
+    const imports = pageIndices.map(i => import(`./lam_page${i}.js`));
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
+// Eat Right Activity Book pages loader — loads specific PDF page indices for a given level and habit
+export function loadErabPages(level, pageIndices) {
+  const key = `erab_l${level}_${pageIndices.join('_')}`;
+  return lazy(key, () => {
+    const imports = pageIndices.map(i => import(`./erab_page${i}.js`));
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
+// FSSAI Yellow Book pages loader — loads specific PDF page indices for a given level and habit
+export function loadYellowBookPages(level, pageIndices) {
+  const key = `yb${level}_${pageIndices.join('_')}`;
+  return lazy(key, () => {
+    const prefix = level === 1 ? 'yb1' : 'yb2';
+    const imports = pageIndices.map(i => import(`./` + prefix + `_page${i}.js`));
+    return Promise.all(imports).then(mods => ({ default: mods.map(m => m.default) }));
+  });
+}
+
 // FAQ pages (2 pages)
 export function loadFaqPages() {
   return lazy('faq_pages', () =>
