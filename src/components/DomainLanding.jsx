@@ -2,7 +2,7 @@ import { DOMAINS } from '../data/domains.js';
 
 const DOMAIN_CONFIG = {
   personal: {
-    icon: '\u{1F958}',
+    icon: '\u{1F9D2}',
     label: 'Domain 1',
     title: 'Personal Well-Being',
     desc: '21 Habits across ROUTINE, HEALTHY and MINDFUL \u2014 building lifelong health from within.',

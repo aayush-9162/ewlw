@@ -97,7 +97,7 @@ body { background: #fff; margin: 0; padding: 0; }
 .hs-divider { flex: 1; height: 1px; background: #EEE; }
 .habit-tiles-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 10px; }
 
-.ht { border-radius: 10px; overflow: hidden; cursor: pointer;
+.ht { border-radius: 10px; overflow: hidden; cursor: pointer; position: relative;
   transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
   display: flex; flex-direction: column; min-height: 120px; }
 .ht:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(0,0,0,.2); }
@@ -109,6 +109,11 @@ body { background: #fff; margin: 0; padding: 0; }
 .ht-icon-area img { width: 56px; height: 56px; object-fit: contain;
   border: none; border-radius: 50%; box-shadow: none; }
 .ht-icon-area .emoji-icon { font-size: 1.8rem; }
+.ht-num {
+  position: absolute; bottom: 4px; right: 6px;
+  font-size: .65rem; font-weight: 700; color: rgba(255,255,255,.5);
+  line-height: 1;
+}
 
 /* ══ SCREEN 2 — HABIT DETAIL (panels) ══════════════════════ */
 .sp-hero { padding: 24px 48px 20px; position: relative; overflow: hidden; }

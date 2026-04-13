@@ -42,6 +42,7 @@ export default function HabitTiles({ domain, onBack, onOpenHabit }) {
                         <span className="emoji-icon">{h.emoji || '\u2605'}</span>
                       )}
                     </div>
+                    <span className="ht-num">{h.n}</span>
                   </div>
                 );
               })}

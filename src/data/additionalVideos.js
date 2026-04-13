@@ -134,6 +134,11 @@ const ADDITIONAL_VIDEOS = {
       embedUrl: 'https://www.youtube.com/embed/eTbdkF16nzA',
       description: 'This video by FSSAI\u2019s Eat Right India initiative explains how food-borne illnesses such as diarrhea, dysentery, and typhoid can spread through contaminated food and poor hygiene. It highlights the importance of clean hands, safe food handling, and proper hygiene practices to prevent illness and ensure food safety. The video encourages maintaining cleanliness while preparing and consuming food to protect health.',
     },
+    {
+      title: 'Methods to Check Food Contamination \u2013 FSSAI (2:11 m)',
+      embedUrl: 'https://www.youtube.com/embed/nUV_DWwkW2o',
+      description: 'This video explains simple ways to identify and prevent food contamination to ensure food safety. It highlights the importance of checking food quality, maintaining cleanliness during food preparation, and following hygienic practices to avoid harmful bacteria and unsafe ingredients. The video encourages people to stay aware of food safety measures to protect their health and prevent food-borne illnesses.',
+    },
   ],
   17: [
     {
@@ -150,11 +155,6 @@ const ADDITIONAL_VIDEOS = {
       title: 'How to read labels \u2013 @fitmaize (1:00 m)',
       embedUrl: 'https://www.youtube.com/embed/fRpY94owwe0?si=1',
       description: 'This short video highlights the importance of reading food labels carefully before buying packaged foods. It explains that many products marketed as \u201Chealthy\u201D may still contain high amounts of added sugar, salt, or unhealthy ingredients.',
-    },
-    {
-      title: 'Methods to Check Food Contamination \u2013 FSSAI (2:11 m)',
-      embedUrl: 'https://www.youtube.com/embed/nUV_DWwkW2o',
-      description: 'This video explains simple ways to identify and prevent food contamination to ensure food safety. It highlights the importance of checking food quality, maintaining cleanliness during food preparation, and following hygienic practices to avoid harmful bacteria and unsafe ingredients. The video encourages people to stay aware of food safety measures to protect their health and prevent food-borne illnesses.',
     },
     {
       title: 'Reading Food Labels Correctly \u2013 FSSAI (1:54 m)',

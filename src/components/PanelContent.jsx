@@ -1318,7 +1318,7 @@ export default function PanelContent({ panelNum, domain, habit, onBack, openLess
         <div className="sc-breadcrumb">
           <span className="sc-crumb-domain">{domain?.label || ''}</span>
           <span className="sc-crumb-sep">/</span>
-          <span className="sc-crumb-habit">{habit?.name || ''}</span>
+          <span className="sc-crumb-habit">{habit?.name || ''}{habit?.n ? ` (Habit ${habit.n})` : ''}</span>
           <span className="sc-crumb-sep">/</span>
           <span className="sc-crumb-panel">{PANEL_NAMES[panelNum] || ''}</span>
         </div>
