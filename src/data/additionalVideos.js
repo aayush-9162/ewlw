@@ -43,12 +43,37 @@ const ADDITIONAL_VIDEOS = {
       embedUrl: 'https://www.youtube.com/embed/igxkhJbfDIs',
       description: 'This video by the Food Safety and Standards Authority of India (FSSAI) highlights the importance of regular physical activity for maintaining good health. It explains that staying active through activities such as walking, playing sports, or exercising helps improve fitness, strengthen the body, and reduce the risk of lifestyle diseases. The video encourages people to include daily physical activity as an essential part of a healthy lifestyle.',
     },
+    {
+      title: 'Why Physical Activity Matters \u2013 Middle Childhood Matters Coalition Toronto (4:14 m)',
+      embedUrl: 'https://www.youtube.com/embed/R0-PBXXljXM',
+      description: 'This video explains why regular physical activity is important for children\u2019s physical, mental, and social development. It highlights that active play and movement help build strong bodies, improve concentration, and support emotional well-being.',
+    },
+    {
+      title: 'How Playing Sports Benefits Your Body... and Your Brain \u2013 TED-Ed (3:46 m)',
+      embedUrl: 'https://www.youtube.com/embed/hmFQqjMF_f0',
+      description: 'This TED-Ed video explains how playing sports benefits both the body and the brain. It shows that regular sports activity strengthens bones, improves heart health, builds coordination, and enhances brain functions such as memory and focus.',
+    },
+    {
+      title: 'Why the Brain is Built for Movement \u2013 Anders Hansen, TEDx (17:55 m)',
+      embedUrl: 'https://www.youtube.com/embed/a9p3Z7L0f0U',
+      description: 'In this TEDx talk, Anders Hansen explains how physical activity has powerful effects on the brain. He shows that regular exercise can improve memory, focus, creativity, mood, and reduce stress and anxiety.',
+    },
   ],
   4: [
     {
       title: 'The Sleep Song \u2013 Kids Pharmer (3:09 m)',
       embedUrl: 'https://www.youtube.com/embed/cD-6tmfCl7g?si=1',
       description: 'This calming lullaby helps children relax and prepare for bedtime. With gentle music and soothing visuals, the video encourages a peaceful sleep routine and highlights the importance of good sleep for health.',
+    },
+    {
+      title: 'The Benefits of a Good Night\u2019s Sleep \u2013 Shai Marcu, TED-Ed (5:44 m)',
+      embedUrl: 'https://www.youtube.com/embed/gedoSfZvBgE',
+      description: 'This TED-Ed video explains why getting enough sleep is essential for both the body and the brain. It shows that during sleep the brain actively reorganizes memories, clears waste products, and restores itself for the next day.',
+    },
+    {
+      title: 'What Would Happen if You Didn\u2019t Sleep? \u2013 Claudia Aguirre, TED-Ed (4:43 m)',
+      embedUrl: 'https://www.youtube.com/embed/dqONk48l5vY',
+      description: 'This TED-Ed video explains what happens to the body and brain when a person does not get enough sleep. It shows that sleep deprivation can affect memory, concentration, mood, and physical health.',
     },
   ],
   5: [
@@ -57,12 +82,56 @@ const ADDITIONAL_VIDEOS = {
       embedUrl: 'https://www.youtube.com/embed/2NrmzltJtTs?si=1',
       description: 'This video turns bath time into a fun and joyful activity for children. Through music and playful repetition, kids learn that bathing helps keep their body clean and healthy.',
     },
+    {
+      title: 'Personal Hygiene Tips Every Teen Should Know \u2013 Sam.K Tween & Teens (4:48 m)',
+      embedUrl: 'https://www.youtube.com/embed/7xX2inCqAbg',
+      description: 'This video explains the importance of maintaining good personal hygiene during the teenage years. It highlights simple daily habits such as bathing regularly, brushing teeth, and keeping clothes clean.',
+    },
+    {
+      title: 'How to Get (and Stay) Organized \u2013 Child Mind Institute (2:38 m)',
+      embedUrl: 'https://www.youtube.com/embed/g3AoOdvL710',
+      description: 'This video explains simple strategies that help children and teens develop better organization skills. It highlights practical habits such as writing things down, using checklists, and keeping spaces tidy.',
+    },
+    {
+      title: '12 Personal Hygiene Mistakes We Make Every Day \u2013 BRIGHT SIDE (9:09 m)',
+      embedUrl: 'https://www.youtube.com/embed/iXWbecngX7c',
+      description: 'This educational video explains several common personal hygiene mistakes people make in their daily routines and how to avoid them. It highlights habits such as proper handwashing, dental care, and skin care.',
+    },
+    {
+      title: 'Personal Hygiene for Teen Girls \u2013 Blissima (3:35 m)',
+      embedUrl: 'https://www.youtube.com/embed/jkZyxbwNfUg',
+      description: 'This video discusses important personal hygiene and self-care tips for teenage girls. It talks about maintaining daily hygiene habits, feeling fresh and confident.',
+    },
+    {
+      title: 'Personal Hygiene for Teenage Boys \u2013 Gig Nurse (3:58 m)',
+      embedUrl: 'https://www.youtube.com/embed/q43a0O2AEfs',
+      description: 'This educational video explains the importance of good personal hygiene for teenage boys during puberty. It highlights simple habits such as regular bathing, using deodorant, and maintaining clean clothes.',
+    },
   ],
   6: [
     {
       title: 'How to Build Self-Control in 3 Simple Steps \u2013 @abhasa.mentalhealth (1:22 m)',
       embedUrl: 'https://www.youtube.com/embed/x8nLkKZurDs?si=1',
       description: 'This video explains how to build self-control using simple daily habits. It suggests three strategies: pausing for a few seconds before acting on an impulse, planning in advance how to respond to temptations, and using a mental script to remind yourself of long-term benefits. These techniques help train the brain to make better choices and gradually strengthen self-control.',
+    },
+  ],
+  7: [
+    {
+      title: 'How You Make the Right Choices \u2013 Healthline (4:54 m)',
+      embedUrl: 'https://www.youtube.com/embed/CTD4GrkI0ZI',
+      description: 'This video by Healthline explains the difference between good (complex) carbohydrates and bad (refined) carbohydrates. It highlights that whole foods like fruits, vegetables, and whole grains provide sustained energy, while refined carbs like white bread and sugary snacks cause energy spikes and crashes.',
+    },
+  ],
+  8: [
+    {
+      title: 'What Are Proteins? \u2013 Smile and Learn (3:16 m)',
+      embedUrl: 'https://www.youtube.com/embed/U-_uuU1i7oE',
+      description: 'This educational video explains what proteins are and why they are important for the body. It shows that proteins are essential nutrients that help build and repair muscles, skin, and organs.',
+    },
+    {
+      title: 'What Makes Muscles Grow? \u2013 Jeffrey Siegel, TED-Ed (4:19 m)',
+      embedUrl: 'https://www.youtube.com/embed/2tM1LFFxeKg',
+      description: 'This TED-Ed video explains how muscles grow stronger through exercise, nutrition, and rest. It shows that when muscles are challenged with physical activity, tiny fibers break down and rebuild stronger with proper protein intake and sleep.',
     },
   ],
   9: [
@@ -121,6 +190,18 @@ const ADDITIONAL_VIDEOS = {
       title: 'Salt Reduction Strategies \u2013 FSSAI (1:29 m)',
       embedUrl: 'https://www.youtube.com/embed/e1Wro3BJumw',
       description: 'This video by FSSAI\u2019s Eat Right India initiative explains simple strategies to reduce salt consumption in everyday diets. It encourages people to gradually lower the amount of salt used in cooking, avoid highly processed foods, and rely more on natural flavors like herbs and spices. The video highlights that reducing excess salt intake helps lower the risk of high blood pressure and heart disease, supporting better long-term health.',
+    },
+  ],
+  15: [
+    {
+      title: 'The Five Tastes \u2013 Denver Museum of Nature & Science, TED-Ed (3:48 m)',
+      embedUrl: 'https://www.youtube.com/embed/MZn2PMUWO-Y',
+      description: 'This TED-Ed video explains that the human tongue can recognize five basic tastes: sweet, sour, salty, bitter, and umami. It describes how special taste receptors on the tongue detect these flavours and send signals to the brain.',
+    },
+    {
+      title: 'The Science of Spiciness \u2013 Rose Eveleth, TED-Ed (3:39 m)',
+      embedUrl: 'https://www.youtube.com/embed/qD0_yWgifDM',
+      description: 'This TED-Ed video explains that spiciness is not actually a taste but a sensation caused by compounds like capsaicin, which activate heat-sensitive nerve receptors on the tongue.',
     },
   ],
   16: [

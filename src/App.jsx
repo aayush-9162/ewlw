@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header.jsx';
-import DomainLanding from './components/DomainLanding.jsx';
+import Homepage from './components/Homepage.jsx';
 import HabitTiles from './components/HabitTiles.jsx';
 import PanelGrid from './components/PanelGrid.jsx';
 import PanelContent from './components/PanelContent.jsx';
+import SchoolFoodPage from './components/SchoolFoodPage.jsx';
+import ActiveSchoolsPage from './components/ActiveSchoolsPage.jsx';
+import TeacherEngagementPage from './components/TeacherEngagementPage.jsx';
+import FamilyEngagementPage from './components/FamilyEngagementPage.jsx';
 import { DOMAINS } from './data/domains.js';
 
 export default function App() {
-  const [screen, setScreen] = useState('domains');
+  const [screen, setScreen] = useState('home');
   const [currentDomain, setCurrentDomain] = useState(null);
   const [currentCluster, setCurrentCluster] = useState(null);
   const [currentHabit, setCurrentHabit] = useState(null);
@@ -24,8 +28,8 @@ export default function App() {
     setScreen('habits');
   };
 
-  const backToDomains = () => {
-    setScreen('domains');
+  const backToHome = () => {
+    setScreen('home');
   };
 
   const openHabit = (ci, hi) => {
@@ -60,16 +64,22 @@ export default function App() {
     setScreen('panels');
   };
 
+  const openPractice = (key) => {
+    setScreen(key);
+  };
+
   return (
     <>
-      <Header showFaqBtn={screen === 'domains'} />
-      {screen === 'domains' && (
-        <DomainLanding onOpenDomain={openDomain} />
+      {screen === 'home' && (
+        <Homepage onOpenDomain={openDomain} onOpenPractice={openPractice} />
+      )}
+      {['habits', 'panels', 'content'].includes(screen) && (
+        <Header showFaqBtn={false} />
       )}
       {screen === 'habits' && currentDomain && (
         <HabitTiles
           domain={currentDomain}
-          onBack={backToDomains}
+          onBack={backToHome}
           onOpenHabit={openHabit}
         />
       )}
@@ -92,6 +102,18 @@ export default function App() {
           openLessonNum={openLessonNum}
           openSection={openSection}
         />
+      )}
+      {screen === 'school-food' && (
+        <SchoolFoodPage onBack={backToHome} onNavigate={openPractice} />
+      )}
+      {screen === 'active-schools' && (
+        <ActiveSchoolsPage onBack={backToHome} onNavigate={openPractice} />
+      )}
+      {screen === 'teacher-engagement' && (
+        <TeacherEngagementPage onBack={backToHome} onNavigate={openPractice} />
+      )}
+      {screen === 'family-engagement' && (
+        <FamilyEngagementPage onBack={backToHome} onNavigate={openPractice} />
       )}
     </>
   );
