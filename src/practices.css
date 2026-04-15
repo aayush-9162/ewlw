@@ -46,6 +46,46 @@
   margin: 0;
 }
 
+/* ---------- Practice nav back (always visible) ---------- */
+.pp-nav-back {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+.pp-nav-back .pp-back-btn {
+  margin-bottom: 0;
+}
+
+/* ---------- Breadcrumb ---------- */
+.pp-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+}
+.pp-breadcrumb button {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  text-decoration: underline;
+  font-family: inherit;
+}
+.pp-breadcrumb button:hover {
+  color: #fff;
+}
+.pp-breadcrumb-sep {
+  color: rgba(255,255,255,0.45);
+}
+.pp-breadcrumb-current {
+  color: #fff;
+  font-weight: 600;
+}
+
 /* ---------- Back button inside hero ---------- */
 .pp-back-btn {
   display: inline-flex;
@@ -500,6 +540,44 @@
   color: var(--pp-dark); min-width: 90px;
 }
 
+/* ---------- Practice Tile Selection Grid ---------- */
+.pp-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+.pp-select-tile {
+  background: var(--pp-lighter);
+  border: 2px solid var(--pp-border);
+  border-radius: var(--radius-md);
+  padding: 28px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.pp-select-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+.pp-select-tile-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin: 0 auto 12px;
+  color: #fff;
+}
+.pp-select-tile h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--pp-dark);
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .pp-cat-body {
@@ -519,6 +597,17 @@
   .pp-hero-inner { padding-top: 32px; }
   .pp-hero h1 { font-size: 1.4rem; }
   .pp-hero p { font-size: 0.9rem; }
+
+  /* Nav back button */
+  .pp-nav-back .pp-back-btn { padding: 5px 12px; font-size: 0.75rem; white-space: nowrap; }
+  .pp-breadcrumb { font-size: 0.75rem; gap: 4px; }
+  .pp-breadcrumb button { font-size: 0.75rem; }
+
+  /* Tile Selection */
+  .pp-select-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .pp-select-tile { padding: 20px 12px; }
+  .pp-select-tile-icon { width: 44px; height: 44px; font-size: 1.3rem; margin-bottom: 8px; }
+  .pp-select-tile h4 { font-size: 0.85rem; }
 
   /* Quick Start */
   .pp-quick { margin-top: -36px; padding: 0 16px; }

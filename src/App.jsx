@@ -1,14 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Header from './components/Header.jsx';
 import Homepage from './components/Homepage.jsx';
 import HabitTiles from './components/HabitTiles.jsx';
 import PanelGrid from './components/PanelGrid.jsx';
 import PanelContent from './components/PanelContent.jsx';
-import SchoolFoodPage from './components/SchoolFoodPage.jsx';
-import ActiveSchoolsPage from './components/ActiveSchoolsPage.jsx';
-import TeacherEngagementPage from './components/TeacherEngagementPage.jsx';
-import FamilyEngagementPage from './components/FamilyEngagementPage.jsx';
+import PracticeTiles from './components/PracticeTiles.jsx';
+import PracticeContentView from './components/PracticeContentView.jsx';
 import { DOMAINS } from './data/domains.js';
 
 export default function App() {
@@ -18,39 +16,104 @@ export default function App() {
   const [currentHabit, setCurrentHabit] = useState(null);
   const [currentPanel, setCurrentPanel] = useState(null);
   const [openLessonNum, setOpenLessonNum] = useState(null);
+  const [openSection, setOpenSection] = useState(null);
+  const [currentPractice, setCurrentPractice] = useState(null);
+  const [currentPracticeTile, setCurrentPracticeTile] = useState(null);
+
+  // Refs to track indices for history reconstruction
+  const domainKeyRef = useRef(null);
+  const clusterIdxRef = useRef(null);
+  const habitIdxRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [screen]);
 
-  const openDomain = (key) => {
-    setCurrentDomain(DOMAINS[key]);
-    setScreen('habits');
+  // ── Browser history management ──
+  useEffect(() => {
+    window.history.replaceState({ screen: 'home' }, '');
+
+    const handlePop = (e) => {
+      const s = e.state || { screen: 'home' };
+
+      if (s.screen === 'habits' && s.domainKey) {
+        domainKeyRef.current = s.domainKey;
+        setCurrentDomain(DOMAINS[s.domainKey]);
+        setScreen('habits');
+      } else if (s.screen === 'panels' && s.domainKey != null) {
+        const domain = DOMAINS[s.domainKey];
+        domainKeyRef.current = s.domainKey;
+        clusterIdxRef.current = s.ci;
+        habitIdxRef.current = s.hi;
+        setCurrentDomain(domain);
+        setCurrentCluster(domain.clusters[s.ci]);
+        setCurrentHabit(domain.clusters[s.ci].habits[s.hi]);
+        setScreen('panels');
+      } else if (s.screen === 'content' && s.domainKey != null) {
+        const domain = DOMAINS[s.domainKey];
+        domainKeyRef.current = s.domainKey;
+        clusterIdxRef.current = s.ci;
+        habitIdxRef.current = s.hi;
+        setCurrentDomain(domain);
+        setCurrentCluster(domain.clusters[s.ci]);
+        setCurrentHabit(domain.clusters[s.ci].habits[s.hi]);
+        setCurrentPanel(s.panel);
+        setOpenLessonNum(s.lesson || null);
+        setOpenSection(s.section || null);
+        setScreen('content');
+      } else if (s.screen === 'practice-tiles' && s.practiceKey) {
+        setCurrentPractice(s.practiceKey);
+        setScreen('practice-tiles');
+      } else if (s.screen === 'practice-content' && s.practiceKey) {
+        setCurrentPractice(s.practiceKey);
+        setCurrentPracticeTile(s.practiceTile);
+        setScreen('practice-content');
+      } else {
+        setScreen('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePop);
+    return () => window.removeEventListener('popstate', handlePop);
+  }, []);
+
+  // ── Navigation helpers ──
+  const goBack = () => window.history.back();
+
+  const goHome = () => {
+    setScreen('home');
+    window.history.pushState({ screen: 'home' }, '');
   };
 
-  const backToHome = () => {
-    setScreen('home');
+  // ── Domain / Habit flow ──
+  const openDomain = (key) => {
+    domainKeyRef.current = key;
+    setCurrentDomain(DOMAINS[key]);
+    setScreen('habits');
+    window.history.pushState({ screen: 'habits', domainKey: key }, '');
   };
 
   const openHabit = (ci, hi) => {
+    clusterIdxRef.current = ci;
+    habitIdxRef.current = hi;
     const cluster = currentDomain.clusters[ci];
     const habit = cluster.habits[hi];
     setCurrentCluster(cluster);
     setCurrentHabit(habit);
     setScreen('panels');
+    window.history.pushState({ screen: 'panels', domainKey: domainKeyRef.current, ci, hi }, '');
   };
-
-  const backToHabits = () => {
-    setScreen('habits');
-  };
-
-  const [openSection, setOpenSection] = useState(null);
 
   const openPanel = (n, section) => {
     setCurrentPanel(n);
     setOpenLessonNum(null);
     setOpenSection(section || null);
     setScreen('content');
+    window.history.pushState({
+      screen: 'content', domainKey: domainKeyRef.current,
+      ci: clusterIdxRef.current, hi: habitIdxRef.current,
+      panel: n, section: section || null,
+    }, '');
   };
 
   const openLesson = (n) => {
@@ -58,17 +121,30 @@ export default function App() {
     setOpenLessonNum(n);
     setOpenSection(null);
     setScreen('content');
+    window.history.pushState({
+      screen: 'content', domainKey: domainKeyRef.current,
+      ci: clusterIdxRef.current, hi: habitIdxRef.current,
+      panel: 2, lesson: n,
+    }, '');
   };
 
-  const backToPanels = () => {
-    setScreen('panels');
-  };
-
-  const [practiceScrollTo, setPracticeScrollTo] = useState(null);
-
+  // ── Practice flow ──
   const openPractice = (key, scrollTarget) => {
-    setPracticeScrollTo(scrollTarget || null);
-    setScreen(key);
+    setCurrentPractice(key);
+    if (scrollTarget) {
+      setCurrentPracticeTile(scrollTarget - 1);
+      setScreen('practice-content');
+      window.history.pushState({ screen: 'practice-content', practiceKey: key, practiceTile: scrollTarget - 1 }, '');
+    } else {
+      setScreen('practice-tiles');
+      window.history.pushState({ screen: 'practice-tiles', practiceKey: key }, '');
+    }
+  };
+
+  const openPracticeTile = (tileIndex) => {
+    setCurrentPracticeTile(tileIndex);
+    setScreen('practice-content');
+    window.history.pushState({ screen: 'practice-content', practiceKey: currentPractice, practiceTile: tileIndex }, '');
   };
 
   return (
@@ -82,7 +158,7 @@ export default function App() {
       {screen === 'habits' && currentDomain && (
         <HabitTiles
           domain={currentDomain}
-          onBack={backToHome}
+          onBack={goBack}
           onOpenHabit={openHabit}
         />
       )}
@@ -91,7 +167,7 @@ export default function App() {
           domain={currentDomain}
           cluster={currentCluster}
           habit={currentHabit}
-          onBack={backToHabits}
+          onBack={goBack}
           onOpenPanel={openPanel}
           onOpenLesson={openLesson}
         />
@@ -101,22 +177,28 @@ export default function App() {
           panelNum={currentPanel}
           domain={currentDomain}
           habit={currentHabit}
-          onBack={backToPanels}
+          onBack={goBack}
           openLessonNum={openLessonNum}
           openSection={openSection}
         />
       )}
-      {screen === 'school-food' && (
-        <SchoolFoodPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
+      {screen === 'practice-tiles' && currentPractice && (
+        <PracticeTiles
+          practiceKey={currentPractice}
+          onBack={goBack}
+          onGoHome={goHome}
+          onSelectTile={openPracticeTile}
+          onNavigate={openPractice}
+        />
       )}
-      {screen === 'active-schools' && (
-        <ActiveSchoolsPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
-      )}
-      {screen === 'teacher-engagement' && (
-        <TeacherEngagementPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
-      )}
-      {screen === 'family-engagement' && (
-        <FamilyEngagementPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
+      {screen === 'practice-content' && currentPractice && currentPracticeTile !== null && (
+        <PracticeContentView
+          practiceKey={currentPractice}
+          tileIndex={currentPracticeTile}
+          onBack={goBack}
+          onBackToHome={goHome}
+          onNavigate={openPractice}
+        />
       )}
     </>
   );
