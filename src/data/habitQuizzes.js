@@ -1,6 +1,6 @@
 // Quiz data per habit (keyed by habit index 0-based)
 const HABIT_QUIZZES = {
-  0: {
+  /* 0: {
     title: 'Respect Mealtimes Quiz',
     questions: [
       {
@@ -84,7 +84,7 @@ const HABIT_QUIZZES = {
         ],
       },
     ],
-  },
+  }, */
   2: {
     title: 'Unplug and Recharge Quiz',
     questions: [

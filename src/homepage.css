@@ -49,7 +49,14 @@
 .hp-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .hp-section { padding: 60px 0; }
 .hp-section-header { margin-bottom: 36px; }
-.hp-section-header h2 { font-size: 1.6rem; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+.hp-section-header h2 {
+  font-size: 1.6rem; font-weight: 800; color: var(--gray-900); margin-bottom: 8px;
+  position: relative; display: inline-block;
+}
+.hp-section-header h2::after {
+  content: ''; display: block; width: 40px; height: 3px; border-radius: 2px;
+  background: var(--green-primary); margin-top: 8px;
+}
 .hp-section-header p { color: var(--gray-600); font-size: 0.95rem; margin: 0; }
 
 /* ===== Navbar ===== */
@@ -79,6 +86,7 @@
 .hp-nav-menu button:hover, .hp-nav-menu button.active {
   color: var(--green-primary); background: var(--green-lighter);
 }
+.hp-nav-actions { display: flex; align-items: center; gap: 12px; }
 .hp-nav-right { display: flex; align-items: center; gap: 12px; }
 .hp-nav-right .hp-lang-select {
   padding: 6px 12px; border: 1px solid var(--gray-300); border-radius: var(--radius-sm);
@@ -101,8 +109,62 @@
   color: white; display: flex; align-items: center; justify-content: center;
   font-weight: 600; font-size: 0.85rem; cursor: pointer;
 }
-.hp-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
-.hp-hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-700); margin: 5px 0; transition: var(--transition); }
+/* Hamburger Icon */
+.hp-hamburger {
+  display: none; background: none; border: none; cursor: pointer;
+  width: 40px; height: 40px; position: relative;
+}
+.hp-hamburger span {
+  position: absolute; left: 9px; width: 22px; height: 2px;
+  background: #333; border-radius: 2px;
+}
+.hp-hamburger span:nth-child(1) { top: 12px; }
+.hp-hamburger span:nth-child(2) { top: 19px; }
+.hp-hamburger span:nth-child(3) { top: 26px; }
+
+/* Drawer close (X) button — rendered outside navbar for correct z-index */
+.hp-drawer-close {
+  display: none; position: fixed; top: 14px; left: 236px; z-index: 1200;
+  width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(0,0,0,.08); align-items: center; justify-content: center;
+}
+.hp-drawer-close span {
+  display: block; width: 18px; height: 2.5px; background: var(--gray-800);
+  border-radius: 2px; position: absolute;
+}
+.hp-drawer-close span:nth-child(1) { transform: rotate(45deg); }
+.hp-drawer-close span:nth-child(2) { transform: rotate(-45deg); }
+
+/* Mobile Drawer */
+.hp-drawer-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  z-index: 1050; animation: hp-fadeIn .25s ease;
+}
+@keyframes hp-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.hp-drawer {
+  display: none; position: fixed; top: 0; left: 0; bottom: 0; width: 280px;
+  background: #fff; z-index: 1060; flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  transform: translateX(-100%); transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+}
+.hp-drawer--open { transform: translateX(0); }
+.hp-drawer-header {
+  display: flex; align-items: center; gap: 12px; padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--gray-200);
+}
+.hp-drawer-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; }
+.hp-drawer-title { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; color: var(--green-dark); }
+.hp-drawer-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.hp-drawer-nav button {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 14px 24px; background: none; border: none; cursor: pointer;
+  font-size: 0.95rem; font-weight: 500; color: var(--gray-700);
+  transition: background 0.2s, color 0.2s; text-align: left;
+}
+.hp-drawer-nav button:hover { background: var(--green-lighter); color: var(--green-primary); }
+.hp-drawer-nav button.active { color: var(--green-primary); font-weight: 700; background: var(--green-lighter); border-left: 3px solid var(--green-primary); }
+.hp-drawer-footer { padding: 16px 20px; border-top: 1px solid var(--gray-200); }
 
 /* ===== Welcome Banner ===== */
 .hp-banner {
@@ -170,6 +232,99 @@
   background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); font-size: 0.78rem;
   font-weight: 700; color: white; margin-top: 20px; position: relative; z-index: 1; width: fit-content;
 }
+
+/* ===== Practice Panel Cards (Healthy School Practices) ===== */
+.hp-pcard-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.hp-pcard {
+  background: #fff; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,.06); border: 1px solid rgba(0,0,0,.06);
+  cursor: pointer; transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s;
+  position: relative;
+}
+.hp-pcard::after {
+  content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px;
+  background: rgba(255,255,255,.04); border-radius: 50%;
+  transform: translate(20px, -20px); pointer-events: none;
+}
+.hp-pcard:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(0,0,0,.14); }
+.hp-pcard-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; color: #fff; position: relative; overflow: hidden;
+}
+.hp-pcard-header::before {
+  content: ''; position: absolute; top: -30px; right: -20px; width: 90px; height: 90px;
+  background: rgba(255,255,255,.1); border-radius: 50%; pointer-events: none;
+}
+.hp-pcard-header::after {
+  content: ''; position: absolute; bottom: -20px; left: -10px; width: 60px; height: 60px;
+  background: rgba(255,255,255,.06); border-radius: 50%; pointer-events: none;
+}
+.hp-pcard-icon {
+  font-size: 1.3rem; width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(255,255,255,.2); display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; position: relative; z-index: 1;
+}
+.hp-pcard-title {
+  font-family: var(--font-heading); font-size: 0.95rem; font-weight: 700;
+  position: relative; z-index: 1;
+}
+.hp-pcard-body { padding: 16px 18px 18px; }
+.hp-pcard-summary {
+  font-size: 0.82rem; color: var(--gray-500); line-height: 1.55;
+  margin-bottom: 14px;
+}
+.hp-pcard-btns { display: flex; flex-wrap: wrap; gap: 7px; }
+.hp-pcard-btn {
+  padding: 6px 12px; border-radius: 8px; border: 1px solid var(--gray-200);
+  background: var(--gray-50); font-size: 0.73rem; font-weight: 500; color: var(--gray-700);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.hp-pcard-btn:hover { background: #fff; border-color: var(--gray-400); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+/* ===== Practice Tiles (Healthy School Practices) ===== */
+.hp-practice-tiles {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+}
+.hp-practice-tile {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px; border-radius: 12px; border: 1px solid var(--gray-200);
+  background: #fff; cursor: pointer; transition: all 0.25s ease;
+  font-size: 0.92rem; font-weight: 600; color: var(--gray-800);
+}
+.hp-practice-tile:hover {
+  transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.1);
+}
+.hp-pt-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.hp-pt-label { font-family: var(--font-heading); }
+.hp-pt-arrow { font-size: 1rem; color: var(--gray-400); margin-left: 4px; transition: transform 0.2s; }
+.hp-practice-tile:hover .hp-pt-arrow { transform: translateX(3px); color: var(--gray-700); }
+
+/* Practice tile colors */
+.hp-practice-tile.hp-card-food { border-color: #FFE0B2; }
+.hp-practice-tile.hp-card-food .hp-pt-icon { background: #FFE0B2; }
+.hp-practice-tile.hp-card-food .hp-pt-label { color: #E65100; }
+.hp-practice-tile.hp-card-food:hover { border-color: #F57C00; background: #FFFAF3; }
+
+.hp-practice-tile.hp-card-active { border-color: #BBDEFB; }
+.hp-practice-tile.hp-card-active .hp-pt-icon { background: #BBDEFB; }
+.hp-practice-tile.hp-card-active .hp-pt-label { color: #0D47A1; }
+.hp-practice-tile.hp-card-active:hover { border-color: #1565C0; background: #F5F9FF; }
+
+.hp-practice-tile.hp-card-teacher { border-color: #E1BEE7; }
+.hp-practice-tile.hp-card-teacher .hp-pt-icon { background: #E1BEE7; }
+.hp-practice-tile.hp-card-teacher .hp-pt-label { color: #4A148C; }
+.hp-practice-tile.hp-card-teacher:hover { border-color: #7B1FA2; background: #FBF5FF; }
+
+.hp-practice-tile.hp-card-family { border-color: #B2DFDB; }
+.hp-practice-tile.hp-card-family .hp-pt-icon { background: #B2DFDB; }
+.hp-practice-tile.hp-card-family .hp-pt-label { color: #004D40; }
+.hp-practice-tile.hp-card-family:hover { border-color: #00897B; background: #F2FFFE; }
 
 /* ===== Practice Cards (Healthy School Practices) ===== */
 .hp-practice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -271,8 +426,19 @@
 /* ===== Footer ===== */
 .hp-footer { background: var(--gray-900); color: var(--gray-400); padding: 48px 0 24px; }
 .hp-footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 36px; }
-.hp-footer-brand .hp-footer-logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 8px; }
+.hp-footer-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.hp-footer-fff-logo { width: 70px; height: 70px; border-radius: 10px; object-fit: contain; }
+.hp-footer-brand .hp-footer-logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: #fff; }
 .hp-footer-brand p { font-size: 0.85rem; line-height: 1.7; margin: 0; }
+.hp-footer-link { color: #4CAF50; text-decoration: none; transition: color 0.2s; }
+.hp-footer-link:hover { color: #81C784; text-decoration: underline; }
+.hp-social-links { display: flex; gap: 12px; margin-top: 14px; }
+.hp-social-icon {
+  width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; background: rgba(255,255,255,.1); color: #9E9E9E;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.hp-social-icon:hover { background: rgba(255,255,255,.2); color: #fff; transform: translateY(-2px); }
 .hp-footer-col h4 { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
 .hp-footer-col ul li { margin-bottom: 8px; }
 .hp-footer-col ul li button { font-size: 0.85rem; color: var(--gray-400); transition: var(--transition); background: none; border: none; cursor: pointer; padding: 0; }
@@ -285,6 +451,7 @@
 @media (max-width: 1024px) {
   .hp-domain-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   .hp-practice-grid { grid-template-columns: repeat(2, 1fr); }
+  .hp-pcard-grid { grid-template-columns: repeat(2, 1fr); }
   .hp-two-col { grid-template-columns: 1fr; }
   .hp-footer-top { grid-template-columns: 1fr 1fr; }
   .hp-resource-grid { grid-template-columns: repeat(2, 1fr); }
@@ -296,13 +463,10 @@
   /* Navbar */
   .hp-nav-menu { display: none; }
   .hp-hamburger { display: block; }
-  .hp-nav-menu.open {
-    display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0;
-    background: #fff; padding: 16px; border-bottom: 1px solid var(--gray-200); box-shadow: var(--shadow-md);
-    z-index: 999;
-  }
-  .hp-nav-menu.open button { padding: 12px 16px; width: 100%; text-align: left; border-bottom: 1px solid var(--gray-100); }
-  .hp-nav-right .hp-lang-select { display: none; }
+  .hp-drawer-close { display: flex; }
+  .hp-drawer-overlay { display: block; }
+  .hp-drawer { display: flex; }
+  .hp-nav-right { display: none; }
   .hp-navbar .hp-container { height: 60px; }
   .hp-nav-logo .hp-logo-text small { display: none; }
 
@@ -327,6 +491,7 @@
   /* Practice cards */
   .hp-practice-grid { grid-template-columns: 1fr; }
   .hp-practice-card { min-height: auto; padding: 24px 20px 22px; }
+  .hp-pcard-grid { grid-template-columns: 1fr; }
 
   /* Two-col habit + dashboard */
   .hp-habit-panel { padding: 24px; }

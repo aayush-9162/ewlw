@@ -64,7 +64,10 @@ export default function App() {
     setScreen('panels');
   };
 
-  const openPractice = (key) => {
+  const [practiceScrollTo, setPracticeScrollTo] = useState(null);
+
+  const openPractice = (key, scrollTarget) => {
+    setPracticeScrollTo(scrollTarget || null);
     setScreen(key);
   };
 
@@ -104,16 +107,16 @@ export default function App() {
         />
       )}
       {screen === 'school-food' && (
-        <SchoolFoodPage onBack={backToHome} onNavigate={openPractice} />
+        <SchoolFoodPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
       )}
       {screen === 'active-schools' && (
-        <ActiveSchoolsPage onBack={backToHome} onNavigate={openPractice} />
+        <ActiveSchoolsPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
       )}
       {screen === 'teacher-engagement' && (
-        <TeacherEngagementPage onBack={backToHome} onNavigate={openPractice} />
+        <TeacherEngagementPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
       )}
       {screen === 'family-engagement' && (
-        <FamilyEngagementPage onBack={backToHome} onNavigate={openPractice} />
+        <FamilyEngagementPage onBack={backToHome} onNavigate={openPractice} scrollTo={practiceScrollTo} />
       )}
     </>
   );

@@ -119,12 +119,7 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
           <div className="sp-why-col">
             <div className="sp-why-box" onMouseLeave={() => setWhyExpanded(false)}>
               <span className="sp-why-label">Why This Habit Matters</span>
-              <span>{habit.why}</span>
-              {whyExpanded && habit.tips && (
-                <ul className="sp-why-tips">
-                  {habit.tips.slice(0, 3).map((t, i) => <li key={i}>{t}</li>)}
-                </ul>
-              )}
+              <span>{whyExpanded ? habit.why : (habit.whyShort || habit.why)}</span>
               <button className="sp-readmore" onClick={() => setWhyExpanded(e => !e)}>
                 {whyExpanded ? '\u2191 Less' : 'Read More \u2192'}
               </button>
@@ -170,9 +165,7 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
               bg="linear-gradient(135deg,#B8860B,#F0C850)"
               icon="&#x1F4DD;"
               title="Lesson Plans"
-
-              summary="Six conversation-based lessons (6–8 minutes each), ideally one per day."
-              detail={<ul><li>Teachers may cover more than one lesson in a day.</li><li>Not all lessons need to be taken up for lower classes.</li><li>As far as possible, all lessons for a habit should be conducted on consecutive days.</li></ul>}
+              summary=""
             />
             <div className="pcard-body">
               <div className="pcard-btns">
@@ -211,7 +204,6 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
               title="Additional Resources"
 
               summary="Relevant modules, activities, guidelines, and other materials linked to each habit are available here."
-              detail={<><p>Additional posters, images, and videos are also provided. These resources can support teachers, parents, and students in strengthening learning and encouraging the practice of healthy habits and skills.</p><ul><li><strong>SHWC:</strong> 11 modules with 5–6 activities in each module.</li><li><strong>DGI-2024:</strong> 17 national dietary guidelines.</li><li><strong>Eat Right Activity Book:</strong> Activities under 7 themes for primary, middle, and senior classes.</li><li><strong>FSSAI Yellow Books:</strong> Resource books for primary, middle, and senior classes.</li><li><strong>Other Resources:</strong> DART Book, Nutrition (Kitchen) Garden Guidelines, Lifestyle as Medicine.</li><li><strong>Additional Posters</strong></li><li><strong>Additional Videos</strong></li></ul></>}
             />
             <div className="pcard-body">
               <div className="pcard-btns">
@@ -219,26 +211,29 @@ export default function PanelGrid({ domain, cluster, habit, onBack, onOpenPanel,
                 {[2,4,9,10,12,14,17,18,20,21,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'dgi')}>&#x1F4D7; DGI-2024</button>}
                 {[1,2,4,6,12,16,17,18,19,20,31,32,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'fssai')}>&#x1F4D9; Eat Right Activity Book</button>}
                 {[1,2,4,5,6,8,9,10,12,17,18,20,21,32,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'yellow')}>&#x1F4D2; FSSAI Yellow Books</button>}
-                {[4,5,7,17,20,24,27,30,31,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4C2; Other Resources</button>}
+                {habit.n === 17 && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4D5; DART Book</button>}
+                {habit.n === 31 && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F33F; SNG Guidelines</button>}
+                {[4,5,7,20,24,27,30,35].includes(habit.n) && <button className="pcard-btn" onClick={() => onOpenPanel(3, 'other')}>&#x1F4D6; Lifestyle as Medicine</button>}
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'posters')}>&#x1F5BC; Additional Posters</button>
                 <button className="pcard-btn" onClick={() => onOpenPanel(3, 'videos')}>&#x1F3A5; Additional Videos</button>
               </div>
             </div>
           </div>
 
-          {/* Panel 5 — Feedback from Teachers */}
+          {/* Panel 5 — Feedback */}
           <div className="pcard" style={{ '--pcard-bg': '#F3E8FF', '--pcard-fg': '#6B21A8' }}>
             <PanelInfoThumb
               bg="linear-gradient(135deg,#7C3AED,#A78BFA)"
               icon="&#x1F4AC;"
-              title="Feedback from Teachers"
+              title="Feedback"
 
-              summary="Upload images, posters, videos, or reels to enrich the learning repository."
-              detail={<p>Teachers are encouraged to share classroom content related to the habit or skill. Such contributions help continuously enrich and update the learning resources over time.</p>}
+              summary="Share feedback on habit experience, platform flow, and suggestions to improve content quality."
             />
             <div className="pcard-body">
               <div className="pcard-btns">
-                <button className="pcard-btn" onClick={() => onOpenPanel(5, 'feedback')}>&#x1F4DD; Share Feedback</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(5, 'habit-feedback')}>&#x1F4DD; Teacher Feedback on Habit Completion</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(5, 'flow-feedback')}>&#x1F501; Feedback on Flow and Navigation</button>
+                <button className="pcard-btn" onClick={() => onOpenPanel(5, 'suggestions')}>&#x1F4A1; Suggestions for Improvement in Quality</button>
               </div>
             </div>
           </div>

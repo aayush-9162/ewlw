@@ -8,10 +8,30 @@ const DOMAINS = [
 ];
 
 const PRACTICES = [
-  { key: 'school-food', cls: 'hp-card-food', icon: '\uD83C\uDF5E', title: 'School Food Environment', items: ['Healthy tiffin guidance', 'Snack recommendations', 'School meal information', 'Food label learning tools'], btn: 'View Food Resources \u2192' },
-  { key: 'active-schools', cls: 'hp-card-active', icon: '\uD83C\uDFC3', title: 'Active Schools', items: ['Movement break videos', 'Stretching and yoga activities', 'Breathing and mindfulness exercises', 'Daily activity routine models'], btn: 'Start Activity \u2192' },
-  { key: 'teacher-engagement', cls: 'hp-card-teacher', icon: '\uD83D\uDCDA', title: 'Teacher Support', items: ['Classroom activity guides', 'Habit discussion prompts', 'Teacher training videos', 'Lesson integration ideas'], btn: 'Teacher Toolkit \u2192' },
-  { key: 'family-engagement', cls: 'hp-card-family', icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', title: 'Family Engagement', items: ['Healthy tiffin ideas', 'Parent guidance resources', 'Home habit challenges', 'Parent communication materials'], btn: 'Parent Resources \u2192' },
+  {
+    key: 'school-food', cls: 'hp-card-food', icon: '\uD83C\uDF5E', title: 'School Food Environment',
+    gradient: 'linear-gradient(135deg,#E65100,#FB923C)',
+    summary: 'Ensuring students eat safe, nutritious food and develop healthy eating habits.',
+    tabs: ['\uD83C\uDF72 School Meals', '\uD83C\uDF7D Meal Environment', '\uD83C\uDFEA Healthy Canteens', '\uD83D\uDCCA Visual Cues', '\u2705 Food Compliance'],
+  },
+  {
+    key: 'active-schools', cls: 'hp-card-active', icon: '\uD83C\uDFC3', title: 'Active Schools',
+    gradient: 'linear-gradient(135deg,#0D47A1,#42A5F5)',
+    summary: 'Integrating physical activity and wellbeing practices into the daily school routine.',
+    tabs: ['\uD83C\uDFC3 Movement Breaks', '\uD83E\uDDD8 Stretching & Yoga', '\uD83C\uDF2C\uFE0F Breathing & Mindfulness', '\uD83D\uDCC5 Daily Routines'],
+  },
+  {
+    key: 'teacher-engagement', cls: 'hp-card-teacher', icon: '\uD83D\uDCDA', title: 'Teacher Support',
+    gradient: 'linear-gradient(135deg,#4A148C,#AB47BC)',
+    summary: 'Supporting teachers to integrate healthy habits into everyday classroom learning.',
+    tabs: ['\uD83C\uDF93 Teacher Orientation', '\uD83D\uDCA1 Classroom Tips', '\uD83D\uDD2C Habits in Subjects', '\uD83D\uDCCA Assessment'],
+  },
+  {
+    key: 'family-engagement', cls: 'hp-card-family', icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', title: 'Family Engagement',
+    gradient: 'linear-gradient(135deg,#004D40,#26A69A)',
+    summary: 'Strengthening school-family collaboration to support healthy habits at home.',
+    tabs: ['\uD83C\uDF71 Healthy Tiffin', '\uD83E\uDD5C Healthy Snacks', '\uD83C\uDFE0 Beyond Classroom', '\uD83D\uDCE2 Communication'],
+  },
 ];
 
 const RESOURCES = [
@@ -47,48 +67,72 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
           <button className="hp-nav-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <img src="/ewlw_logo.png" alt="EWLW" className="hp-logo-icon" />
             <div className="hp-logo-text">
-              Eat Well &bull; Live Well
+              Eat Well. Live Well.
               <small>Healthy Habits for Schools</small>
             </div>
           </button>
 
-          <div className={`hp-nav-menu${menuOpen ? ' open' : ''}`}>
-            <button className="active" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</button>
+          <div className="hp-nav-menu">
+            <button className="active" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
             <button onClick={() => scrollTo('hp-about')}>About</button>
             <button onClick={() => scrollTo('hp-learning')}>Learning</button>
             <button onClick={() => scrollTo('hp-practices')}>Healthy School Practices</button>
             <button onClick={() => scrollTo('hp-resources')}>Resources</button>
           </div>
 
-          <div className="hp-nav-right">
-            <select className="hp-lang-select">
-              <option>English</option>
-              <option>Hindi</option>
-            </select>
-            <button className="hp-notif-btn">
-              &#x1F514;
-              <span className="hp-notif-badge">3</span>
-            </button>
-            <div className="hp-user-avatar">TP</div>
+          <div className="hp-nav-actions">
+            <div className="hp-nav-right">
+              <select className="hp-lang-select">
+                <option>English</option>
+                <option>Hindi</option>
+              </select>
+              <button className="hp-notif-btn">
+                &#x1F514;
+                <span className="hp-notif-badge">3</span>
+              </button>
+              <div className="hp-user-avatar">TP</div>
+            </div>
+            {!menuOpen && (
+              <button className="hp-hamburger" onClick={() => setMenuOpen(true)}>
+                <span></span><span></span><span></span>
+              </button>
+            )}
           </div>
-
-          <button className="hp-hamburger" onClick={() => setMenuOpen(m => !m)}>
-            <span></span><span></span><span></span>
-          </button>
         </div>
       </nav>
+
+      {/* Mobile Drawer Overlay + Close Button */}
+      {menuOpen && <div className="hp-drawer-overlay" onClick={() => setMenuOpen(false)} />}
+      {menuOpen && (
+        <button className="hp-drawer-close" onClick={() => setMenuOpen(false)}>
+          <span></span><span></span>
+        </button>
+      )}
+      <div className={`hp-drawer${menuOpen ? ' hp-drawer--open' : ''}`}>
+        <div className="hp-drawer-header">
+          <img src="/ewlw_logo.png" alt="EWLW" className="hp-drawer-logo" />
+          <span className="hp-drawer-title">Eat Well. Live Well.</span>
+        </div>
+        <nav className="hp-drawer-nav">
+          <button className="active" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</button>
+          <button onClick={() => scrollTo('hp-about')}>About</button>
+          <button onClick={() => scrollTo('hp-learning')}>Learning</button>
+          <button onClick={() => scrollTo('hp-practices')}>Healthy School Practices</button>
+          <button onClick={() => scrollTo('hp-resources')}>Resources</button>
+        </nav>
+        <div className="hp-drawer-footer">
+          <select className="hp-lang-select" style={{ width: '100%' }}>
+            <option>English</option>
+            <option>Hindi</option>
+          </select>
+        </div>
+      </div>
 
       {/* Welcome Banner */}
       <section className="hp-banner">
         <div className="hp-container">
-          <h1>Welcome to the Eat Well &bull; Live Well Platform</h1>
-          <p>Building healthy habits for lifelong well-being through everyday school practices.</p>
-          <div className="hp-quick-actions">
-            <button className="hp-btn hp-btn--primary" onClick={() => scrollTo('hp-learning')}>&#9654; Start a Habit Activity</button>
-            <button className="hp-btn hp-btn--outline">&#128218; View Today's Classroom Activity</button>
-            <button className="hp-btn hp-btn--outline" onClick={() => scrollTo('hp-resources')}>&#128269; Explore Resources</button>
-            <button className="hp-btn hp-btn--outline">&#128203; Record School Activities</button>
-          </div>
+          <h1>Welcome to the Eat Well. Live Well. Platform</h1>
+          <p style={{ maxWidth: 'none', textAlign: 'justify' }}>Building healthy habits for lifelong well-being through everyday school practices.</p>
         </div>
       </section>
 
@@ -121,65 +165,29 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
             <h2>Healthy School Practices</h2>
             <p>Whole-school implementation tools for creating healthier school environments.</p>
           </div>
-          <div className="hp-practice-grid">
+          <div className="hp-pcard-grid">
             {PRACTICES.map(p => (
-              <div key={p.key} className={`hp-practice-card ${p.cls}`} onClick={() => onOpenPractice(p.key)}>
-                <div className="hp-pc-icon">{p.icon}</div>
-                <h3>{p.title}</h3>
-                <ul>
-                  {p.items.map((item, i) => <li key={i}>{item}</li>)}
-                </ul>
-                <button className="hp-pc-btn">{p.btn}</button>
+              <div key={p.key} className="hp-pcard" onClick={() => onOpenPractice(p.key)}>
+                <div className="hp-pcard-header" style={{ background: p.gradient }}>
+                  <span className="hp-pcard-icon">{p.icon}</span>
+                  <span className="hp-pcard-title">{p.title}</span>
+                </div>
+                <div className="hp-pcard-body">
+                  <p className="hp-pcard-summary">{p.summary}</p>
+                  <div className="hp-pcard-btns">
+                    {p.tabs.map((tab, ti) => (
+                      <button key={ti} className="hp-pcard-btn" onClick={(e) => { e.stopPropagation(); onOpenPractice(p.key, ti + 1); }}>
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Today's Habit + Dashboard */}
-      <section className="hp-section">
-        <div className="hp-container">
-          <div className="hp-two-col">
-            <div className="hp-habit-panel">
-              <div className="hp-habit-badge">&#9733; Daily Focus</div>
-              <h3>Today's Habit</h3>
-              <div className="hp-habit-name">Often and Enough Water</div>
-              <ul className="hp-tips">
-                <li>Drink water regularly during the day</li>
-                <li>Carry a water bottle to school</li>
-              </ul>
-              <div className="hp-habit-actions">
-                <button className="hp-btn-sm hp-btn-blue">&#9654; Watch 1-min Video</button>
-                <button className="hp-btn-sm hp-btn-green">&#128221; Try Classroom Activity</button>
-                <button className="hp-btn-sm hp-btn-light">&#128172; Share with Parents</button>
-              </div>
-            </div>
-
-            <div className="hp-dashboard">
-              <h3>School Well-being Score</h3>
-              <div className="hp-panel-sub">For principals and school committees</div>
-              <div className="hp-score-display">
-                <div className="hp-score-num">78</div>
-                <div className="hp-score-label">
-                  <strong>Good Progress</strong>
-                  Based on 5 indicators this month
-                </div>
-              </div>
-              <ul className="hp-indicator-list">
-                <li>Participation in school meals<div className="hp-indicator-bar"><div className="hp-fill" style={{ width: '85%', background: '#2E7D32' }}></div></div></li>
-                <li>Healthy tiffin adoption<div className="hp-indicator-bar"><div className="hp-fill" style={{ width: '65%', background: '#F57C00' }}></div></div></li>
-                <li>Nutrition education sessions<div className="hp-indicator-bar"><div className="hp-fill" style={{ width: '90%', background: '#4CAF50' }}></div></div></li>
-                <li>Movement breaks conducted<div className="hp-indicator-bar"><div className="hp-fill" style={{ width: '72%', background: '#1565C0' }}></div></div></li>
-                <li>Parent engagement activities<div className="hp-indicator-bar"><div className="hp-fill" style={{ width: '55%', background: '#00897B' }}></div></div></li>
-              </ul>
-              <div className="hp-dashboard-actions">
-                <button className="hp-btn-sm hp-btn-green">&#128203; Record Activity</button>
-                <button className="hp-btn-sm hp-btn-light">&#128200; View Progress Report</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Resource Library */}
       <section className="hp-section" id="hp-resources">
@@ -232,9 +240,20 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
         <div className="hp-container">
           <div className="hp-footer-top">
             <div className="hp-footer-brand">
-              <div className="hp-footer-logo">Eat Well &bull; Live Well Digital Platform</div>
-              <p>An initiative developed by <strong>Food Future Foundation</strong>.<br />
+              <div className="hp-footer-logo-row">
+                <img src="/fff_logo.png" alt="FFF" className="hp-footer-fff-logo" />
+                <div className="hp-footer-logo">Eat Well. Live Well. Digital Platform</div>
+              </div>
+              <p>An initiative developed by <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-footer-link"><strong>Food Future Foundation</strong></a>.<br />
               Implemented in partnership with <strong>Directorate of Education, Government of Delhi</strong>.</p>
+              <div className="hp-social-links">
+                <a href="https://www.linkedin.com/company/food-future-foundation/" target="_blank" rel="noopener noreferrer" className="hp-social-icon" title="LinkedIn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/foodfuturefoundation/" target="_blank" rel="noopener noreferrer" className="hp-social-icon" title="Instagram">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </a>
+              </div>
             </div>
             <div className="hp-footer-col">
               <h4>Platform</h4>
@@ -265,9 +284,9 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
             </div>
           </div>
           <div className="hp-footer-bottom">
-            <span>&copy; 2026 Eat Well &bull; Live Well Programme. All rights reserved.</span>
+            <span>&copy; 2026 Eat Well. Live Well. Programme. All rights reserved.</span>
             <div className="hp-footer-partners">
-              <span className="hp-partner-badge">Food Future Foundation</span>
+              <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-partner-badge">Food Future Foundation</a>
               <span className="hp-partner-badge">Govt. of Delhi</span>
             </div>
           </div>

@@ -41,7 +41,7 @@
 .pp-hero p {
   font-size: 1.05rem;
   opacity: 0.92;
-  max-width: 680px;
+  max-width: none;
   line-height: 1.65;
   margin: 0;
 }
@@ -137,40 +137,45 @@
   margin-bottom: 28px;
 }
 .pp-tile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  justify-content: center;
 }
 .pp-tile {
   background: var(--pp-lighter);
   border: 1px solid var(--pp-border);
-  border-radius: var(--radius-md);
-  padding: 24px 20px;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
   text-align: center;
   cursor: pointer;
   transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .pp-tile:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
   border-color: var(--pp-color);
 }
 .pp-tile-icon {
-  width: 56px;
-  height: 56px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--pp-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 .pp-tile h4 {
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--pp-dark);
   margin: 0;
+  white-space: nowrap;
   font-family: var(--font-heading);
 }
 
@@ -237,12 +242,6 @@
   margin-bottom: 8px;
   font-size: 0.88rem;
   color: var(--gray-700);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.pp-resource-list ul li:hover {
-  border-color: var(--pp-color);
-  box-shadow: var(--shadow-sm);
 }
 .pp-res-bullet {
   width: 8px;
@@ -460,13 +459,54 @@
   box-shadow: var(--shadow-md);
 }
 
+/* ---------- Video Embed ---------- */
+.pp-video-embed {
+  position: relative; width: 100%; padding-top: 56.25%;
+  border-radius: var(--radius-md); overflow: hidden; margin-bottom: 14px;
+  background: #000;
+}
+.pp-video-embed iframe {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+}
+.pp-video-title {
+  font-size: 0.88rem; font-weight: 600; color: var(--gray-800); margin-bottom: 4px;
+}
+.pp-video-source {
+  font-size: 0.78rem; color: var(--gray-500); margin-bottom: 16px;
+}
+
+/* Info sections inside categories */
+.pp-info-section { margin-top: 20px; }
+.pp-info-section h4 {
+  font-size: 0.95rem; font-weight: 700; color: var(--pp-dark);
+  margin-bottom: 10px; font-family: var(--font-heading);
+}
+.pp-info-section p {
+  font-size: 0.88rem; color: var(--gray-600); line-height: 1.65; margin-bottom: 10px;
+}
+.pp-info-section ul { margin-bottom: 12px; }
+.pp-info-section ul li {
+  font-size: 0.88rem; color: var(--gray-600); padding: 3px 0; line-height: 1.55;
+}
+.pp-info-section ul li::before {
+  content: '\2022 '; color: var(--pp-color); font-weight: 700; margin-right: 6px;
+}
+.pp-routine-step {
+  display: flex; align-items: center; gap: 12px; padding: 8px 14px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-sm);
+  margin-bottom: 6px; font-size: 0.85rem; color: var(--gray-700);
+}
+.pp-routine-step strong {
+  color: var(--pp-dark); min-width: 90px;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
   .pp-cat-body {
     grid-template-columns: 1fr;
   }
   .pp-tile-grid {
-    grid-template-columns: repeat(2, 1fr);
+    justify-content: flex-start;
   }
   .pp-tools-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -489,8 +529,9 @@
 
   /* Tiles */
   .pp-tiles { padding: 36px 0 0; }
-  .pp-tile-grid { grid-template-columns: 1fr; gap: 12px; }
-  .pp-tile { padding: 18px 16px; }
+  .pp-tile-grid { flex-wrap: wrap; gap: 8px; }
+  .pp-tile { padding: 8px 14px; }
+  .pp-tile h4 { white-space: normal; }
 
   /* Categories */
   .pp-category { padding: 36px 0; }
@@ -527,6 +568,6 @@
   .pp-back-btn { padding: 6px 14px; font-size: 0.82rem; }
   .pp-cat-num { width: 40px; height: 40px; font-size: 1rem; }
   .pp-cat-header h3 { font-size: 1rem; }
-  .pp-tile-icon { width: 44px; height: 44px; font-size: 1.2rem; }
-  .pp-tile h4 { font-size: 0.85rem; }
+  .pp-tile-icon { width: 30px; height: 30px; font-size: 1rem; }
+  .pp-tile h4 { font-size: 0.78rem; }
 }
