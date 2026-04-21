@@ -7,6 +7,7 @@ import PanelGrid from './components/PanelGrid.jsx';
 import PanelContent from './components/PanelContent.jsx';
 import PracticeTiles from './components/PracticeTiles.jsx';
 import PracticeContentView from './components/PracticeContentView.jsx';
+import AboutPage from './components/AboutPage.jsx';
 import { DOMAINS } from './data/domains.js';
 
 export default function App() {
@@ -68,6 +69,8 @@ export default function App() {
         setCurrentPractice(s.practiceKey);
         setCurrentPracticeTile(s.practiceTile);
         setScreen('practice-content');
+      } else if (s.screen === 'about') {
+        setScreen('about');
       } else {
         setScreen('home');
       }
@@ -83,6 +86,11 @@ export default function App() {
   const goHome = () => {
     setScreen('home');
     window.history.pushState({ screen: 'home' }, '');
+  };
+
+  const openAbout = () => {
+    setScreen('about');
+    window.history.pushState({ screen: 'about' }, '');
   };
 
   // ── Domain / Habit flow ──
@@ -150,7 +158,7 @@ export default function App() {
   return (
     <>
       {screen === 'home' && (
-        <Homepage onOpenDomain={openDomain} onOpenPractice={openPractice} />
+        <Homepage onOpenDomain={openDomain} onOpenPractice={openPractice} onOpenAbout={openAbout} />
       )}
       {['habits', 'panels', 'content'].includes(screen) && (
         <Header showFaqBtn={false} />
@@ -198,6 +206,14 @@ export default function App() {
           onBack={goBack}
           onBackToHome={goHome}
           onNavigate={openPractice}
+        />
+      )}
+      {screen === 'about' && (
+        <AboutPage
+          onBack={goBack}
+          onGoHome={goHome}
+          onOpenDomain={openDomain}
+          onOpenPractice={openPractice}
         />
       )}
     </>

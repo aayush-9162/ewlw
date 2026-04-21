@@ -60,6 +60,27 @@ export const PRACTICES_DATA = {
     ],
     footerHighlight: { label: 'Teacher Support', color: '#7B1FA2' },
   },
+  'whole-school': {
+    style: {
+      '--pp-color': '#3949AB',
+      '--pp-light': '#E8EAF6',
+      '--pp-lighter': '#F5F6FF',
+      '--pp-border': '#C5CAE9',
+      '--pp-dark': '#1A237E',
+      '--pp-gradient': 'linear-gradient(135deg, #1A237E 0%, #3949AB 40%, #5C6BC0 100%)',
+    },
+    heroIcon: '\uD83C\uDFEB',
+    heroTitle: 'Whole-of-School Approach',
+    heroDesc: 'Healthy schools require the participation of the entire school community. The Whole-of-School Approach ensures that school leadership, teachers, students, parents and staff work together to build a culture that promotes healthy living and well-being.',
+    tiles: [
+      { icon: '\uD83D\uDC54', label: 'School Leadership', bg: '#E8EAF6', border: '#9FA8DA', iconBg: '#3949AB' },
+      { icon: '\uD83D\uDC65', label: 'School Well-being Committee', bg: '#FFF3E0', border: '#FFB74D', iconBg: '#EF6C00' },
+      { icon: '\uD83D\uDCCA', label: 'School Well-being Score', bg: '#E8F5E9', border: '#81C784', iconBg: '#2E7D32' },
+      { icon: '\uD83D\uDCCB', label: 'Monitoring and Reporting', bg: '#FCE4EC', border: '#F48FB1', iconBg: '#C2185B' },
+      { icon: '\uD83D\uDCC8', label: 'Impact Insights', bg: '#F3E5F5', border: '#CE93D8', iconBg: '#7B1FA2' },
+    ],
+    footerHighlight: { label: 'Whole-of-School', color: '#3949AB' },
+  },
   'family-engagement': {
     style: {
       '--pp-color': '#00897B',

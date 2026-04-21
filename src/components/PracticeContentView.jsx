@@ -16,7 +16,7 @@ function SchoolFoodContent({ idx }) {
         </div>
         <div className="pp-cat-body">
           <div className="pp-resource-list">
-            <h4>Resources</h4>
+            <h4>Key Practices</h4>
             <ul>
               <li><span className="pp-res-bullet"></span>Strengthen quality, acceptance, and nutritional value of school meals</li>
               <li><span className="pp-res-bullet"></span>Monitor quality, menu balance, hygiene, and portion sizes</li>
@@ -81,13 +81,13 @@ function SchoolFoodContent({ idx }) {
         </div>
         <div className="pp-cat-body">
           <div className="pp-resource-list">
-            <h4>Resources</h4>
+            <h4>Key Practices</h4>
             <ul>
               <li><span className="pp-res-bullet"></span>Promote fresh, home-style, and nutritious foods</li>
               <li><span className="pp-res-bullet"></span>Ensure safe preparation and clean serving</li>
               <li><span className="pp-res-bullet"></span>Reduce high-fat, high-sugar, and processed foods</li>
             </ul>
-            <h4 style={{ marginTop: 18 }}>Additional Resources</h4>
+            <h4 style={{ marginTop: 18 }}>Resources</h4>
             <ul>
               <li><span className="pp-res-bullet"></span>Healthy Canteen Menu Examples</li>
               <li><span className="pp-res-bullet"></span>Foods to Encourage</li>
@@ -750,6 +750,191 @@ function FamilyContent({ idx }) {
   return null;
 }
 
+/* ─── Whole-of-School Approach content ─── */
+function WholeSchoolContent({ idx }) {
+  if (idx === 0) return (
+    <section className="pp-category">
+      <div className="hp-container">
+        <div className="pp-cat-header">
+          <div className="pp-cat-num">1</div>
+          <div>
+            <h3>School Leadership</h3>
+            <p>School leadership plays a key role in driving well-being initiatives.</p>
+          </div>
+        </div>
+        <div className="pp-cat-body">
+          <div className="pp-resource-list">
+            <h4>Leadership Responsibilities</h4>
+            <p style={{ fontSize: '0.88rem', color: '#616161', lineHeight: 1.65, marginBottom: 14 }}>
+              Principals and school leaders create policies, enable resources, and encourage participation in healthy school practices.
+            </p>
+            <h4>Leadership Actions</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Integrating well-being into school priorities</li>
+              <li><span className="pp-res-bullet"></span>Supporting teachers in implementing habit-based learning</li>
+              <li><span className="pp-res-bullet"></span>Encouraging active school routines</li>
+              <li><span className="pp-res-bullet"></span>Promoting healthy food environments</li>
+            </ul>
+          </div>
+          <div className="pp-example-card">
+            <div className="pp-ex-badge">&#128218; Resources</div>
+            <h4>Leadership Resources</h4>
+            <ul>
+              <li>Digital Platform</li>
+              <li>Poster (&amp; Things to do)</li>
+              <li>Global Good Practices</li>
+              <li>Additional Learning Resources</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (idx === 1) return (
+    <section className="pp-category">
+      <div className="hp-container">
+        <div className="pp-cat-header">
+          <div className="pp-cat-num">2</div>
+          <div>
+            <h3>School Well-being Committee</h3>
+            <p>Schools can establish a School Well-being Committee to guide programme implementation.</p>
+          </div>
+        </div>
+        <div className="pp-cat-body">
+          <div className="pp-resource-list">
+            <p style={{ fontSize: '0.88rem', color: '#616161', lineHeight: 1.65, marginBottom: 14 }}>
+              The committee helps coordinate activities and ensure that well-being practices are implemented across the school.
+            </p>
+            <h4>Suggested Members</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>School Principal or Vice Principal</li>
+              <li><span className="pp-res-bullet"></span>Teachers (Health / Science / Sports)</li>
+              <li><span className="pp-res-bullet"></span>Student representatives</li>
+              <li><span className="pp-res-bullet"></span>Parent representatives</li>
+              <li><span className="pp-res-bullet"></span>School health personnel</li>
+            </ul>
+            <h4 style={{ marginTop: 18 }}>Key Functions</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Plan school well-being activities</li>
+              <li><span className="pp-res-bullet"></span>Support healthy school initiatives</li>
+              <li><span className="pp-res-bullet"></span>Coordinate awareness campaigns</li>
+              <li><span className="pp-res-bullet"></span>Review progress and improvements</li>
+            </ul>
+          </div>
+          <div className="pp-example-card">
+            <div className="pp-ex-badge">&#128218; Toolkit</div>
+            <h4>Committee Toolkit</h4>
+            <p>A structured set of resources to help schools set up and run their Well-being Committee effectively.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (idx === 2) return (
+    <section className="pp-category">
+      <div className="hp-container">
+        <div className="pp-cat-header">
+          <div className="pp-cat-num">3</div>
+          <div>
+            <h3>School Well-being Score</h3>
+            <p>The School Well-being Score helps schools track their progress in implementing healthy school practices.</p>
+          </div>
+        </div>
+        <div className="pp-cat-body">
+          <div className="pp-resource-list">
+            <h4>The score is based on indicators such as:</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Healthy food environment practices</li>
+              <li><span className="pp-res-bullet"></span>Nutrition and well-being activities</li>
+              <li><span className="pp-res-bullet"></span>Physical activity opportunities</li>
+              <li><span className="pp-res-bullet"></span>Student participation in habit activities</li>
+              <li><span className="pp-res-bullet"></span>Parent engagement initiatives</li>
+            </ul>
+            <h4 style={{ marginTop: 18 }}>Schools Can View</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Current well-being score</li>
+              <li><span className="pp-res-bullet"></span>Monthly progress</li>
+              <li><span className="pp-res-bullet"></span>Improvements over time</li>
+            </ul>
+          </div>
+          <div className="pp-example-card">
+            <div className="pp-ex-badge">&#128202; Dashboard</div>
+            <h4>View School Score</h4>
+            <p>Access the School Well-being Score dashboard to see your school's current standing and track improvements month over month.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (idx === 3) return (
+    <section className="pp-category">
+      <div className="hp-container">
+        <div className="pp-cat-header">
+          <div className="pp-cat-num">4</div>
+          <div>
+            <h3>Monitoring and Reporting</h3>
+            <p>Schools can record and track the well-being activities conducted across the school.</p>
+          </div>
+        </div>
+        <div className="pp-cat-body">
+          <div className="pp-resource-list">
+            <h4>Monitoring Tools Allow Schools To</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Record classroom and school-level activities</li>
+              <li><span className="pp-res-bullet"></span>Track implementation of healthy practices</li>
+              <li><span className="pp-res-bullet"></span>Review participation levels</li>
+              <li><span className="pp-res-bullet"></span>Identify areas for improvement</li>
+            </ul>
+          </div>
+          <div className="pp-example-card">
+            <div className="pp-ex-badge">&#128221; Activity Log</div>
+            <h4>Record School Activity</h4>
+            <p>Use the school activity recording tool to log healthy practices, programmes, and engagement activities happening across your school.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  if (idx === 4) return (
+    <section className="pp-category">
+      <div className="hp-container">
+        <div className="pp-cat-header">
+          <div className="pp-cat-num">5</div>
+          <div>
+            <h3>Impact Insights</h3>
+            <p>This section helps schools understand the impact of well-being initiatives.</p>
+          </div>
+        </div>
+        <div className="pp-cat-body">
+          <div className="pp-resource-list">
+            <h4>Insights May Include</h4>
+            <ul>
+              <li><span className="pp-res-bullet"></span>Student engagement in habit learning</li>
+              <li><span className="pp-res-bullet"></span>Participation in health and activity programmes</li>
+              <li><span className="pp-res-bullet"></span>Improvements in school practices</li>
+              <li><span className="pp-res-bullet"></span>Progress in the school well-being score</li>
+            </ul>
+            <p style={{ fontSize: '0.88rem', color: '#616161', lineHeight: 1.65, marginTop: 14 }}>
+              These insights support schools in strengthening their well-being initiatives and planning future actions.
+            </p>
+          </div>
+          <div className="pp-example-card">
+            <div className="pp-ex-badge">&#128200; Insights</div>
+            <h4>View Impact Insights</h4>
+            <p>Explore insights that show how well-being initiatives are shaping student learning, participation, and overall school practices over time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
+  return null;
+}
+
 /* ─── Main Component ─── */
 export default function PracticeContentView({ practiceKey, tileIndex, onBack, onNavigate, onBackToHome }) {
   const practice = PRACTICES_DATA[practiceKey];
@@ -801,6 +986,7 @@ export default function PracticeContentView({ practiceKey, tileIndex, onBack, on
       {practiceKey === 'active-schools' && <ActiveSchoolsContent idx={tileIndex} />}
       {practiceKey === 'teacher-engagement' && <TeacherContent idx={tileIndex} />}
       {practiceKey === 'family-engagement' && <FamilyContent idx={tileIndex} />}
+      {practiceKey === 'whole-school' && <WholeSchoolContent idx={tileIndex} />}
 
       {/* Footer */}
       <footer className="hp-footer">
@@ -808,11 +994,9 @@ export default function PracticeContentView({ practiceKey, tileIndex, onBack, on
           <div className="hp-footer-top">
             <div className="hp-footer-brand">
               <div className="hp-footer-logo-row">
-                <img src="/fff_logo.png" alt="FFF" className="hp-footer-fff-logo" />
                 <div className="hp-footer-logo">Eat Well. Live Well. Digital Platform</div>
               </div>
-              <p>An initiative developed by <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-footer-link"><strong>Food Future Foundation</strong></a>.<br />
-              Implemented in partnership with <strong>Directorate of Education, Government of Delhi</strong>.</p>
+              <p>An initiative Implemented by <strong>CM Shri Schools education<br /><img src="/delhi_gov_logo.png" alt="Govt of NCT Delhi" className="hp-footer-inline-logo" /> Department, Government of NCT of Delhi</strong><span className="hp-footer-support">with support of <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-footer-link"><strong>Food Future Foundation</strong></a>.</span></p>
               <div className="hp-social-links">
                 <a href="https://www.linkedin.com/company/food-future-foundation/" target="_blank" rel="noopener noreferrer" className="hp-social-icon" title="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
                 <a href="https://www.instagram.com/foodfuturefoundation/" target="_blank" rel="noopener noreferrer" className="hp-social-icon" title="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
@@ -834,6 +1018,7 @@ export default function PracticeContentView({ practiceKey, tileIndex, onBack, on
                 <li><button style={practiceKey === 'active-schools' ? { fontWeight: 700, color: practice.footerHighlight.color } : {}} onClick={() => practiceKey !== 'active-schools' && onNavigate && onNavigate('active-schools')}>Active Schools</button></li>
                 <li><button style={practiceKey === 'teacher-engagement' ? { fontWeight: 700, color: practice.footerHighlight.color } : {}} onClick={() => practiceKey !== 'teacher-engagement' && onNavigate && onNavigate('teacher-engagement')}>Teacher Support</button></li>
                 <li><button style={practiceKey === 'family-engagement' ? { fontWeight: 700, color: practice.footerHighlight.color } : {}} onClick={() => practiceKey !== 'family-engagement' && onNavigate && onNavigate('family-engagement')}>Family Engagement</button></li>
+                <li><button style={practiceKey === 'whole-school' ? { fontWeight: 700, color: practice.footerHighlight.color } : {}} onClick={() => practiceKey !== 'whole-school' && onNavigate && onNavigate('whole-school')}>Whole-of-School</button></li>
               </ul>
             </div>
             <div className="hp-footer-col">
@@ -849,8 +1034,8 @@ export default function PracticeContentView({ practiceKey, tileIndex, onBack, on
           <div className="hp-footer-bottom">
             <span>&copy; 2026 Eat Well. Live Well. Programme. All rights reserved.</span>
             <div className="hp-footer-partners">
-              <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-partner-badge">Food Future Foundation</a>
               <span className="hp-partner-badge">Govt. of Delhi</span>
+              <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-partner-badge">Food Future Foundation</a>
             </div>
           </div>
         </div>

@@ -165,9 +165,11 @@ export function loadDgiGuideline(guidelineNum) {
 const TLR_POSTER_MAP = {
   1: [0, 1],       // Habit 2: pages 0-1
   5: [2],           // Habit 6: page 2
+  6: [13],          // Habit 7: page 13
   9: [3, 4, 5],     // Habit 10: pages 3-5
   11: [6, 7],       // Habit 12: pages 6-7
-  12: [8, 9],       // Habit 13: pages 8-9
+  12: [8, 9, 14],   // Habit 13: pages 8-9, 14
+  16: [15],         // Habit 17: page 15
   18: [10, 11],     // Habit 19: pages 10-11
   19: [12],         // Habit 20: page 12
 };

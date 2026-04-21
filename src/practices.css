@@ -660,3 +660,154 @@
   .pp-tile-icon { width: 30px; height: 30px; font-size: 1rem; }
   .pp-tile h4 { font-size: 0.78rem; }
 }
+
+/* ===== About Page ===== */
+.about-section {
+  margin-bottom: 48px;
+}
+.about-heading {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #2E7D32;
+  display: inline-block;
+}
+.about-text {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--gray-700);
+  margin-bottom: 14px;
+}
+
+/* Domain cards in About */
+.about-domains {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+.about-domain-card {
+  border-radius: var(--radius-md);
+  padding: 28px 24px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.about-domain-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.about-domain-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 12px;
+}
+.about-domain-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.about-domain-card p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  opacity: 0.92;
+}
+
+/* Features list */
+.about-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.about-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: var(--transition);
+}
+.about-feature:hover {
+  border-color: #2E7D32;
+  box-shadow: var(--shadow-sm);
+}
+.about-feature-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #E8F5E9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-feature h4 {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+.about-feature p {
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  line-height: 1.55;
+}
+
+/* FFF card */
+.about-fff-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  background: #F1F8E9;
+  border: 1px solid #C8E6C9;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-top: 16px;
+}
+.about-fff-logo {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+.about-fff-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 24px;
+  background: #2E7D32;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+.about-fff-link:hover {
+  background: #1B5E20;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* About responsive */
+@media (max-width: 768px) {
+  .about-domains { grid-template-columns: 1fr; }
+  .about-fff-card { flex-direction: column; align-items: center; text-align: center; padding: 24px 20px; }
+  .about-fff-logo { width: 60px; }
+  .about-heading { font-size: 1.2rem; }
+  .about-feature { flex-direction: column; align-items: center; text-align: center; }
+}

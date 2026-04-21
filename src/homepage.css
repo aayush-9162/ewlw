@@ -181,7 +181,16 @@
 }
 .hp-banner .hp-container { position: relative; z-index: 1; }
 .hp-banner h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 12px; }
-.hp-banner p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin-bottom: 30px; }
+.hp-banner p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin-bottom: 0; }
+.hp-banner-row { display: flex; align-items: center; gap: 28px; text-align: left; }
+.hp-banner-logo-big {
+  width: 100px; height: 100px; border-radius: 12px; background: #fff; padding: 6px;
+  flex-shrink: 0; object-fit: contain; box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+.hp-banner-text { flex: 1; }
+.hp-banner-text h1 { margin-bottom: 10px; }
+.hp-banner-desc { font-size: 1.1rem; opacity: 0.9; margin-bottom: 10px; max-width: none; white-space: nowrap; }
+.hp-banner p.hp-banner-support { font-size: 0.85rem; font-weight: 400; opacity: 0.45; margin-top: 18px; margin-bottom: 0; max-width: none; }
 .hp-quick-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 .hp-btn {
   padding: 10px 20px; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600;
@@ -212,6 +221,32 @@
 .hp-domain-personal { background: linear-gradient(135deg, #E8733A 0%, #D4574A 50%, #C0392B 100%); }
 .hp-domain-social { background: linear-gradient(135deg, #C0459B 0%, #9B59B6 50%, #8E44AD 100%); }
 .hp-domain-planetary { background: linear-gradient(135deg, #1ABC9C 0%, #16A085 50%, #0E8A72 100%); }
+.hp-practice-food { background: linear-gradient(135deg, #E65100 0%, #F57C00 50%, #FB8C00 100%); }
+.hp-practice-active { background: linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #1E88E5 100%); }
+.hp-practice-teacher { background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 50%, #9C27B0 100%); }
+.hp-practice-family { background: linear-gradient(135deg, #004D40 0%, #00897B 50%, #26A69A 100%); }
+.hp-practice-whole { background: linear-gradient(135deg, #1A237E 0%, #3949AB 50%, #5C6BC0 100%); }
+.hp-practice-grid-4 { grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.hp-practice-grid-4 .hp-domain-card { min-height: 240px; padding: 22px 18px 18px; }
+.hp-practice-grid-4 .hp-d-title { font-size: 1.1rem; margin-bottom: 8px; }
+.hp-practice-grid-4 .hp-d-desc { font-size: 0.8rem; line-height: 1.45; margin-bottom: auto; }
+.hp-practice-grid-4 .hp-d-badge { font-size: 0.7rem; padding: 5px 12px; margin-top: 14px; align-self: flex-start; }
+.hp-practice-grid-4 .hp-d-icon-wrap { width: 54px; height: 54px; margin-bottom: 14px; }
+.hp-practice-grid-4 .hp-d-icon { font-size: 1.5rem; }
+.hp-practice-grid-4 .hp-d-arrow { width: 32px; height: 32px; top: 20px; right: 18px; font-size: 0.9rem; }
+.hp-res-videos { background: linear-gradient(135deg, #C62828 0%, #E53935 50%, #EF5350 100%); }
+.hp-res-cards { background: linear-gradient(135deg, #1565C0 0%, #1E88E5 50%, #42A5F5 100%); }
+.hp-res-posters { background: linear-gradient(135deg, #E65100 0%, #F57C00 50%, #FF9800 100%); }
+.hp-res-guides { background: linear-gradient(135deg, #6A1B9A 0%, #8E24AA 50%, #AB47BC 100%); }
+.hp-res-parents { background: linear-gradient(135deg, #00695C 0%, #00897B 50%, #26A69A 100%); }
+.hp-resource-grid-5 { grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.hp-resource-grid-5 .hp-domain-card { min-height: 240px; padding: 22px 18px 18px; }
+.hp-resource-grid-5 .hp-d-title { font-size: 1.1rem; margin-bottom: 8px; }
+.hp-resource-grid-5 .hp-d-desc { font-size: 0.8rem; line-height: 1.45; margin-bottom: auto; }
+.hp-resource-grid-5 .hp-d-icon-wrap { width: 54px; height: 54px; margin-bottom: 14px; }
+.hp-resource-grid-5 .hp-d-icon { font-size: 1.5rem; }
+.hp-resource-grid-5 .hp-d-arrow { width: 32px; height: 32px; top: 20px; right: 18px; font-size: 0.9rem; }
+.hp-resource-grid-5 .hp-d-badge { font-size: 0.7rem; padding: 5px 12px; margin-top: 14px; align-self: flex-start; }
 .hp-d-icon-wrap {
   width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2);
   backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center;
@@ -431,8 +466,10 @@
 .hp-footer-brand .hp-footer-logo { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: #fff; }
 .hp-footer-brand p { font-size: 0.85rem; line-height: 1.7; margin: 0; }
 .hp-footer-link { color: #4CAF50; text-decoration: none; transition: color 0.2s; }
+.hp-footer-inline-logo { height: 28px; width: auto; vertical-align: middle; margin: 0 4px; background: #fff; border-radius: 4px; padding: 2px; display: inline-block; }
+.hp-footer-brand p .hp-footer-support { display: block !important; margin-top: 6px !important; margin-left: 30px !important; padding-left: 0 !important; font-size: 0.82rem !important; }
 .hp-footer-link:hover { color: #81C784; text-decoration: underline; }
-.hp-social-links { display: flex; gap: 12px; margin-top: 14px; }
+.hp-social-links { display: flex; gap: 12px; margin-top: 36px; }
 .hp-social-icon {
   width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
   justify-content: center; background: rgba(255,255,255,.1); color: #9E9E9E;
@@ -450,6 +487,8 @@
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .hp-domain-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .hp-practice-grid-4 { grid-template-columns: repeat(3, 1fr); max-width: none; }
+  .hp-resource-grid-5 { grid-template-columns: repeat(3, 1fr); max-width: none; }
   .hp-practice-grid { grid-template-columns: repeat(2, 1fr); }
   .hp-pcard-grid { grid-template-columns: repeat(2, 1fr); }
   .hp-two-col { grid-template-columns: 1fr; }
@@ -474,6 +513,11 @@
   .hp-banner { padding: 40px 0; }
   .hp-banner h1 { font-size: 1.5rem; }
   .hp-banner p { font-size: 0.95rem; margin-bottom: 20px; }
+  .hp-banner-row { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .hp-banner-text { text-align: center; }
+  .hp-banner-logo-big { width: 90px; height: 90px; }
+  .hp-banner-desc { font-size: 0.95rem; white-space: normal; }
+  .hp-banner-support { font-size: 0.95rem; }
   .hp-quick-actions { flex-direction: column; }
   .hp-quick-actions .hp-btn { width: 100%; justify-content: center; }
 
@@ -487,6 +531,8 @@
   .hp-d-title { font-size: 1.25rem; }
   .hp-d-icon-wrap { width: 60px; height: 60px; margin-bottom: 14px; }
   .hp-d-icon { font-size: 1.6rem; }
+  .hp-practice-grid-4 { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .hp-resource-grid-5 { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
 
   /* Practice cards */
   .hp-practice-grid { grid-template-columns: 1fr; }

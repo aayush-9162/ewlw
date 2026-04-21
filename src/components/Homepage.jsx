@@ -9,37 +9,38 @@ const DOMAINS = [
 
 const PRACTICES = [
   {
-    key: 'school-food', cls: 'hp-card-food', icon: '\uD83C\uDF5E', title: 'School Food Environment',
-    gradient: 'linear-gradient(135deg,#E65100,#FB923C)',
+    key: 'school-food', cls: 'hp-practice-food', icon: '\uD83C\uDF5E', title: 'School Food Environment',
     summary: 'Ensuring students eat safe, nutritious food and develop healthy eating habits.',
-    tabs: ['\uD83C\uDF72 School Meals', '\uD83C\uDF7D Meal Environment', '\uD83C\uDFEA Healthy Canteens', '\uD83D\uDCCA Visual Cues', '\u2705 Food Compliance'],
+    badge: '5 Topics',
   },
   {
-    key: 'active-schools', cls: 'hp-card-active', icon: '\uD83C\uDFC3', title: 'Active Schools',
-    gradient: 'linear-gradient(135deg,#0D47A1,#42A5F5)',
+    key: 'active-schools', cls: 'hp-practice-active', icon: '\uD83C\uDFC3', title: 'Active Schools',
     summary: 'Integrating physical activity and wellbeing practices into the daily school routine.',
-    tabs: ['\uD83C\uDFC3 Movement Breaks', '\uD83E\uDDD8 Stretching & Yoga', '\uD83C\uDF2C\uFE0F Breathing & Mindfulness', '\uD83D\uDCC5 Daily Routines'],
+    badge: '4 Topics',
   },
   {
-    key: 'teacher-engagement', cls: 'hp-card-teacher', icon: '\uD83D\uDCDA', title: 'Teacher Support',
-    gradient: 'linear-gradient(135deg,#4A148C,#AB47BC)',
+    key: 'teacher-engagement', cls: 'hp-practice-teacher', icon: '\uD83D\uDCDA', title: 'Teacher Support',
     summary: 'Supporting teachers to integrate healthy habits into everyday classroom learning.',
-    tabs: ['\uD83C\uDF93 Teacher Orientation', '\uD83D\uDCA1 Classroom Tips', '\uD83D\uDD2C Habits in Subjects', '\uD83D\uDCCA Assessment'],
+    badge: '4 Topics',
   },
   {
-    key: 'family-engagement', cls: 'hp-card-family', icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', title: 'Family Engagement',
-    gradient: 'linear-gradient(135deg,#004D40,#26A69A)',
+    key: 'family-engagement', cls: 'hp-practice-family', icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', title: 'Family Engagement',
     summary: 'Strengthening school-family collaboration to support healthy habits at home.',
-    tabs: ['\uD83C\uDF71 Healthy Tiffin', '\uD83E\uDD5C Healthy Snacks', '\uD83C\uDFE0 Beyond Classroom', '\uD83D\uDCE2 Communication'],
+    badge: '4 Topics',
+  },
+  {
+    key: 'whole-school', cls: 'hp-practice-whole', icon: '\uD83C\uDFEB', title: 'Whole-of-School Approach',
+    summary: 'Bringing leadership, teachers, students, and families together to build a culture of well-being.',
+    badge: '5 Topics',
   },
 ];
 
 const RESOURCES = [
-  { icon: '\uD83C\uDFA5', bg: '#FFEBEE', title: 'Movement Break Videos', sub: '12 videos \u00B7 1-3 mins each' },
-  { icon: '\uD83C\uDFB2', bg: '#E3F2FD', title: 'Classroom Activity Cards', sub: '24 printable cards' },
-  { icon: '\uD83D\uDDBC', bg: '#FFF3E0', title: 'Posters & Visual Materials', sub: '15 downloadable posters' },
-  { icon: '\uD83D\uDCD6', bg: '#F3E5F5', title: 'Teacher Guides', sub: '8 comprehensive guides' },
-  { icon: '\uD83D\uDCC4', bg: '#E0F2F1', title: 'Parent Information Sheets', sub: '10 bilingual handouts' },
+  { key: 'videos', cls: 'hp-res-videos', icon: '\uD83C\uDFA5', title: 'Videos', desc: 'Movement break videos, classroom activity videos, and more.', badge: '12 Videos' },
+  { key: 'activity-cards', cls: 'hp-res-cards', icon: '\uD83C\uDFB2', title: 'Classroom Activity Cards', desc: 'Printable activity cards for classroom engagement and learning.', badge: '24 Cards' },
+  { key: 'posters', cls: 'hp-res-posters', icon: '\uD83D\uDDBC\uFE0F', title: 'Posters & Visual Materials', desc: 'Downloadable posters and visual aids for schools.', badge: '15 Posters' },
+  { key: 'guides', cls: 'hp-res-guides', icon: '\uD83D\uDCD6', title: 'Teacher Guides', desc: 'Comprehensive guides to support teachers in the classroom.', badge: '8 Guides' },
+  { key: 'parent-sheets', cls: 'hp-res-parents', icon: '\uD83D\uDCC4', title: 'Parent Information Sheets', desc: 'Bilingual handouts for families to support healthy habits at home.', badge: '10 Handouts' },
 ];
 
 const ANNOUNCEMENTS = [
@@ -48,11 +49,8 @@ const ANNOUNCEMENTS = [
   { text: 'Healthy tiffin campaign week \u2014 Starting April 21 across all schools', date: 'Apr 5, 2026', color: '#1565C0' },
 ];
 
-const TAGS = ['All', 'Videos', 'Classroom Activity Cards', 'Posters and Visual Materials', 'Teacher Guides', 'Parent Information Sheets'];
-
-export default function Homepage({ onOpenDomain, onOpenPractice }) {
+export default function Homepage({ onOpenDomain, onOpenPractice, onOpenAbout }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeTag, setActiveTag] = useState('All');
 
   const scrollTo = (id) => {
     setMenuOpen(false);
@@ -74,7 +72,7 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
 
           <div className="hp-nav-menu">
             <button className="active" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
-            <button onClick={() => scrollTo('hp-about')}>About</button>
+            <button onClick={() => onOpenAbout()}>About</button>
             <button onClick={() => scrollTo('hp-learning')}>Learning</button>
             <button onClick={() => scrollTo('hp-practices')}>Healthy School Practices</button>
             <button onClick={() => scrollTo('hp-resources')}>Resources</button>
@@ -115,7 +113,7 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
         </div>
         <nav className="hp-drawer-nav">
           <button className="active" onClick={() => { setMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>Home</button>
-          <button onClick={() => scrollTo('hp-about')}>About</button>
+          <button onClick={() => onOpenAbout()}>About</button>
           <button onClick={() => scrollTo('hp-learning')}>Learning</button>
           <button onClick={() => scrollTo('hp-practices')}>Healthy School Practices</button>
           <button onClick={() => scrollTo('hp-resources')}>Resources</button>
@@ -131,8 +129,14 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
       {/* Welcome Banner */}
       <section className="hp-banner">
         <div className="hp-container">
-          <h1>Welcome to the Eat Well. Live Well. Platform</h1>
-          <p style={{ maxWidth: 'none', textAlign: 'justify' }}>Building healthy habits for lifelong well-being through everyday school practices.</p>
+          <div className="hp-banner-row">
+            <img src="/cm_shri_logo.png" alt="CM Shri School" className="hp-banner-logo-big" />
+            <div className="hp-banner-text">
+              <h1>Welcome to the Eat Well. Live Well. Platform</h1>
+              <p className="hp-banner-desc">Building healthy habits for lifelong well-being through everyday school practices.</p>
+            </div>
+          </div>
+          <p className="hp-banner-support">Supported by Food Future Foundation</p>
         </div>
       </section>
 
@@ -165,24 +169,15 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
             <h2>Healthy School Practices</h2>
             <p>Whole-school implementation tools for creating healthier school environments.</p>
           </div>
-          <div className="hp-pcard-grid">
+          <div className="hp-domain-grid hp-practice-grid-4">
             {PRACTICES.map(p => (
-              <div key={p.key} className="hp-pcard" onClick={() => onOpenPractice(p.key)}>
-                <div className="hp-pcard-header" style={{ background: p.gradient }}>
-                  <span className="hp-pcard-icon">{p.icon}</span>
-                  <span className="hp-pcard-title">{p.title}</span>
-                </div>
-                <div className="hp-pcard-body">
-                  <p className="hp-pcard-summary">{p.summary}</p>
-                  <div className="hp-pcard-btns">
-                    {p.tabs.map((tab, ti) => (
-                      <button key={ti} className="hp-pcard-btn" onClick={(e) => { e.stopPropagation(); onOpenPractice(p.key, ti + 1); }}>
-                        {tab}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <button key={p.key} className={`hp-domain-card ${p.cls}`} onClick={() => onOpenPractice(p.key)}>
+                <div className="hp-d-icon-wrap"><span className="hp-d-icon">{p.icon}</span></div>
+                <span className="hp-d-arrow">&#8594;</span>
+                <div className="hp-d-title">{p.title}</div>
+                <div className="hp-d-desc">{p.summary}</div>
+                <div className="hp-d-badge">{p.badge}</div>
+              </button>
             ))}
           </div>
         </div>
@@ -196,22 +191,16 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
             <h2>Resource Library</h2>
             <p>Searchable resources for teachers, students, and parents.</p>
           </div>
-          <div className="hp-resource-tags">
-            {TAGS.map(t => (
-              <button key={t} className={`hp-resource-tag${activeTag === t ? ' active' : ''}`} onClick={() => setActiveTag(t)}>{t}</button>
+          <div className="hp-domain-grid hp-resource-grid-5">
+            {RESOURCES.map(r => (
+              <button key={r.key} className={`hp-domain-card ${r.cls}`}>
+                <div className="hp-d-icon-wrap"><span className="hp-d-icon">{r.icon}</span></div>
+                <span className="hp-d-arrow">&#8594;</span>
+                <div className="hp-d-title">{r.title}</div>
+                <div className="hp-d-desc">{r.desc}</div>
+                <div className="hp-d-badge">{r.badge}</div>
+              </button>
             ))}
-          </div>
-          <div className="hp-resource-grid">
-            {RESOURCES.map((r, i) => (
-              <div key={i} className="hp-resource-item">
-                <div className="hp-res-icon" style={{ background: r.bg }}>{r.icon}</div>
-                <h4>{r.title}</h4>
-                <p>{r.sub}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: '24px' }}>
-            <button className="hp-btn hp-btn--primary" style={{ background: '#2E7D32', color: 'white' }}>Browse Library &#8594;</button>
           </div>
         </div>
       </section>
@@ -236,16 +225,14 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
       </section>
 
       {/* Footer */}
-      <footer className="hp-footer" id="hp-about">
+      <footer className="hp-footer">
         <div className="hp-container">
           <div className="hp-footer-top">
             <div className="hp-footer-brand">
               <div className="hp-footer-logo-row">
-                <img src="/fff_logo.png" alt="FFF" className="hp-footer-fff-logo" />
                 <div className="hp-footer-logo">Eat Well. Live Well. Digital Platform</div>
               </div>
-              <p>An initiative developed by <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-footer-link"><strong>Food Future Foundation</strong></a>.<br />
-              Implemented in partnership with <strong>Directorate of Education, Government of Delhi</strong>.</p>
+              <p>An initiative Implemented by <strong>CM Shri Schools education<br /><img src="/delhi_gov_logo.png" alt="Govt of NCT Delhi" className="hp-footer-inline-logo" /> Department, Government of NCT of Delhi</strong><span className="hp-footer-support">with support of <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-footer-link"><strong>Food Future Foundation</strong></a>.</span></p>
               <div className="hp-social-links">
                 <a href="https://www.linkedin.com/company/food-future-foundation/" target="_blank" rel="noopener noreferrer" className="hp-social-icon" title="LinkedIn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -271,12 +258,13 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
                 <li><button onClick={() => onOpenPractice('active-schools')}>Active Schools</button></li>
                 <li><button onClick={() => onOpenPractice('teacher-engagement')}>Teacher Support</button></li>
                 <li><button onClick={() => onOpenPractice('family-engagement')}>Family Engagement</button></li>
+                <li><button onClick={() => onOpenPractice('whole-school')}>Whole-of-School</button></li>
               </ul>
             </div>
             <div className="hp-footer-col">
               <h4>Links</h4>
               <ul>
-                <li><button onClick={() => scrollTo('hp-about')}>About</button></li>
+                <li><button onClick={() => onOpenAbout()}>About</button></li>
                 <li><button>Programme Guidelines</button></li>
                 <li><button>Contact Support</button></li>
                 <li><button>Privacy Policy</button></li>
@@ -286,8 +274,8 @@ export default function Homepage({ onOpenDomain, onOpenPractice }) {
           <div className="hp-footer-bottom">
             <span>&copy; 2026 Eat Well. Live Well. Programme. All rights reserved.</span>
             <div className="hp-footer-partners">
-              <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-partner-badge">Food Future Foundation</a>
               <span className="hp-partner-badge">Govt. of Delhi</span>
+              <a href="https://foodfuturefoundation.org/" target="_blank" rel="noopener noreferrer" className="hp-partner-badge">Food Future Foundation</a>
             </div>
           </div>
         </div>
