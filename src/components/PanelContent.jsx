@@ -64,6 +64,76 @@ function VideoDesc({ text }) {
   );
 }
 
+function VideoCard({ v }) {
+  return (
+    <div className="video-card">
+      <div className="video-embed">
+        <iframe
+          src={v.embedUrl}
+          title={v.title}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+      <div className="video-card-body">
+        <h4 className="video-card-title">{v.title}</h4>
+        <VideoDesc text={v.description} />
+      </div>
+    </div>
+  );
+}
+
+function VideoSection({ videos }) {
+  const hasL1 = videos.some(v => v.level === 1);
+  const hasL2 = videos.some(v => v.level === 2);
+  const showLevels = hasL1 || hasL2;
+  const defaultLevel = hasL1 ? 1 : (hasL2 ? 2 : 1);
+  const [level, setLevel] = useState(defaultLevel);
+
+  if (!showLevels) {
+    return (
+      <div className="videos-grid">
+        {videos.map((v, i) => <VideoCard key={i} v={v} />)}
+      </div>
+    );
+  }
+
+  // Common videos (no level) appear in BOTH tabs
+  const filtered = videos.filter(v => !v.level || v.level === level);
+
+  return (
+    <div>
+      <div className="video-level-tabs">
+        <button
+          className={`video-level-tab${level === 1 ? ' video-level-tab--active' : ''}`}
+          onClick={() => setLevel(1)}
+        >
+          Level 1
+        </button>
+        <button
+          className={`video-level-tab${level === 2 ? ' video-level-tab--active' : ''}`}
+          onClick={() => setLevel(2)}
+        >
+          Level 2
+        </button>
+      </div>
+      {filtered.length > 0 ? (
+        <div className="videos-grid">
+          {filtered.map((v, i) => <VideoCard key={i} v={v} />)}
+        </div>
+      ) : (
+        <div className="section-content-card" style={{ maxWidth: '760px' }}>
+          <p style={{ fontSize: '.88rem', color: '#666', lineHeight: 1.7 }}>
+            Videos for Level {level} will be available soon.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HabitNoteAccordion({ kmData, kmSlides }) {
   const [openIdx, setOpenIdx] = useState(null);
   const toggle = (i) => setOpenIdx(prev => prev === i ? null : i);
@@ -214,26 +284,7 @@ function TeachingLearningResources({ habit, openSection }) {
 
         {activeSection === 'video' && (
           videos.length > 0 ? (
-            <div className="videos-grid">
-              {videos.map((v, i) => (
-                <div key={i} className="video-card">
-                  <div className="video-embed">
-                    <iframe
-                      src={v.embedUrl}
-                      title={v.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="video-card-body">
-                    <h4 className="video-card-title">{v.title}</h4>
-                    <VideoDesc text={v.description} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <VideoSection videos={videos} />
           ) : (
             <div className="section-content-card">
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.2rem', fontWeight: 900, marginBottom: '12px' }}>Videos</h3>
@@ -1172,26 +1223,7 @@ function AdditionalResources({ habit, openSection }) {
         {activeSection === 'videos' && (() => {
           const addVids = ADDITIONAL_VIDEOS[habitIdx] || [];
           return addVids.length > 0 ? (
-            <div className="videos-grid">
-              {addVids.map((v, i) => (
-                <div key={i} className="video-card">
-                  <div className="video-embed">
-                    <iframe
-                      src={v.embedUrl}
-                      title={v.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </div>
-                  <div className="video-card-body">
-                    <h4 className="video-card-title">{v.title}</h4>
-                    <VideoDesc text={v.description} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <VideoSection videos={addVids} />
           ) : (
             <div className="section-content-card" style={{ maxWidth: '760px' }}>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.15rem', fontWeight: 900, marginBottom: '12px' }}>Additional Videos</h3>

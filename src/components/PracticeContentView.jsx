@@ -1,6 +1,432 @@
+import { useState } from 'react';
 import '../homepage.css';
 import '../practices.css';
 import { PRACTICES_DATA } from '../data/practicesData.js';
+
+/* ─── Canteen Resources (expandable items) ─── */
+const CANTEEN_RESOURCES = [
+  {
+    id: 'menu',
+    title: 'Healthy Canteen Menu Examples',
+    intro: 'These options are budget-friendly, easy to prepare, and familiar to students:',
+    groups: [
+      {
+        heading: 'Snacks',
+        items: [
+          'Roasted chana / peanuts',
+          'Sprouts chaat (with onion, tomato, lemon)',
+          'Vegetable poha / upma',
+          'Idli with chutney',
+          'Stuffed vegetable sandwich (minimal butter)',
+          'Boiled corn / corn chaat',
+          'Besan chilla / moong dal chilla',
+          'Vegetable paratha rolls',
+          'Homemade dhokla',
+        ],
+      },
+      {
+        heading: 'Drinks',
+        items: [
+          'Buttermilk (chaas)',
+          'Lemon water (less sugar)',
+          'Coconut water (where feasible)',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'encourage',
+    title: 'Foods to Encourage',
+    intro: 'These foods should be easily available and promoted regularly in the canteen:',
+    items: [
+      'Freshly prepared foods over packaged items',
+      'Local and seasonal fruits such as banana',
+      'Protein-rich options (chana, sprouts)',
+      'Whole grains (atta-based items, poha, millets where possible)',
+      'Low-oil preparations (steamed, roasted, lightly sautéed)',
+      'Traditional Indian snacks that are naturally healthy',
+      'Safe drinking water and hydrating beverages',
+    ],
+  },
+  {
+    id: 'limit',
+    title: 'Foods to Limit',
+    intro: 'These foods should be reduced or gradually phased out from the canteen:',
+    items: [
+      'Packaged chips, namkeen, and fried snacks',
+      'Instant noodles and highly processed foods',
+      'Sugary drinks (colas, packaged juices, energy drinks)',
+      'High-sugar items (candies, chocolates, pastries)',
+      'Deep-fried items (samosa, pakora – limit frequency)',
+      'Foods high in salt, sugar, and unhealthy fats (HFSS foods)',
+    ],
+  },
+];
+
+function CanteenResourcesAccordion() {
+  const [openId, setOpenId] = useState(null);
+  const toggle = (id, target) => {
+    const willOpen = openId !== id;
+    setOpenId(willOpen ? id : null);
+    if (willOpen && target) {
+      setTimeout(() => {
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }, 50);
+    }
+  };
+
+  return (
+    <div className="pp-accordion">
+      {CANTEEN_RESOURCES.map(r => {
+        const isOpen = openId === r.id;
+        return (
+          <div key={r.id} className={`pp-accordion-item${isOpen ? ' pp-accordion-item--open' : ''}`}>
+            <button className="pp-accordion-header" onClick={(e) => toggle(r.id, e.currentTarget)} aria-expanded={isOpen}>
+              <span className="pp-accordion-icon">{isOpen ? '−' : '+'}</span>
+              <span className="pp-accordion-title">{r.title}</span>
+            </button>
+            {isOpen && (
+              <div className="pp-accordion-body">
+                <p className="pp-accordion-intro">{r.intro}</p>
+                {r.groups ? (
+                  r.groups.map((g, gi) => (
+                    <div key={gi} className="pp-accordion-group">
+                      <h5>{g.heading}</h5>
+                      <ul>
+                        {g.items.map((it, i) => <li key={i}>{it}</li>)}
+                      </ul>
+                    </div>
+                  ))
+                ) : (
+                  <ul>
+                    {r.items.map((it, i) => <li key={i}>{it}</li>)}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Assessment Tools (expandable accordion) ─── */
+const ASSESSMENT_TOOLS = [
+  {
+    id: 'observe',
+    title: 'Simple ways to observe habit adoption in students',
+    intro: 'What to look for across the 21 habits:',
+    groups: [
+      {
+        heading: 'A. Personal Well-being (21 Habits)',
+        subgroups: [
+          { heading: 'Smart Routine', items: ['Comes well-rested and attentive', 'Drinks water regularly', 'Participates in physical activity', 'Maintains hygiene', 'Shows reduced screen dependency'] },
+          { heading: 'Healthy Food Choices', items: ['Brings balanced meals', 'Includes fruits/vegetables', 'Avoids excessive junk food', 'Shows awareness of healthy vs unhealthy'] },
+          { heading: 'Mindful Eating', items: ['Eats calmly without rushing', 'Avoids food wastage', 'Shows curiosity about food choices', 'Reads/asks about food labels'] },
+        ],
+      },
+      {
+        heading: 'B. Social Well-being (Respect Skills)',
+        items: [
+          'Shows responsible behavior (follows rules, completes tasks)',
+          'Respects peers regardless of gender/background',
+          'Communicates politely and listens actively',
+          'Demonstrates emotional awareness (handles conflicts calmly)',
+          'Uses media and the internet responsibly',
+          'Avoids harmful behaviors (substance awareness, safety)',
+          'Stands against bullying or unsafe situations',
+        ],
+      },
+      {
+        heading: 'C. Planetary Well-being (Sustainability Skills)',
+        items: [
+          'Shows care for surroundings (no littering)',
+          'Understands link between health and environment',
+          'Avoids food waste and values resources',
+          'Participates in eco-friendly practices (reuse, reduce)',
+          'Shows awareness of biodiversity and nature',
+          'Makes mindful consumption choices',
+          'Connects habits with long-term health and environment',
+        ],
+      },
+    ],
+    tip: 'Tip: Look for daily actions + attitude shifts, not just knowledge.',
+  },
+  {
+    id: 'questions',
+    title: 'Questions for classroom discussions on healthy habits',
+    groups: [
+      {
+        heading: 'Personal Habits',
+        subgroups: [
+          { heading: 'Smart Routine', items: ['Why does our body need sleep and movement daily?', 'What changes do you feel when you use screens less?'] },
+          { heading: 'Healthy Food Choices', items: ['What makes a meal "healthy" or "balanced"?', 'Why should we limit sugar and salt?', 'Are all fats bad? Why/why not?'] },
+          { heading: 'Mindful Eating', items: ['What affects our food choices (friends, ads, taste)?', 'Why is it important to not waste food?', 'How can we make better food choices daily?'] },
+        ],
+      },
+      {
+        heading: 'Social Skills (Respect)',
+        items: [
+          'What does "respect" look like in everyday school life?',
+          'How can we handle disagreements without hurting others?',
+          'What is responsible internet behavior?',
+          'How can we help a friend make safe choices?',
+        ],
+      },
+      {
+        heading: 'Sustainability Skills (Sustain)',
+        items: [
+          'How are our food choices connected to the environment?',
+          'Why should we avoid wasting food?',
+          'What small actions can protect nature daily?',
+          'How does our health depend on the environment?',
+        ],
+      },
+    ],
+    tip: 'Tip: Encourage students to connect habits → real-life impact.',
+  },
+  {
+    id: 'self',
+    title: 'Student self-assessment ideas',
+    groups: [
+      {
+        heading: 'A. Weekly Reflection',
+        intro: 'Students respond:',
+        items: [
+          'I slept well and felt fresh',
+          'I drank enough water',
+          'I stayed active',
+          'I ate healthy food',
+          'I avoided too much junk food',
+          'I ate without distractions',
+          'I did not waste food',
+        ],
+        note: 'Options: Always / Sometimes / Rarely',
+      },
+      {
+        heading: 'B. Habit Check Prompt',
+        items: [
+          'One habit I followed well this week: ______',
+          'One habit I want to improve: ______',
+        ],
+      },
+      {
+        heading: 'C. Mini Habit Tracker',
+        intro: 'Students track 4–5 key habits daily:',
+        items: [
+          'Sleep on time',
+          'Drink water',
+          'Eat healthy',
+          'Stay active',
+          'Eat mindfully',
+        ],
+        note: '✔ / ✖ system works well',
+      },
+    ],
+  },
+  {
+    id: 'feedback',
+    title: 'Quick feedback tools for teachers',
+    groups: [
+      { heading: 'A. 1-Line Feedback', items: ['"Great improvement in your eating habits."', '"Try to drink more water during the day."'] },
+      { heading: 'B. Traffic Light Method', items: ['🟢 Consistent habit', '🟡 Improving', '🔴 Needs attention'] },
+      { heading: 'C. Exit Ticket (1-minute)', items: ['One habit I practiced today: ______', 'One habit I will try tomorrow: ______'] },
+      { heading: 'D. Habit Recognition', items: ['"Healthy Habit Star of the Week"', 'Appreciate small improvements (not perfection)'] },
+      { heading: 'E. Parent Connect (Optional)', items: ['Short note: "This week we focused on hydration and mindful eating—please support at home."'] },
+    ],
+  },
+];
+
+function AssessmentToolsAccordion() {
+  const [openId, setOpenId] = useState(null);
+  const toggle = (id, target) => {
+    const willOpen = openId !== id;
+    setOpenId(willOpen ? id : null);
+    if (willOpen && target) {
+      setTimeout(() => {
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }, 50);
+    }
+  };
+
+  const renderGroup = (g, gi) => (
+    <div key={gi} className="pp-accordion-group">
+      <h5>{g.heading}</h5>
+      {g.intro && <p className="pp-accordion-subintro">{g.intro}</p>}
+      {g.subgroups ? (
+        g.subgroups.map((sg, sgi) => (
+          <div key={sgi} className="pp-accordion-subgroup">
+            <h6>{sg.heading}</h6>
+            <ul>
+              {sg.items.map((it, i) => <li key={i}>{it}</li>)}
+            </ul>
+          </div>
+        ))
+      ) : (
+        <ul>
+          {g.items.map((it, i) => <li key={i}>{it}</li>)}
+        </ul>
+      )}
+      {g.note && <p className="pp-accordion-note">{g.note}</p>}
+    </div>
+  );
+
+  return (
+    <div className="pp-accordion">
+      {ASSESSMENT_TOOLS.map(r => {
+        const isOpen = openId === r.id;
+        return (
+          <div key={r.id} className={`pp-accordion-item${isOpen ? ' pp-accordion-item--open' : ''}`}>
+            <button className="pp-accordion-header" onClick={(e) => toggle(r.id, e.currentTarget)} aria-expanded={isOpen}>
+              <span className="pp-accordion-icon">{isOpen ? '−' : '+'}</span>
+              <span className="pp-accordion-title">{r.title}</span>
+            </button>
+            {isOpen && (
+              <div className="pp-accordion-body">
+                {r.intro && <p className="pp-accordion-intro">{r.intro}</p>}
+                {r.groups ? r.groups.map(renderGroup) : (
+                  <ul>{r.items.map((it, i) => <li key={i}>{it}</li>)}</ul>
+                )}
+                {r.tip && <p className="pp-accordion-tip">👉 {r.tip}</p>}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Family Engagement Posters (click to view) ─── */
+const FAMILY_POSTERS = [
+  { label: 'Healthy Eating at Home', src: '/family_poster_1.jpg' },
+  { label: 'Smart Snack Swaps', src: '/family_poster_2.jpg' },
+  { label: 'Protein-Rich Breakfasts', src: '/family_poster_3.jpg' },
+  { label: 'Balanced Family Meals', src: '/family_poster_4.jpg' },
+  { label: 'Tips for Reducing Sugar', src: '/family_poster_5.jpg' },
+  { label: 'Family Mealtime Habits', src: '/family_poster_6.jpg' },
+  { label: 'Mindful Eating at Home', src: '/family_poster_7.jpg' },
+  { label: 'Local & Seasonal Foods', src: '/family_poster_8.jpg' },
+  { label: 'Stay Active as a Family', src: '/family_poster_9.jpg' },
+  { label: 'Healthy Habits for the Whole Family', src: '/family_poster_10.jpg' },
+];
+
+function FamilyPostersList() {
+  const [preview, setPreview] = useState(null); // { src, label } | null
+  const [loaded, setLoaded] = useState(false);
+
+  const open = (poster) => {
+    setLoaded(false);
+    setPreview(poster);
+  };
+  const close = () => {
+    setPreview(null);
+    setLoaded(false);
+  };
+
+  return (
+    <>
+      <ul>
+        {FAMILY_POSTERS.map((p, i) => (
+          <li key={i} className="pp-board-item" onClick={() => open(p)}>
+            <span className="pp-res-bullet"></span>
+            <span>{p.label}</span>
+            <span className="pp-board-view">View &rarr;</span>
+          </li>
+        ))}
+      </ul>
+
+      {preview && (
+        <div className="pp-board-overlay" onClick={close}>
+          <div className="pp-board-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="pp-board-close" onClick={close} aria-label="Close">&times;</button>
+            <div className="pp-board-img-wrap">
+              {!loaded && <div className="pp-board-skeleton" aria-hidden="true" />}
+              <img
+                src={preview.src}
+                alt={preview.label}
+                decoding="async"
+                onLoad={() => setLoaded(true)}
+                className={`pp-board-img ${loaded ? 'pp-board-img--loaded' : ''}`}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ─── Visual Cues Section (with clickable boards + lazy image load) ─── */
+function VisualCuesSection() {
+  const [preview, setPreview] = useState(null); // 'sugar' | 'oil' | null
+  const [loaded, setLoaded] = useState(false);
+
+  const open = (key) => {
+    setLoaded(false);
+    setPreview(key);
+  };
+  const close = () => {
+    setPreview(null);
+    setLoaded(false);
+  };
+
+  const src = preview === 'sugar' ? '/sugar_board.jpg'
+            : preview === 'oil' ? '/oil_board.jpg'
+            : null;
+  const alt = preview === 'sugar' ? 'FSSAI Sugar Board' : 'FSSAI Oil Board';
+
+  return (
+    <>
+      <div className="pp-resource-list">
+        <h4>Visual Tools</h4>
+        <ul>
+          <li className="pp-board-item" onClick={() => open('sugar')}>
+            <span className="pp-res-bullet"></span>
+            <span><strong>Sugar Board</strong> &ndash; Shows the sugar content in common foods and drinks</span>
+            <span className="pp-board-view">View &rarr;</span>
+          </li>
+          <li className="pp-board-item" onClick={() => open('oil')}>
+            <span className="pp-res-bullet"></span>
+            <span><strong>Oil Board</strong> &ndash; Displays oil usage awareness for everyday foods</span>
+            <span className="pp-board-view">View &rarr;</span>
+          </li>
+          <li><span className="pp-res-bullet"></span><strong>Traffic Light System (FSSAI-based)</strong></li>
+        </ul>
+      </div>
+      <div className="pp-example-card">
+        <div className="pp-ex-badge">&#128225; Traffic Light System</div>
+        <h4>FSSAI-Based Traffic Light Guide</h4>
+        <ul>
+          <li><strong style={{ color: '#388E3C' }}>Green</strong> &ndash; Eat often (fresh fruits, vegetables, whole grains)</li>
+          <li><strong style={{ color: '#F9A825' }}>Yellow</strong> &ndash; Eat sometimes (moderate fat/sugar foods)</li>
+          <li><strong style={{ color: '#D32F2F' }}>Red</strong> &ndash; Eat rarely (high fat, high sugar, processed foods)</li>
+        </ul>
+      </div>
+
+      {preview && (
+        <div className="pp-board-overlay" onClick={close}>
+          <div className="pp-board-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="pp-board-close" onClick={close} aria-label="Close">&times;</button>
+            <div className="pp-board-img-wrap">
+              {!loaded && <div className="pp-board-skeleton" aria-hidden="true" />}
+              <img
+                src={src}
+                alt={alt}
+                decoding="async"
+                onLoad={() => setLoaded(true)}
+                className={`pp-board-img ${loaded ? 'pp-board-img--loaded' : ''}`}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 /* ─── School Food Environment content ─── */
 function SchoolFoodContent({ idx }) {
@@ -88,11 +514,7 @@ function SchoolFoodContent({ idx }) {
               <li><span className="pp-res-bullet"></span>Reduce high-fat, high-sugar, and processed foods</li>
             </ul>
             <h4 style={{ marginTop: 18 }}>Resources</h4>
-            <ul>
-              <li><span className="pp-res-bullet"></span>Healthy Canteen Menu Examples</li>
-              <li><span className="pp-res-bullet"></span>Foods to Encourage</li>
-              <li><span className="pp-res-bullet"></span>Foods to Limit</li>
-            </ul>
+            <CanteenResourcesAccordion />
           </div>
           <div className="pp-example-card">
             <div className="pp-ex-badge">&#9989; Canteen Guidelines</div>
@@ -120,23 +542,7 @@ function SchoolFoodContent({ idx }) {
           </div>
         </div>
         <div className="pp-cat-body">
-          <div className="pp-resource-list">
-            <h4>Visual Tools</h4>
-            <ul>
-              <li><span className="pp-res-bullet"></span><strong>Sugar Board</strong> &ndash; Shows the sugar content in common foods and drinks</li>
-              <li><span className="pp-res-bullet"></span><strong>Oil Board</strong> &ndash; Displays oil usage awareness for everyday foods</li>
-              <li><span className="pp-res-bullet"></span><strong>Traffic Light System (FSSAI-based)</strong></li>
-            </ul>
-          </div>
-          <div className="pp-example-card">
-            <div className="pp-ex-badge">&#128225; Traffic Light System</div>
-            <h4>FSSAI-Based Traffic Light Guide</h4>
-            <ul>
-              <li><strong style={{ color: '#388E3C' }}>Green</strong> &ndash; Eat often (fresh fruits, vegetables, whole grains)</li>
-              <li><strong style={{ color: '#F9A825' }}>Yellow</strong> &ndash; Eat sometimes (moderate fat/sugar foods)</li>
-              <li><strong style={{ color: '#D32F2F' }}>Red</strong> &ndash; Eat rarely (high fat, high sugar, processed foods)</li>
-            </ul>
-          </div>
+          <VisualCuesSection />
         </div>
       </div>
     </section>
@@ -562,12 +968,7 @@ function TeacherContent({ idx }) {
         <div className="pp-cat-body">
           <div className="pp-resource-list">
             <h4>Assessment Tools</h4>
-            <ul>
-              <li><span className="pp-res-bullet"></span>Simple ways to observe habit adoption in students</li>
-              <li><span className="pp-res-bullet"></span>Questions for classroom discussions on healthy habits</li>
-              <li><span className="pp-res-bullet"></span>Student self-assessment ideas</li>
-              <li><span className="pp-res-bullet"></span>Quick feedback tools for teachers</li>
-            </ul>
+            <AssessmentToolsAccordion />
           </div>
           <div className="pp-example-card">
             <div className="pp-ex-badge">&#128203; Assessment</div>
@@ -691,18 +1092,7 @@ function FamilyContent({ idx }) {
         <div className="pp-cat-body">
           <div className="pp-resource-list">
             <h4>Example Poster Topics for Families</h4>
-            <ul>
-              <li><span className="pp-res-bullet"></span>Healthy Eating at Home</li>
-              <li><span className="pp-res-bullet"></span>Smart Snack Swaps</li>
-              <li><span className="pp-res-bullet"></span>Protein-Rich Breakfasts</li>
-              <li><span className="pp-res-bullet"></span>Balanced Family Meals</li>
-              <li><span className="pp-res-bullet"></span>Tips for Reducing Sugar</li>
-              <li><span className="pp-res-bullet"></span>Family Mealtime Habits</li>
-              <li><span className="pp-res-bullet"></span>Mindful Eating at Home</li>
-              <li><span className="pp-res-bullet"></span>Local &amp; Seasonal Foods</li>
-              <li><span className="pp-res-bullet"></span>Stay Active as a Family</li>
-              <li><span className="pp-res-bullet"></span>Healthy Habits for the Whole Family</li>
-            </ul>
+            <FamilyPostersList />
           </div>
           <div className="pp-example-card">
             <div className="pp-ex-badge">&#128227; Community</div>
